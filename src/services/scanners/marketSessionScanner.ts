@@ -1,5 +1,5 @@
 import { MarketSession } from "../../config/constants";
-import { MarketSessionFetcher } from "../../market_data_providers/polygon/interfaces/marketSession.interface";
+import { MarketSessionFetcher } from "../../market_data_providers/polygon/interfaces/marketSessionFetcher.interface";
 import { ScanStrategy } from "./scanStrategies";
 /**
  * MarketSessionScanner is responsible for scanning market sessions using various strategies.

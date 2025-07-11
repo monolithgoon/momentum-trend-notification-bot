@@ -5,7 +5,7 @@ import { TelegramNotifier } from "./services/notifiers/TelegramNotifier";
 import { NotifierService } from "./services/notifiers/NotifierService";
 import { EODHDWebSocketClient } from "./market_data_providers/eodhd/eodhdWebSocketClient";
 import { WebSocketManager } from "./managers/websocketManager";
-import { EodhdWebSocketTickerSnapshot } from "./interfaces/eodhd/websocket.interface";
+import { EodhdWebSocketTickerSnapshot } from "./market_data_providers/eodhd/interfaces/websocket.interface";
 import { APP_CONFIG } from "./config";
 
 function handleTickerUpdate(data: EodhdWebSocketTickerSnapshot) {

@@ -2,11 +2,10 @@ import axios from "axios";
 import { APP_CONFIG } from "../../config";
 import { nsToUnixSec, safeAPICall } from "../../utils";
 import { PolygonTickerSnapshot } from "./interfaces/polygonTicker.interface";
-import { MarketSessionFetcher } from "./interfaces/marketSession.interface";
+import { MarketSessionFetcher } from "./interfaces/marketSessionFetcher.interface";
 import { MarketSession } from "../../config/constants";
 
 export class PolygonMarketFetcher implements MarketSessionFetcher {
-	private static readonly MARKET_OPEN_UTC = 13 * 3600 + 30 * 60; // 13:30 UTC in seconds
 
 	private static readonly ENDPOINTS = {
 		gainers: APP_CONFIG.POLYGON_MARKET_MOVERS_ENDPOINTS.GAINERS,
@@ -16,7 +15,7 @@ export class PolygonMarketFetcher implements MarketSessionFetcher {
 
 	private isPreMarket(tsNs: number, nowUtc: number): boolean {
 		const tradeSec = nsToUnixSec(tsNs);
-		return tradeSec < nowUtc && tradeSec < PolygonMarketFetcher.MARKET_OPEN_UTC;
+		return tradeSec < nowUtc && tradeSec < APP_CONFIG.MARKET_OPEN_UTC;
 	}
 
 	private async fetchPreMarketMovers(): Promise<PolygonTickerSnapshot[]> {
@@ -42,14 +41,20 @@ export class PolygonMarketFetcher implements MarketSessionFetcher {
 			];
 
 			return allTickers
-				.filter((t: any) => t.lastTradeTimestampNs?.t && this.isPreMarket(t.lastTradeTimestampNs.t, nowUtc))
+				.filter((t: any) => t.lastTradeTimestampNs && this.isPreMarket(t.lastTradeTimestampNs, nowUtc))
 				.map(
 					(t: any): PolygonTickerSnapshot => ({
 						tickerName: t.tickerName,
-						tradingVolume: t.tradingVolume?.v ?? 0,
+						tradingVolumeToday: t.tradingVolumeToday ?? 0,
 						priceChangeTodayPerc: t.priceChangeTodayPerc ?? 0,
-						lastTradeTimestampNs: t.lastTradeTimestampNs?.t,
-						priceChangeTodayAbs: t.priceChangeTodayAbs ?? null,
+						lastTradeTimestampNs: t.lastTradeTimestampNs,
+						priceChangeTodayAbs: t.priceChangeTodayAbs ?? 0,
+						rawTickerSnapshot: t.rawTickerSnapshot,
+						currDay: t.currDay,
+						prevDay: t.prevDay,
+						minute: t.minute,
+						lastQuote: t.lastQuote,
+						lastTrade: t.lastTrade
 					})
 				);
 		} catch (err) {

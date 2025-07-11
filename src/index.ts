@@ -5,7 +5,7 @@ import { formatSessionLabel, getCurrentMarketSession } from "./utils";
 import { WebSocketTickerBuffer } from "./utils/webSocketTickerBuffer";
 const wsTickBuffer = new WebSocketTickerBuffer();
 // Interfaces
-import { EodhdWebSocketTickerSnapshot } from "./interfaces/eodhd/websocket.interface";
+import { EodhdWebSocketTickerSnapshot } from "./market_data_providers/eodhd/interfaces/websocket.interface";
 // Analytics
 import { isTrendingAboveKC } from "./analytics/indicators";
 // Market Data Providers
@@ -14,7 +14,6 @@ import { PolygonMarketFetcher } from "./market_data_providers/polygon/polygonDat
 // Services - Notifiers
 import { NotifierService } from "./services/notifiers/NotifierService";
 import { TelegramNotifier } from "./services/notifiers/TelegramNotifier";
-import { sendTelegramAlert } from "./services/telegram.service";
 // Services - Scanners
 import { MarketSessionScanner } from "./services/scanners/marketSessionScanner";
 import { VolumeChangeScanStrategy, PriceChangeScanStrategy } from "./services/scanners/scanStrategies";
@@ -31,9 +30,10 @@ function handleTickerUpdate(tick: EodhdWebSocketTickerSnapshot) {
 	const symbolBufferLength = wsTickBuffer.getBufferLength(tick.s);
 	console.log({ symbolBufferLength });
 
-	isTrendingAboveKC(buffer).then((trending) => {
+	isTrendingAboveKC(buffer).then(async (trending) => {
 		if (trending) {
-			sendTelegramAlert(`🚀 ${tick.s} is trending above the KC!`);
+			const notifierService = new NotifierService(new TelegramNotifier());
+			await notifierService.notify(`🚀 ${tick.s} is trending above the KC!`);
 		}
 	});
 }
@@ -137,3 +137,11 @@ function climbStairs(n: number): number {
 
 	return dp(n);
 }
+
+/**
+ * Market Movers Scan
+- Compare snapshots to detect tickers moving up, or just added and rising
+
+WS
+- Monitor anomalies to check if they're trending above KC
+ */

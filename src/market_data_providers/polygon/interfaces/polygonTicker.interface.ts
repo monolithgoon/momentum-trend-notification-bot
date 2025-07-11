@@ -1,65 +1,73 @@
-export interface SnapshotBar {
-	/** Unix timestamp (seconds) of this bar */
-	t: number;
-	o: number; // open
+export interface PolygonTickerSnapshot {
+	tickerName: RawTickerSnapshot["ticker"];
+	priceChangeTodayAbs: RawTickerSnapshot["todaysChange"];
+	priceChangeTodayPerc: RawTickerSnapshot["todaysChangePerc"];
+	lastTradeTimestampNs: RawTickerSnapshot["updated"];
+	rawTickerSnapshot: RawTickerSnapshot;
+	tradingVolumeToday: RawSnapshotDay["v"]; // Today's trading volume
+
+	currDay: RawSnapshotDay; // Today’s aggregated data
+	prevDay: RawSnapshotPrevDay; // Previous day’s aggregated data
+	minute: RawSnapshotMinute; // Latest minute snapshot
+	lastQuote: RawSnapshotLastQuote; // Last quote info
+	lastTrade: RawSnapshotLastTrade; // Last trade info
+}
+
+export interface TopMarketMoversResponse {
+	status: string; // "OK" if successful
+	tickers: RawTickerSnapshot[];
+}
+
+interface RawTickerSnapshot {
+	ticker: string;
+	todaysChange: number; // Absolute change from prev close to last price
+	todaysChangePerc: number; // Percentage change
+	updated: number; // Last update timestamp in nanoseconds
+}
+
+interface RawSnapshotDay {
+	c: number; // close
 	h: number; // high
 	l: number; // low
-	c: number; // close
+	o: number; // open
 	v: number; // volume
+	vw: number; // volume-weighted average price
 }
 
-export interface SnapshotQuote {
-	/** Unix timestamp in microseconds */
-	t: number;
-	x: number; // exchange id
+interface RawSnapshotPrevDay {
+	c: number; // close
+	h: number; // high
+	l: number; // low
+	o: number; // open
+	v: number; // volume
+	vw: number; // volume-weighted average price
+}
+
+interface RawSnapshotMinute {
+	av: number; // accumulated volume
+	c: number; // close
+	h: number; // high
+	l: number; // low
+	n: number; // number of trades
+	o: number; // open
+	t: number; // timestamp (ms)
+	v: number; // volume
+	vw: number; // volume-weighted average price
+}
+
+interface RawSnapshotLastQuote {
+	P: number; // ask price
+	S: number; // ask size
+	p: number; // bid price
+	s: number; // bid size
+	t: number; // timestamp (nanoseconds)
+}
+
+interface RawSnapshotLastTrade {
+	c: number[]; // trade conditions
+	i: string; // trade ID
 	p: number; // price
 	s: number; // size
-	c?: number[]; // condition codes
-}
-
-export interface SnapshotTrade {
-	/** Unix timestamp in microseconds */
-	t: number;
-	x: number; // exchange id
-	p: number; // price
-	s: number; // size
-	c?: number[]; // condition codes
-	/** trade id string */
-	i: string;
-}
-
-// REMOVE
-// export interface PolygonTickerSnapshot_0 {
-// 	ticker: string;
-// 	updated: number;
-// 	todaysChange: number;
-// 	todaysChangePerc: number;
-// 	prevDay?: SnapshotBar;
-// 	day?: SnapshotBar;
-// 	min?: SnapshotBar;
-// 	fmv?: number;
-// 	lastQuote?: SnapshotQuote;
-// 	lastTrade?: SnapshotTrade;
-// 	volume: SnapshotBar;
-// }
-
-export interface PolygonTickerSnapshot {
-	tickerName: string;
-
-  lastTradeTimestampNs: SnapshotTrade; // e.g., 1700000000000 (nanoseconds)
-	// lastUpdatedTimestampNs: number;
-
-	priceChangeTodayAbs: number; // e.g., +2.15
-	priceChangeTodayPerc: number; // e.g., +3.42%
-
-	previousDayStats?: SnapshotBar;
-	currentDayStats?: SnapshotBar;
-	oneMinuteStats?: SnapshotBar;
-
-	fairMarketValueEstimate?: number;
-
-	lastQuote?: SnapshotQuote;
-	lastTrade?: SnapshotTrade;
-
-	tradingVolume: SnapshotBar;
+	t: number; // timestamp (nanoseconds)
+	x: number; // exchange ID
 }
