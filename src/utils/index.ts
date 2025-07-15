@@ -1,5 +1,5 @@
 import { APP_CONFIG } from "../config";
-import { MarketSession } from "../config/constants";
+import { MarketSessions } from "../core/enums/marketSessions.enum";
 
 export async function safeAPICall<T>(
 	fn: () => Promise<T>,
@@ -32,20 +32,20 @@ export function nsToUnixSec(ns: number): number {
 }
 
 // Helper to make label human-friendly
-export function formatSessionLabel(session: MarketSession): string {
+export function formatSessionLabel(session: MarketSessions): string {
 	switch (session) {
-		case MarketSession.PRE_MARKET:
+		case MarketSessions.PRE_MARKET:
 			return "Pre-Market";
-		case MarketSession.RTH:
+		case MarketSessions.RTH:
 			return "Regular Trading Hours";
-		case MarketSession.AFTER_MARKET:
+		case MarketSessions.AFTER_MARKET:
 			return "After-Market";
 		default:
 			return "Unknown Session";
 	}
 }
 
-export function getCurrentMarketSession(): MarketSession {
+export function getCurrentMarketSession(): MarketSessions {
 	const now = new Date();
 	const utcHour = now.getUTCHours();
 	const utcMinute = now.getUTCMinutes();
@@ -55,11 +55,11 @@ export function getCurrentMarketSession(): MarketSession {
 	const MARKET_CLOSE_MIN = 20 * 60 + 0; // 20:00 UTC
 
 	if (totalMinutes < MARKET_OPEN_MIN) {
-		return MarketSession.PRE_MARKET;
+		return MarketSessions.PRE_MARKET;
 	} else if (totalMinutes >= MARKET_OPEN_MIN && totalMinutes <= MARKET_CLOSE_MIN) {
-		return MarketSession.RTH;
+		return MarketSessions.RTH;
 	} else {
-		return MarketSession.AFTER_MARKET;
+		return MarketSessions.AFTER_MARKET;
 	}
 }
 

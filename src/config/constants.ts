@@ -1,10 +1,12 @@
 // src/constants.ts
+import { MarketDataVendors } from "../core/enums/marketDataVendors.enum";
 import { validateWebSocketUrl } from "../utils";
 
 interface AppConstantsInterface {
+	DEFAULT_MARKET_DATA_VENDOR: string;
+	MARKET_DATA_VENDORS: string[];
 	MARKET_OPEN_UTC: number;
 	SCAN_DAEMON_INTERVAL_MS: number;
-	TICKER_BUFFER_MAX_LENGTH: number;
 	ASYNC_LIMIT_CEILING: number;
 	EMA_LENGTH: number;
 	KC_MULTIPLIER: number;
@@ -19,7 +21,9 @@ interface AppConstantsInterface {
 	PRE_MARKET_MIN_CHANGE_PERC: number;
 	MAX_CONCURRENT_REQUESTS: number;
 	MAX_KC_TICKS: number;
-
+	TICKER_BUFFER_MAX_LENGTH: number;
+	REDIS_SNAPSHOT_LIMIT: number;
+	
 	POLYGON_BASE_URL: string;
 	POLYGON_SOCKET_URL: string;
 
@@ -34,6 +38,9 @@ interface AppConstantsInterface {
 }
 
 export const APP_CONSTANTS: AppConstantsInterface = {
+	DEFAULT_MARKET_DATA_VENDOR: MarketDataVendors.POLYGON, // Default vendor for market data
+	MARKET_DATA_VENDORS: ["POLYGON", "EODHD"], // Supported
+
 	MARKET_OPEN_UTC: 13 * 3600 + 30 * 60, // 13:30 UTC in seconds
 	SCAN_DAEMON_INTERVAL_MS: 1 * 60 * 1000,
 	ASYNC_LIMIT_CEILING: 5,
@@ -51,6 +58,7 @@ export const APP_CONSTANTS: AppConstantsInterface = {
 	MAX_CONCURRENT_REQUESTS: 5,
 	MAX_KC_TICKS: 30,
 	TICKER_BUFFER_MAX_LENGTH: 200,
+	REDIS_SNAPSHOT_LIMIT: 10,
 
 	// 🔽 POLYGON and EODHD API Constants
 	POLYGON_BASE_URL: "https://api.polygon.io",
@@ -67,7 +75,7 @@ export const APP_CONSTANTS: AppConstantsInterface = {
 	EODHD_WEBSOCKET_URL: validateWebSocketUrl("wss://ws.eodhistoricaldata.com/ws/us-quote?api_token=demo"),
 };
 
-export enum MarketSession {
+export enum MarketSessions {
 	PRE_MARKET = "pre_market",
 	RTH = "rth",
 	AFTER_MARKET = "after_market",

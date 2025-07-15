@@ -1,11 +1,18 @@
 import axios from "axios";
-import { APP_CONFIG } from "../../config";
-import { nsToUnixSec, safeAPICall } from "../../utils";
-import { PolygonTickerSnapshot } from "./interfaces/polygonTicker.interface";
-import { MarketSessionFetcher } from "./interfaces/marketSessionFetcher.interface";
-import { MarketSession } from "../../config/constants";
+import { APP_CONFIG } from "../../../config";
+import { nsToUnixSec, safeAPICall } from "../../../utils";
+import { MarketDataFetcher } from "../../../core/interfaces/marketDataFetcher.interface";
+import { MarketSessions } from "../../../config/constants";
+import { InternalTickerSnapshot } from "../../../core/interfaces/internalTickerSnapshot.interface";
+import { PolygonTickerSnapshot } from "../types/polygonTickerSnapshot.interface";
+import { TickerSnapshotTransformer } from "src/core/interfaces/tickerSnapshotTransformer.interface";
 
-export class PolygonMarketFetcher implements MarketSessionFetcher {
+
+export class PolygonMarketDataFetcher implements MarketDataFetcher {
+
+constructor(
+		private transformer: TickerSnapshotTransformer<PolygonTickerSnapshot>
+	) {}
 
 	private static readonly ENDPOINTS = {
 		gainers: APP_CONFIG.POLYGON_MARKET_MOVERS_ENDPOINTS.GAINERS,
@@ -24,13 +31,13 @@ export class PolygonMarketFetcher implements MarketSessionFetcher {
 		try {
 			const [gainersRes, losersRes, activeRes] = await Promise.all([
 				safeAPICall(() =>
-					axios.get(PolygonMarketFetcher.ENDPOINTS.gainers, { params: { apiKey: APP_CONFIG.POLYGON_API_KEY } })
+					axios.get(PolygonMarketDataFetcher.ENDPOINTS.gainers, { params: { apiKey: APP_CONFIG.POLYGON_API_KEY } })
 				),
 				safeAPICall(() =>
-					axios.get(PolygonMarketFetcher.ENDPOINTS.losers, { params: { apiKey: APP_CONFIG.POLYGON_API_KEY } })
+					axios.get(PolygonMarketDataFetcher.ENDPOINTS.losers, { params: { apiKey: APP_CONFIG.POLYGON_API_KEY } })
 				),
 				safeAPICall(() =>
-					axios.get(PolygonMarketFetcher.ENDPOINTS.most_active, { params: { apiKey: APP_CONFIG.POLYGON_API_KEY } })
+					axios.get(PolygonMarketDataFetcher.ENDPOINTS.most_active, { params: { apiKey: APP_CONFIG.POLYGON_API_KEY } })
 				),
 			]);
 
@@ -63,10 +70,12 @@ export class PolygonMarketFetcher implements MarketSessionFetcher {
 		}
 	}
 
-	async getData(session: MarketSession): Promise<PolygonTickerSnapshot[]> {
+	async getData(session: MarketSessions): Promise<InternalTickerSnapshot[]> {
 		switch (session) {
-			case MarketSession.PRE_MARKET:
-				return this.fetchPreMarketMovers();
+			// Fetch pre-market movers
+			case MarketSessions.PRE_MARKET:
+				const movers = await this.fetchPreMarketMovers();
+				return movers.map((symbolSnapshot) => this.transformer.transform(symbolSnapshot));
 
 			default:
 				console.warn(`${session} data fetch not implemented yet.`);

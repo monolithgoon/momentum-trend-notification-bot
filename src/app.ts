@@ -1,21 +1,21 @@
 // app.ts
 import { APP_CONFIG } from "./config";
-import { MarketSessionScanner } from "./services/scanners/marketSessionScanner";
-import { PolygonMarketFetcher } from "./market_data_providers/polygon/polygonDataFetcher";
+import { MarketSessionScanner } from "./scanners/marketSessionScanner";
+import { PolygonMarketDataFetcher } from "./data_vendors/polygon/fetchers/polygonMarketDataFetcher";
 import {
-	VolumeChangeScanStrategy,
-	PriceChangeScanStrategy,
-} from "./services/scanners/scanStrategies";
+	VolumeChangeScanFilter,
+	PriceChangeScanFilter,
+} from "./strategies/scan/scanFilters";
 
 export function createScannerApp() {
-	const fetcher = new PolygonMarketFetcher();
+	const fetcher = new PolygonMarketDataFetcher();
 	const scanner = new MarketSessionScanner(fetcher, [
 		{
-			strategy: new VolumeChangeScanStrategy(),
+			scanFilter: new VolumeChangeScanFilter(),
 			config: { volumeThreshold: 1_000_000, changePercentageThreshold: 3 },
 		},
 		{
-			strategy: new PriceChangeScanStrategy(),
+			scanFilter: new PriceChangeScanFilter(),
 			config: { minPriceJump: 2.5 },
 		},
 	]);

@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { WebSocketClientInterface } from "../interfaces/webSocketClient.interface";
+import { WebSocketClientInterface } from "../types/webSocketClient.interface";
 
 export class WebSocketManager {
 	private ws: WebSocket | null = null;

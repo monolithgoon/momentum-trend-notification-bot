@@ -1,15 +1,30 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "CommonJS",
+		"rootDir": "src",
+		"outDir": "dist",
+		"strict": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"baseUrl": ".", // This is the root of your project
+		"paths": {
+			"@analytics/*": ["src/analytics/*"],
+			"@config/*": ["src/config/*"],
+			"@core/*": ["src/core/*"],
+			"@data_vendors/*": ["src/data_vendors/*"],
+			"@enums/*": ["src/core/enums/*"],
+			"@factories/*": ["src/factories/*"],
+			"@infrastructure/*": ["src/infrastructure/*"],
+			"@notifiers/*": ["src/notifiers/*"],
+			"@scanners/*": ["src/scanners/*"],
+			"@services/*": ["src/services/*"],
+			"@strategies/*": ["src/strategies/*"],
+			"@utils/*": ["src/utils/*"],
+		}
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "dist"]
 }

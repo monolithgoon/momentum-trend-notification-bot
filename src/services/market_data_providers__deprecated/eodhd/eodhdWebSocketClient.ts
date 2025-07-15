@@ -1,14 +1,15 @@
-import { APP_CONFIG } from "../../config/index";
-import { EodhdWebSocketMessage, EodhdWebSocketTickerSnapshot } from "./interfaces/websocket.interface";
-import { AuthMessage, SubscriptionMessage, WebSocketClientInterface } from "../../interfaces/webSocketClient.interface";
+// import { APP_CONFIG } from "@config/index";
+import { APP_CONFIG } from "@config/index"
+import { EodhdWebSocketMessage, EodhdWebSocketTickerSnapshot } from "./types/websocket.interface";
+import { AuthMessage, SubscriptionMessage, WebSocketClientInterface } from "@infrastructure/websocket/types/webSocketClient.interface";
 
 /**
- * This class is a WebSocket dataProvider for EODHD, implementing the WebSocketClientInterface.
+ * This class is a WebSocket dataFetcher for EODHD, implementing the WebSocketClientInterface.
  *
  * It handles authentication and subscription messages, and processes incoming data.
  * It is designed to work with the EODHD WebSocket API, which provides real-time market data.
  *
- * The dataProvider can handle both single ticker snapshots and arrays of tickers, processing them accordingly.
+ * The dataFetcher can handle both single ticker snapshots and arrays of tickers, processing them accordingly.
  */
 export class EODHDWebSocketClient implements WebSocketClientInterface {
 	socketClientName = "EODHD";

@@ -1,7 +1,7 @@
 import { APP_CONFIG } from "../config";
-import { saveSnapshotToRedis, getRecentSnapshots } from "../services/redis.service";
-import { PolygonTickerSnapshot } from "../market_data_providers/polygon/interfaces/polygonTicker.interface";
-import { InternalTickerSnapshot } from "../interfaces/internalTickerSnapshot.interface";
+import { saveSnapshotToRedis, getRecentSnapshots } from "../infrastructure/redis/redis.service";
+import { PolygonTickerSnapshot } from "./types/polygon/polygonTickerSnapshot.interface";
+import { InternalTickerSnapshot } from "../core/interfaces/internalTickerSnapshot.interface";
 
 /**
  * Converts Polygon's snapshot format to your internal snapshot type.
@@ -25,7 +25,7 @@ export async function updateSnapshots(rawSnapshots: PolygonTickerSnapshot[]): Pr
 		const ticker = data.tickerName;
 		const snapshot = transformSnapshot(ticker, data, rankIdx);
 
-		await saveSnapshotToRedis(ticker, snapshot, APP_CONFIG.SNAPSHOT_LIMIT);
+		await saveSnapshotToRedis(ticker, snapshot, APP_CONFIG.REDIS_SNAPSHOT_LIMIT);
 	}
 }
 

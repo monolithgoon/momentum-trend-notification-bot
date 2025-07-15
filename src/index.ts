@@ -1,28 +1,26 @@
 // src/index.ts
-import { APP_CONFIG } from "./config";
+import { APP_CONFIG } from "@config/index";
 // Utilities
 import { formatSessionLabel, getCurrentMarketSession } from "./utils";
 import { WebSocketTickerBuffer } from "./utils/webSocketTickerBuffer";
 const wsTickBuffer = new WebSocketTickerBuffer();
 // Interfaces
-import { EodhdWebSocketTickerSnapshot } from "./market_data_providers/eodhd/interfaces/websocket.interface";
+import { EodhdWebSocketTickerSnapshot } from "./services/market_data_providers__deprecated/eodhd/types/websocket.interface";
 // Analytics
 import { isTrendingAboveKC } from "./analytics/indicators";
 // Market Data Providers
-import { EODHDWebSocketClient } from "./market_data_providers/eodhd/eodhdWebSocketClient";
-import { PolygonMarketFetcher } from "./market_data_providers/polygon/polygonDataFetcher";
+import { EODHDWebSocketClient } from "./services/market_data_providers__deprecated/eodhd/eodhdWebSocketClient";
 // Services - Notifiers
-import { NotifierService } from "./services/notifiers/NotifierService";
-import { TelegramNotifier } from "./services/notifiers/TelegramNotifier";
+import { NotifierService } from "./notifiers/NotifierService";
+import { TelegramNotifier } from "./notifiers/TelegramNotifier";
 // Services - Scanners
-import { MarketSessionScanner } from "./services/scanners/marketSessionScanner";
-import { VolumeChangeScanStrategy, PriceChangeScanStrategy } from "./services/scanners/scanStrategies";
 // Managers
-import { WebSocketManager } from "./managers/websocketManager";
+import { MarketDataVendors } from "./core/enums/marketDataVendors.enum";
+import { MarketDataService } from "@services/market_data/marketDataService";
 
-// ---- HANDLE TICKER UPDATES ----
+// ---- HANDLE WEBSOCKET TICKER UPDATES ----
 
-function handleTickerUpdate(tick: EodhdWebSocketTickerSnapshot) {
+function handleWebSocketTickerUpdate(tick: EodhdWebSocketTickerSnapshot) {
 	wsTickBuffer.addTick(tick);
 
 	const buffer = wsTickBuffer.getBuffer(tick.s);
@@ -43,39 +41,31 @@ function handleTickerUpdate(tick: EodhdWebSocketTickerSnapshot) {
 async function runProgram() {
 	console.log("🟢 Running scanner task at", new Date().toLocaleString());
 
-	const fetcher = new PolygonMarketFetcher();
-
-	const scanner = new MarketSessionScanner(fetcher, [
-		{
-			strategy: new VolumeChangeScanStrategy(),
-			config: { volumeThreshold: 1_000_000, changePercentageThreshold: 3 },
-		},
-		{
-			strategy: new PriceChangeScanStrategy(),
-			config: { minPriceJump: 2.5 },
-		},
-	]);
+	const vendor = MarketDataVendors.POLYGON;
 
 	try {
-		const session = getCurrentMarketSession();
-		const activeTickers = await scanner.runScan(session);
+		const currentMarketSession = getCurrentMarketSession();
 
-		if (!activeTickers) return;
+		const marketDataService = new MarketDataService({ vendor: vendor, marketSession: currentMarketSession });
 
-		const activeTickersStr = activeTickers.join(", ");
-		const sessionLabel = formatSessionLabel(session);
+		const activeTickers_2 = await marketDataService.runService();
+
+		if (!activeTickers_2) return;
+
+		const activeTickersStr = activeTickers_2.join(", ");
+		const sessionLabel = formatSessionLabel(currentMarketSession);
 		const notifierService = new NotifierService(new TelegramNotifier());
 
 		// WIP
 		// await notifierService.notify(
-		// 	`${sessionLabel} scan – Found ${activeTickers.length} active ticker(s): ${activeTickersStr}`
+		// 	`${sessionLabel} scan – Found ${activeTickers_2.length} active ticker(s): ${activeTickersStr}`
 		// );
 
 		// Init websocket
 		const wsClient = new EODHDWebSocketClient(
 			APP_CONFIG.EODHD_API_KEY,
 			"AAPL, TSLA", // use activeTickersStr if desired
-			handleTickerUpdate
+			handleWebSocketTickerUpdate
 		);
 
 		// WIP
