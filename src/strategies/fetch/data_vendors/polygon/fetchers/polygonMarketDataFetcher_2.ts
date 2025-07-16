@@ -1,10 +1,10 @@
-import { MarketDataFetcher } from "../../../../../core/interfaces/marketDataFetcher.interface";
+import { MarketDataFetcher } from "../../../types/marketDataFetcher.interface";
 import { MarketSessions } from "src/core/enums/marketSessions.enum";
-import { InternalTickerSnapshot } from "src/core/interfaces/internalTickerSnapshot.interface";
+import { InternalTickerSnapshot } from "src/data/snapshots/types/internalTickerSnapshot.interface";
 import { PolygonFetchStrategy_2 } from "@strategies/fetch/data_vendors/polygon/types/polygonFetchStrategy.interface";
 import { PolygonStrategyKey, polygonFetchStrategyRegistry } from "@strategies/fetch/registries/polygnFetchStrategyRegistry";
-import { PolygonTickerSnapshot } from "../types/polygonTickerSnapshot.interface";
-import { TickerSnapshotTransformer } from "src/core/interfaces/tickerSnapshotTransformer.interface";
+import { PolygonTickerSnapshot } from "../../../../../data/snapshots/vendors/polygon/polygonRestSnapshot.interface";
+import { TickerSnapshotTransformer } from "src/data/snapshots/transformers/types/tickerSnapshotTransformer.interface";
 
 // REMOVE - DEPRECATED
 export class PolygonMarketDataFetcher_2 implements MarketDataFetcher {

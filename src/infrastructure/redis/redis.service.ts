@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import { InternalTickerSnapshot } from "../../core/interfaces/internalTickerSnapshot.interface";
+import { InternalTickerSnapshot } from "../../data/snapshots/types/internalTickerSnapshot.interface";
 
 const redisClient = createClient();
 await redisClient.connect();

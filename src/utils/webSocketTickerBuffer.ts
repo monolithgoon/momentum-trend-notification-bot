@@ -1,5 +1,5 @@
 import { APP_CONFIG } from "@config/index";
-import { EodhdWebSocketTickerSnapshot } from "@services/market_data_providers__deprecated/eodhd/types/websocket.interface";
+import { EodhdWebSocketTickerSnapshot } from "src/data/snapshots/vendors/eodhd/eodhdWebSocketSnapshot.interface";
 
 type Ticker = EodhdWebSocketTickerSnapshot;
 

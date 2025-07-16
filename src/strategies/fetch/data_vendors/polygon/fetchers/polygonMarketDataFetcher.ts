@@ -1,10 +1,10 @@
 import axios from "axios";
 import { APP_CONFIG } from "../../../../../config";
 import { nsToUnixSec, safeAPICall } from "../../../../../utils";
-import { MarketDataFetcher } from "../../../../../core/interfaces/marketDataFetcher.interface";
-import { InternalTickerSnapshot } from "../../../../../core/interfaces/internalTickerSnapshot.interface";
-import { PolygonTickerSnapshot } from "../types/polygonTickerSnapshot.interface";
-import { TickerSnapshotTransformer } from "src/core/interfaces/tickerSnapshotTransformer.interface";
+import { MarketDataFetcher } from "../../../types/marketDataFetcher.interface";
+import { InternalTickerSnapshot } from "../../../../../data/snapshots/types/internalTickerSnapshot.interface";
+import { PolygonTickerSnapshot } from "../../../../../data/snapshots/vendors/polygon/polygonRestSnapshot.interface";
+import { TickerSnapshotTransformer } from "src/data/snapshots/transformers/types/tickerSnapshotTransformer.interface";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
 
 

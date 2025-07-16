@@ -1,11 +1,11 @@
 // main.ts
 import { createScannerApp } from "./app";
 import { getCurrentMarketSession, formatSessionLabel } from "./utils";
-import { TelegramNotifier } from "./notifiers/TelegramNotifier";
-import { NotifierService } from "./notifiers/NotifierService";
-import { EODHDWebSocketClient } from "./services/market_data_providers__deprecated/eodhd/eodhdWebSocketClient";
+import { TelegramNotifier } from "./services/TelegramService";
+import { NotifierService } from "./services/NotifierService";
+import { EODHDWebSocketClient } from "./strategies/stream/eodhd/eodhdWebSocketClient";
 import { WebSocketManager } from "./infrastructure/websocket/websocketManager";
-import { EodhdWebSocketTickerSnapshot } from "./services/market_data_providers__deprecated/eodhd/types/websocket.interface";
+import { EodhdWebSocketTickerSnapshot } from "./data/snapshots/vendors/eodhd/eodhdWebSocketSnapshot.interface";
 import { APP_CONFIG } from "./config";
 
 function handleTickerUpdate(data: EodhdWebSocketTickerSnapshot) {

@@ -1,7 +1,7 @@
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
-import { MarketDataFetcher } from "@core/interfaces/marketDataFetcher.interface";
+import { MarketDataFetcher } from "@strategies/fetch/types/marketDataFetcher.interface";
 import { PolygonMarketDataFetcher_3 } from "@strategies/fetch/data_vendors/polygon/fetchers/polygonMarketDataFetcher_2";
-import { PolygonTickerTransformer } from "@strategies/fetch/data_vendors/polygon/transformers/polygonTickerTransformer";
+import { PolygonTickerTransformer } from "src/data/snapshots/transformers/vendors/polygon/polygonTickerTransformer";
 import { PolygonFetchStrategy_2 } from "@strategies/fetch/data_vendors/polygon/types/polygonFetchStrategy.interface";
 import { vendorStrategyRegistryMap } from "@strategies/fetch/registries/vendorStrategyRegistryMap";
 import { isValidVendorAndStrategyKeys } from "@utils/marketDataVendorGuards";

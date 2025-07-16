@@ -1,7 +1,7 @@
-import { APP_CONFIG } from "../config";
-import { saveSnapshotToRedis, getRecentSnapshots } from "../infrastructure/redis/redis.service";
+import { APP_CONFIG } from "../../config";
+import { saveSnapshotToRedis, getRecentSnapshots } from "../../infrastructure/redis/redis.service";
 import { PolygonTickerSnapshot } from "./types/polygon/polygonTickerSnapshot.interface";
-import { InternalTickerSnapshot } from "../core/interfaces/internalTickerSnapshot.interface";
+import { InternalTickerSnapshot } from "./types/internalTickerSnapshot.interface";
 
 /**
  * Converts Polygon's snapshot format to your internal snapshot type.

@@ -1,5 +1,4 @@
-import { InternalTickerSnapshot } from "../../core/interfaces/internalTickerSnapshot.interface";
-
+import { InternalTickerSnapshot } from "../../data/snapshots/types/internalTickerSnapshot.interface";
 import { ScanFilter } from "./types/scanFilter.interface";
 
 // Configs

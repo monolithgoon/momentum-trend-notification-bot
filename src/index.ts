@@ -5,20 +5,19 @@ import { formatSessionLabel, getCurrentMarketSession } from "./utils";
 import { WebSocketTickerBuffer } from "./utils/webSocketTickerBuffer";
 const wsTickBuffer = new WebSocketTickerBuffer();
 // Interfaces
-import { EodhdWebSocketTickerSnapshot } from "./services/market_data_providers__deprecated/eodhd/types/websocket.interface";
+import { EodhdWebSocketTickerSnapshot } from "./data/snapshots/vendors/eodhd/eodhdWebSocketSnapshot.interface";
 // Analytics
 import { isTrendingAboveKC } from "./analytics/indicators";
 // Market Data Providers
-import { EODHDWebSocketClient } from "./services/market_data_providers__deprecated/eodhd/eodhdWebSocketClient";
+import { EODHDWebSocketClient } from "./strategies/stream/eodhd/eodhdWebSocketClient";
 // Services - Notifiers
-import { NotifierService } from "./notifiers/NotifierService";
-import { TelegramNotifier } from "./notifiers/TelegramNotifier";
+import { NotifierService } from "./services/NotifierService";
+import { TelegramNotifier } from "./services/TelegramService";
 // Services - Scanners
 // Managers
 import { MarketDataVendors } from "./core/enums/marketDataVendors.enum";
-import { MarketDataService } from "@services/market_data/marketDataService";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
-import { MarketDataService_3 } from "@services/market_data/marketDataService_3";
+import { MarketSnapshotScanner } from "@strategies/scan/MarketSnapshotScanner";
 
 // ---- HANDLE WEBSOCKET TICKER UPDATES ----
 
@@ -48,7 +47,7 @@ async function runProgram() {
 	try {
 		const currentMarketSession = getCurrentMarketSession();
 
-		const marketDataService_3 = new MarketDataService_3({
+		const marketSnapshotScanner = new MarketSnapshotScanner({
 			vendor: MarketDataVendors.POLYGON,
 			marketSession: MarketSessions.PRE_MARKET,
 			strategyKeys: [
@@ -57,11 +56,7 @@ async function runProgram() {
 			],
 		});
 
-		const activeTickers = await marketDataService_3.runService();
-
-		// const vendor = MarketDataVendors.POLYGON;
-		// const marketDataService = new MarketDataService({ vendor: vendor, marketSession: currentMarketSession });
-		// const activeTickers = await marketDataService.runService();
+		const activeTickers = await marketSnapshotScanner.runService();
 
 		if (!activeTickers) return;
 

@@ -1,17 +1,19 @@
+// src/services/market_data/marketDataService.ts
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
-import { InternalTickerSnapshot } from "@core/interfaces/internalTickerSnapshot.interface";
-import { buildMarketDataFetcher } from "@strategies/fetch/factories/buildMarketDataFetcher";
-import { MarketDataScreener } from "@scanners/marketSessionScanner";
-import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@strategies/scan/scanFilters";
 import { getCurrentMarketSession } from "@utils/index";
+import { InternalTickerSnapshot } from "src/data/snapshots/types/internalTickerSnapshot.interface";
+import { buiildMarketDataFetcherFromkeys } from "@strategies/fetch/factories/buildMarketDataFetcherFromKeys";
+import { SnapshotScreener } from "./SnapshotScreener"
+import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@strategies/scan/scanFilters";
 
 export interface MarketDataServiceConfig {
 	vendor: MarketDataVendors;
-	marketSession?: MarketSessions; // optional → fallback to current
+	marketSession?: MarketSessions;
+	strategyKeys: string[];
 }
 
-export class MarketDataService {
+export class MarketSnapshotScanner {
 	constructor(private readonly config: MarketDataServiceConfig) {}
 
 	private resolveMarketSession(): MarketSessions {
@@ -34,32 +36,27 @@ export class MarketDataService {
 		const marketSession = this.resolveMarketSession();
 
 		try {
-			const fetcher = buildMarketDataFetcher(this.config.vendor, "Pre-market top movers");
+			const fetcher = buiildMarketDataFetcherFromkeys(this.config.vendor, this.config.strategyKeys);
 
-			const sessionMarketData = await fetcher.getData(marketSession);
+			const rawData = await fetcher.getData(marketSession);
 
-			const screener = new MarketDataScreener([
+			const screener = new SnapshotScreener([
 				{
 					scanFilter: new VolumeChangeScanFilter(),
-					config: {
-						volumeThreshold: 1_000_000,
-						changePercentageThreshold: 3,
-					},
+					config: { volumeThreshold: 1_000_000, changePercentageThreshold: 3 },
 				},
 				{
 					scanFilter: new PriceChangeScanFilter(),
-					config: {
-						minPriceJump: 2.5,
-					},
+					config: { minPriceJump: 2.5 },
 				},
 			]);
 
-			const filteredMarketData = screener.runScreener(sessionMarketData);
+			const filtered = screener.runScreener(rawData);
 
-			this.handleResults(filteredMarketData);
-			return filteredMarketData;
+			this.handleResults(filtered);
+			return filtered;
 		} catch (err) {
-			console.error("❌ MarketDataService failed:", err);
+			console.error("❌ MarketSnapshotScanner failed:", err);
 			throw err;
 		}
 	}

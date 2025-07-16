@@ -8,7 +8,7 @@ import {
 
 export function createScannerApp() {
 	const fetcher = new PolygonMarketDataFetcher();
-	const scanner = new MarketSessionScanner(fetcher, [
+	const scanner = new MarketSnapshotScanner(fetcher, [
 		{
 			scanFilter: new VolumeChangeScanFilter(),
 			config: { volumeThreshold: 1_000_000, changePercentageThreshold: 3 },

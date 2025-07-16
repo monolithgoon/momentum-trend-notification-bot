@@ -1,10 +1,10 @@
 // /src/vendors/eodhdVendor.ts
 
 import axios from "axios";
-import { APP_CONFIG } from "../../../config";
-import { safeAPICall } from "../../../utils";
-import { MarketSessionDataProvider } from "../types/sessionDataProvider.interface";
-import { EodhdTickerSnapshot } from "./types/ticker.interface";
+import { APP_CONFIG } from "../../../../config";
+import { safeAPICall } from "../../../../utils";
+import { MarketSessionDataProvider } from "./MarketSessionDataProvider.interface";
+import { EodhdTickerSnapshot } from "../../../../data/snapshots/vendors/eodhd/eodhdRestSnapshot.interface";
 
 /**
  * EODHD vendor implementation for fetching pre-market active tickers.

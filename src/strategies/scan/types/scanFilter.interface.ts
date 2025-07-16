@@ -1,4 +1,4 @@
-import { InternalTickerSnapshot } from "src/core/interfaces/internalTickerSnapshot.interface";
+import { InternalTickerSnapshot } from "src/data/snapshots/types/internalTickerSnapshot.interface";
 
 export interface ScanFilter<TConfig = unknown> {
   name: string;

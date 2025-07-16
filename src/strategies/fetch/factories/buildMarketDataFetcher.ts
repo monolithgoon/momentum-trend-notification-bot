@@ -1,8 +1,8 @@
 // src/factories/selectMarketDataFetcher.ts
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
-import { MarketDataFetcher } from "@core/interfaces/marketDataFetcher.interface";
+import { MarketDataFetcher } from "@strategies/fetch/types/marketDataFetcher.interface";
 import { PolygonMarketDataFetcher_2 } from "@strategies/fetch/data_vendors/polygon/fetchers/polygonMarketDataFetcher_2";
-import { PolygonTickerTransformer } from "@strategies/fetch/data_vendors/polygon/transformers/polygonTickerTransformer";
+import { PolygonTickerTransformer } from "src/data/snapshots/transformers/vendors/polygon/polygonTickerTransformer";
 
 export function buildMarketDataFetcher(vendor: MarketDataVendors, strategyKey: string): MarketDataFetcher {
 	switch (vendor) {

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { APP_CONFIG } from '@config/index';
 import { PolygonFetchStrategy_2 } from '@strategies/fetch/data_vendors/polygon/types/polygonFetchStrategy.interface';
 import { nsToUnixSec, safeAPICall } from '@utils/index';
-import { PolygonTickerSnapshot } from '../types/polygonTickerSnapshot.interface';
+import { PolygonTickerSnapshot } from '../../../../../data/snapshots/vendors/polygon/polygonRestSnapshot.interface';
 
 export class PolygonPreMarketFetchStrategy implements PolygonFetchStrategy_2 {
   private readonly nowUtc = Math.floor(Date.now() / 1000);
