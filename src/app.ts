@@ -1,7 +1,6 @@
 // app.ts
 import { APP_CONFIG } from "./config";
-import { MarketSessionScanner } from "./scanners/marketSessionScanner";
-import { PolygonMarketDataFetcher } from "./data_vendors/polygon/fetchers/polygonMarketDataFetcher";
+import { PolygonMarketDataFetcher } from "./strategies/fetch/data_vendors/polygon/fetchers/polygonMarketDataFetcher";
 import {
 	VolumeChangeScanFilter,
 	PriceChangeScanFilter,

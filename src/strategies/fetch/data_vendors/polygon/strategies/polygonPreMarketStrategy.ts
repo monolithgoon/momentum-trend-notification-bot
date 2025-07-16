@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { APP_CONFIG } from '@config/index';
-import { PolygonFetchStrategy_2 } from '@strategies/fetch/polygon/polygonFetchStrategy.interface';
+import { PolygonFetchStrategy_2 } from '@strategies/fetch/data_vendors/polygon/types/polygonFetchStrategy.interface';
 import { nsToUnixSec, safeAPICall } from '@utils/index';
 import { PolygonTickerSnapshot } from '../types/polygonTickerSnapshot.interface';
 

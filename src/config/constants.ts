@@ -74,9 +74,3 @@ export const APP_CONSTANTS: AppConstantsInterface = {
 	EODHD_LIVE_US_QUOTE_URL: "https://eodhd.com/api/real-time",
 	EODHD_WEBSOCKET_URL: validateWebSocketUrl("wss://ws.eodhistoricaldata.com/ws/us-quote?api_token=demo"),
 };
-
-export enum MarketSessions {
-	PRE_MARKET = "pre_market",
-	RTH = "rth",
-	AFTER_MARKET = "after_market",
-}

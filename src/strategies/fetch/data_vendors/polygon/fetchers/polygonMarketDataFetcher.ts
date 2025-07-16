@@ -1,11 +1,11 @@
 import axios from "axios";
-import { APP_CONFIG } from "../../../config";
-import { nsToUnixSec, safeAPICall } from "../../../utils";
-import { MarketDataFetcher } from "../../../core/interfaces/marketDataFetcher.interface";
-import { MarketSessions } from "../../../config/constants";
-import { InternalTickerSnapshot } from "../../../core/interfaces/internalTickerSnapshot.interface";
+import { APP_CONFIG } from "../../../../../config";
+import { nsToUnixSec, safeAPICall } from "../../../../../utils";
+import { MarketDataFetcher } from "../../../../../core/interfaces/marketDataFetcher.interface";
+import { InternalTickerSnapshot } from "../../../../../core/interfaces/internalTickerSnapshot.interface";
 import { PolygonTickerSnapshot } from "../types/polygonTickerSnapshot.interface";
 import { TickerSnapshotTransformer } from "src/core/interfaces/tickerSnapshotTransformer.interface";
+import { MarketSessions } from "@core/enums/marketSessions.enum";
 
 
 export class PolygonMarketDataFetcher implements MarketDataFetcher {

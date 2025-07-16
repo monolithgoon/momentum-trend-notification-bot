@@ -17,6 +17,8 @@ import { TelegramNotifier } from "./notifiers/TelegramNotifier";
 // Managers
 import { MarketDataVendors } from "./core/enums/marketDataVendors.enum";
 import { MarketDataService } from "@services/market_data/marketDataService";
+import { MarketSessions } from "@core/enums/marketSessions.enum";
+import { MarketDataService_3 } from "@services/market_data/marketDataService_3";
 
 // ---- HANDLE WEBSOCKET TICKER UPDATES ----
 
@@ -41,24 +43,35 @@ function handleWebSocketTickerUpdate(tick: EodhdWebSocketTickerSnapshot) {
 async function runProgram() {
 	console.log("🟢 Running scanner task at", new Date().toLocaleString());
 
-	const vendor = MarketDataVendors.POLYGON;
+	// MarketDataQuoteService vs MarketDataWebsocketService
 
 	try {
 		const currentMarketSession = getCurrentMarketSession();
 
-		const marketDataService = new MarketDataService({ vendor: vendor, marketSession: currentMarketSession });
+		const marketDataService_3 = new MarketDataService_3({
+			vendor: MarketDataVendors.POLYGON,
+			marketSession: MarketSessions.PRE_MARKET,
+			strategyKeys: [
+				"Pre-market top movers", // Must match keys in polygonFetchStrategyRegistry
+				// "Recent IPO Top Moving",     // Optional: if enabled in the registry
+			],
+		});
 
-		const activeTickers_2 = await marketDataService.runService();
+		const activeTickers = await marketDataService_3.runService();
 
-		if (!activeTickers_2) return;
+		// const vendor = MarketDataVendors.POLYGON;
+		// const marketDataService = new MarketDataService({ vendor: vendor, marketSession: currentMarketSession });
+		// const activeTickers = await marketDataService.runService();
 
-		const activeTickersStr = activeTickers_2.join(", ");
+		if (!activeTickers) return;
+
+		const activeTickersStr = activeTickers.join(", ");
 		const sessionLabel = formatSessionLabel(currentMarketSession);
 		const notifierService = new NotifierService(new TelegramNotifier());
 
 		// WIP
 		// await notifierService.notify(
-		// 	`${sessionLabel} scan – Found ${activeTickers_2.length} active ticker(s): ${activeTickersStr}`
+		// 	`${sessionLabel} scan – Found ${activeTickers.length} active ticker(s): ${activeTickersStr}`
 		// );
 
 		// Init websocket
