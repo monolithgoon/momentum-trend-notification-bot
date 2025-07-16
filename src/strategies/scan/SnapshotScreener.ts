@@ -1,5 +1,3 @@
-import { InternalTickerSnapshot } from "../data/snapshots/types/internalTickerSnapshot.interface";
-import { ScanFilter } from "../strategies/scan/types/scanFilter.interface";
 
 /**
  * SnapshotScreener applies one or more scan filters to a set of market data snapshots.
@@ -16,6 +14,9 @@ import { ScanFilter } from "../strategies/scan/types/scanFilter.interface";
  * @param data - The market data snapshots to screen.
  * @returns A deduplicated list of tickers that matched at least one filter.
  */
+
+import { InternalTickerSnapshot } from "@data/snapshots/types/internalTickerSnapshot.interface";
+import { ScanFilter } from "./types/scanFilter.interface";
 
 export class SnapshotScreener {
 	constructor(private scanFilters: { scanFilter: ScanFilter<any>; config: any }[]) {}

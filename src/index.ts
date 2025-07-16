@@ -18,6 +18,7 @@ import { TelegramNotifier } from "./services/TelegramService";
 import { MarketDataVendors } from "./core/enums/marketDataVendors.enum";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
 import { MarketSnapshotScanner } from "@strategies/scan/MarketSnapshotScanner";
+import { WebSocketManager } from "@infrastructure/websocket/websocketManager";
 
 // ---- HANDLE WEBSOCKET TICKER UPDATES ----
 
@@ -65,9 +66,9 @@ async function runProgram() {
 		const notifierService = new NotifierService(new TelegramNotifier());
 
 		// WIP
-		// await notifierService.notify(
-		// 	`${sessionLabel} scan – Found ${activeTickers.length} active ticker(s): ${activeTickersStr}`
-		// );
+		await notifierService.notify(
+			`${sessionLabel} scan – Found ${activeTickers.length} active ticker(s): ${activeTickersStr}`
+		);
 
 		// Init websocket
 		const wsClient = new EODHDWebSocketClient(
@@ -78,7 +79,7 @@ async function runProgram() {
 
 		// WIP
 		// Connect the WS client
-		// new WebSocketManager(wsClient).connect();
+		new WebSocketManager(wsClient).connect();
 	} catch (error) {
 		console.error("❌ Error in runProgram:", error);
 	}
