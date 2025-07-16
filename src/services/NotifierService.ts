@@ -10,7 +10,7 @@ interface Notifier {
  * The `NotifierService` allows you to send a message to all registered notifiers at once.
  * Notifiers can be provided during instantiation or dynamically added later using the `addNotifier` method.
  *
- * @example
+ * @examples
  * ```typescript
  * const emailNotifier = new EmailNotifier();
  * const smsNotifier = new SMSNotifier();

@@ -19,6 +19,7 @@ import { MarketDataVendors } from "./core/enums/marketDataVendors.enum";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
 import { MarketSnapshotScanner } from "@strategies/scan/MarketSnapshotScanner";
 import { WebSocketManager } from "@infrastructure/websocket/websocketManager";
+import { waitForInternet } from "./net/waitForInternet";
 
 // ---- HANDLE WEBSOCKET TICKER UPDATES ----
 
@@ -66,9 +67,9 @@ async function runProgram() {
 		const notifierService = new NotifierService(new TelegramNotifier());
 
 		// WIP
-		await notifierService.notify(
-			`${sessionLabel} scan – Found ${activeTickers.length} active ticker(s): ${activeTickersStr}`
-		);
+		// await notifierService.notify(
+		// 	`${sessionLabel} scan – Found ${activeTickers.length} active ticker(s): ${activeTickersStr}`
+		// );
 
 		// Init websocket
 		const wsClient = new EODHDWebSocketClient(
@@ -79,7 +80,7 @@ async function runProgram() {
 
 		// WIP
 		// Connect the WS client
-		new WebSocketManager(wsClient).connect();
+		// new WebSocketManager(wsClient).connect();
 	} catch (error) {
 		console.error("❌ Error in runProgram:", error);
 	}
@@ -87,35 +88,34 @@ async function runProgram() {
 
 // ---- DAEMON SERVICE SCHEDULER ----
 
-function startScannerDaemon(intervalMs: number = 5 * 60 * 1000) {
+function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
 	let isRunning = false;
 
-	console.log(`📡 Scanner daemon started. Interval: ${intervalMs / 1000} seconds`);
-
-	const safeRun = async () => {
+	async function safeRun() {
 		if (isRunning) {
 			console.log("⏳ Previous scan still running. Skipping this cycle.");
 			return;
 		}
 
-		isRunning = true;
 		try {
+			await waitForInternet(); // Will block here if disconnected
+			isRunning = true;
 			await runProgram();
 		} catch (err) {
 			console.error("Daemon error:", err);
 		} finally {
 			isRunning = false;
 		}
-	};
+	}
 
-	// Run immediately, then schedule
+	console.log(`📡 Scanner daemon started. Interval: ${intervalMs / 1000} seconds`);
 	safeRun();
 	setInterval(safeRun, intervalMs);
 }
 
 // ---- START ----
 
-startScannerDaemon(APP_CONFIG.SCAN_DAEMON_INTERVAL_MS); // Every 1 minute
+startAppDaemon(APP_CONFIG.SCAN_DAEMON_INTERVAL_MS); // Every 1 minute
 
 function climbStairs(n: number): number {
 	const memo: Record<number, number> = {};
@@ -140,6 +140,8 @@ function climbStairs(n: number): number {
 /**
  * Market Movers Scan
 - Compare snapshots to detect tickers moving up, or just added and rising
+
+- Maintain an internal leaderboard, and have an anomaly detection algorithm for new tickers that appear on the leaderboard
 
 WS
 - Monitor anomalies to check if they're trending above KC

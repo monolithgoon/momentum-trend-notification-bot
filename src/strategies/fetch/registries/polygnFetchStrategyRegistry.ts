@@ -1,7 +1,7 @@
 // src/strategies/fetch-strategy/polygon/polygonFetchStrategyRegistry.ts
 
 import { PolygonFetchStrategy_2 } from '../data_vendors/polygon/types/polygonFetchStrategy.interface';
-import { PolygonPreMarketFetchStrategy } from "../data_vendors/polygon/strategies/polygonPreMarketStrategy"
+import { PolygonPreMarketFetchStrategy } from "../data_vendors/polygon/strategies/PolygonPreMarketFetchStrategy"
 // import { PolygonRecentIpoTopStrategy } from './PolygonRecentIpoTopStrategy';
 // import { PolygonCryptoPrivatePlacementStrategy } from './PolygonCryptoPrivatePlacementStrategy';
 // import { PolygonReverseSplitPositiveNewsStrategy } from './PolygonReverseSplitPositiveNewsStrategy';
