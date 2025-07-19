@@ -17,6 +17,7 @@
 			"@data/*": ["src/data/*"],
 			"@enums/*": ["src/core/enums/*"],
 			"@infrastructure/*": ["src/infrastructure/*"],
+			"@net/*": ["src/net/*"],
 			"@scanners/*": ["src/scanners/*"],
 			"@services/*": ["src/services/*"],
 			"@strategies/*": ["src/strategies/*"],

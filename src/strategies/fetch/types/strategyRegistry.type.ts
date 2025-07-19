@@ -1,9 +1,9 @@
 // src/interfaces/strategies/strategyRegistry.interface.ts
 
-import { FetchStrategy } from "./fetchStrategy.interface";
+import { RestApiQuoteFetchStrategy } from "./RestApiQuoteFetchStrategy.interface";
 
 /**
- * A type-safe registry that maps string keys to FetchStrategy instances.
+ * A type-safe registry that maps string keys to RestApiQuoteFetchStrategy instances.
  * Allows each vendor to define its own variant using concrete types.
  */
-export type StrategyRegistry<Strategy extends FetchStrategy<any>> = Record<string, Strategy>;
+export type strategyRegistryType<Strategy extends RestApiQuoteFetchStrategy<any>> = Record<string, Strategy>;

@@ -1,121 +1,32 @@
-// src/index.ts
 import { APP_CONFIG } from "@config/index";
-// Utilities
-import { formatSessionLabel, getCurrentMarketSession } from "./utils";
-import { WebSocketTickerBuffer } from "./utils/webSocketTickerBuffer";
-const wsTickBuffer = new WebSocketTickerBuffer();
-// Interfaces
-import { EodhdWebSocketTickerSnapshot } from "./data/snapshots/vendors/eodhd/eodhdWebSocketSnapshot.interface";
-// Analytics
-import { isTrendingAboveKC } from "./analytics/indicators";
-// Market Data Providers
-import { EODHDWebSocketClient } from "./strategies/stream/eodhd/eodhdWebSocketClient";
-// Services - Notifiers
-import { NotifierService } from "./services/NotifierService";
-import { TelegramNotifier } from "./services/TelegramService";
-// Services - Scanners
-// Managers
-import { MarketDataVendors } from "./core/enums/marketDataVendors.enum";
-import { MarketSessions } from "@core/enums/marketSessions.enum";
-import { MarketSnapshotScanner } from "@strategies/scan/MarketSnapshotScanner";
-import { WebSocketManager } from "@infrastructure/websocket/websocketManager";
-import { waitForInternet } from "./net/waitForInternet";
+import { verifyRedisConnection } from "@infrastructure/__deprecated__redis/redis.service";
+import { initializeAlertListeners } from "./bootstrap/__deprecated__alertListeners";
+import startAppDaemon_2 from "./app/daemon";
+import gracefulShutdown from "./app/shutdownHandler";
 
-// ---- HANDLE WEBSOCKET TICKER UPDATES ----
+// ---- main.ts (entry point) ----
 
-function handleWebSocketTickerUpdate(tick: EodhdWebSocketTickerSnapshot) {
-	wsTickBuffer.addTick(tick);
-
-	const buffer = wsTickBuffer.getBuffer(tick.s);
-
-	const symbolBufferLength = wsTickBuffer.getBufferLength(tick.s);
-	console.log({ symbolBufferLength });
-
-	isTrendingAboveKC(buffer).then(async (trending) => {
-		if (trending) {
-			const notifierService = new NotifierService(new TelegramNotifier());
-			await notifierService.notify(`🚀 ${tick.s} is trending above the KC!`);
-		}
-	});
-}
-
-// ---- MAIN TASK ----
-
-async function runProgram() {
-	console.log("🟢 Running scanner task at", new Date().toLocaleString());
-
-	// MarketDataQuoteService vs MarketDataWebsocketService
-
+(async () => {
 	try {
-		const currentMarketSession = getCurrentMarketSession();
+		console.log("🚀 Bootstrapping app...");
 
-		const marketSnapshotScanner = new MarketSnapshotScanner({
-			vendor: MarketDataVendors.POLYGON,
-			marketSession: MarketSessions.PRE_MARKET,
-			strategyKeys: [
-				"Pre-market top movers", // Must match keys in polygonFetchStrategyRegistry
-				// "Recent IPO Top Moving",     // Optional: if enabled in the registry
-			],
-		});
+		// Step 1: Verify Redis (fail fast if down)
+		await verifyRedisConnection();
 
-		const activeTickers = await marketSnapshotScanner.runService();
+		// Step 2: Initialize listeners/subscriptions
+		await initializeAlertListeners();
 
-		if (!activeTickers) return;
+		// Step 3: Defer daemon startup — don't block on flaky network
+		setTimeout(() => {
+			startAppDaemon_2(APP_CONFIG.SCAN_DAEMON_INTERVAL_MS);
+		}, 0); // async kickoff, non-blocking
 
-		const activeTickersStr = activeTickers.join(", ");
-		const sessionLabel = formatSessionLabel(currentMarketSession);
-		const notifierService = new NotifierService(new TelegramNotifier());
-
-		// WIP
-		// await notifierService.notify(
-		// 	`${sessionLabel} scan – Found ${activeTickers.length} active ticker(s): ${activeTickersStr}`
-		// );
-
-		// Init websocket
-		const wsClient = new EODHDWebSocketClient(
-			APP_CONFIG.EODHD_API_KEY,
-			"AAPL, TSLA", // use activeTickersStr if desired
-			handleWebSocketTickerUpdate
-		);
-
-		// WIP
-		// Connect the WS client
-		// new WebSocketManager(wsClient).connect();
-	} catch (error) {
-		console.error("❌ Error in runProgram:", error);
+		console.log("✅ App fully initialized.");
+	} catch (err) {
+		console.error("❌ App failed to initialize:", err);
+		await gracefulShutdown(`Too many app daemon failures`);
 	}
-}
-
-// ---- DAEMON SERVICE SCHEDULER ----
-
-function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
-	let isRunning = false;
-
-	async function safeRun() {
-		if (isRunning) {
-			console.log("⏳ Previous scan still running. Skipping this cycle.");
-			return;
-		}
-
-		try {
-			await waitForInternet(); // Will block here if disconnected
-			isRunning = true;
-			await runProgram();
-		} catch (err) {
-			console.error("Daemon error:", err);
-		} finally {
-			isRunning = false;
-		}
-	}
-
-	console.log(`📡 Scanner daemon started. Interval: ${intervalMs / 1000} seconds`);
-	safeRun();
-	setInterval(safeRun, intervalMs);
-}
-
-// ---- START ----
-
-startAppDaemon(APP_CONFIG.SCAN_DAEMON_INTERVAL_MS); // Every 1 minute
+})();
 
 function climbStairs(n: number): number {
 	const memo: Record<number, number> = {};
@@ -145,4 +56,6 @@ function climbStairs(n: number): number {
 
 WS
 - Monitor anomalies to check if they're trending above KC
+
+All this work just to keep track of a leaderboard, and detect stocks that pop up on the leaderboard and quickly move up??? That's wild!!!
  */

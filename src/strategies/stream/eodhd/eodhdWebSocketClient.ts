@@ -1,6 +1,6 @@
 // import { APP_CONFIG } from "@config/index";
 import { APP_CONFIG } from "@config/index"
-import { EodhdWebSocketMessage, EodhdWebSocketTickerSnapshot } from "@data/snapshots/vendors/eodhd/eodhdWebSocketSnapshot.interface";
+import { EodhdWebSocketMessage, EodhdWebSocketTickerSnapshot } from "@data/snapshots/rest_api/vendors/eodhd/eodhdWebSocketSnapshot.interface";
 import { AuthMessage, SubscriptionMessage, WebSocketClientInterface } from "@infrastructure/websocket/types/webSocketClient.interface";
 
 /**

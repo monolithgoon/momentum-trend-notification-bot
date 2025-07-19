@@ -1,8 +1,14 @@
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
-import { VendorStrategyRegistryMap } from "../types/vendorStrategyRegistryMap.type";
-import { polygonFetchStrategyRegistry } from "./polygnFetchStrategyRegistry";
+import { polygnRestApiFetchStrategyRegistry } from "./polygnRestApiFetchStrategyRegistry";
+import { strategyRegistryType } from "../types/strategyRegistry.type";
+import { PolygonRestApiQuoteFetchStrategy } from "../vendors/polygon/types/PolygonRestApiQuoteFetchStrategy.interface";
 
-export const vendorStrategyRegistryMap: VendorStrategyRegistryMap = {
-	[MarketDataVendors.POLYGON]: polygonFetchStrategyRegistry,
-	// [MarketDataVendors.EODHD]: eodhdFetchStrategyRegistry,
+export type vendorStrategyRegistryMapTypes = {
+	[MarketDataVendors.POLYGON]: strategyRegistryType<PolygonRestApiQuoteFetchStrategy>;
+	// [MarketDataVendors.EODHD]: strategyRegistryType<EodhdFetchStrategy>;
+};
+// Diagram the flow of interactions and inheritance from isValidVendorAndStrategyRegistryMapKeys()
+export const vendorStrategyRegistryMap: vendorStrategyRegistryMapTypes = {
+	[MarketDataVendors.POLYGON]: polygnRestApiFetchStrategyRegistry,
+	// [MarketDataVendors.EODHD]: eodhdRestApiFetchStrategyRegistry,
 };
