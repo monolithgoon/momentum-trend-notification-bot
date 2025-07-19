@@ -3,6 +3,7 @@ import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/Nor
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 import { KineticsCalculators } from "./LeaderboardKineticsCalculator";
 import { RankedRestTickerSnapshot } from "@data/snapshots/rest_api/types/RankedRestTickerSnapshot.interface";
+import { TickerSorter } from "@core/interfaces/tickerSorter.interface";
 
 // // Simple in-memory store for previous snapshots (could be replaced with Redis later)
 // const snapshotHistory: Record<string, NormalizedRestTickerSnapshot[]> = {};
@@ -50,38 +51,10 @@ import { RankedRestTickerSnapshot } from "@data/snapshots/rest_api/types/RankedR
 // 	return deltaTime > 0 ? (v2 - v1) / deltaTime : 0;
 // }
 
-export interface SnapshotSorter {
-	sort(snapshots: LeaderboardRestTickerSnapshot[]): LeaderboardRestTickerSnapshot[];
-}
-
-// TODO - remove the hard-coding
-type SortableField = keyof Pick<LeaderboardRestTickerSnapshot, "score" | "velocity" | "acceleration">;
-type SortOrder = "asc" | "desc";
-
-export class LeaderboardSnapshotSorter implements SnapshotSorter {
-  constructor(
-    private readonly sortField: SortableField = "score",
-    private readonly sortOrder: SortOrder = "desc"
-  ) {}
-
-  sort(snapshots: LeaderboardRestTickerSnapshot[]): LeaderboardRestTickerSnapshot[] {
-    const multiplier = this.sortOrder === "asc" ? 1 : -1;
-
-    return snapshots
-      .slice()
-      .sort(
-        (a, b) =>
-          multiplier *
-          (((a[this.sortField] ?? 0) as number) -
-            ((b[this.sortField] ?? 0) as number))
-      );
-  }
-}
-
 export class LeaderboardService {
 	constructor(
 		private readonly storage: LeaderboardStorage,
-		private readonly sorter: SnapshotSorter,
+		private readonly sorter: TickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>,
 		private readonly kineticsCalculator: KineticsCalculators
 	) {}
 

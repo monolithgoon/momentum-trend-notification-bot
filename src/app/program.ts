@@ -16,6 +16,7 @@ import { InMemoryLeaderboardStorage } from "@analytics/leaderboard/InMemoryLeade
 import handleWebSocketTickerUpdate from "@data/snapshots/websocket/handleWebSocketTickerUpdate";
 // WIP
 import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { SortOrder } from "@core/enums/sortOrder.enum";
 
 export interface TaggedMarketScanTickers {
 	scan_strategy_tag: string;
@@ -82,7 +83,7 @@ export default async function runProgram() {
 			trend: "increasing",
 		});
 
-		// const sortedSnapshots = new RestTickersSorter("change_pct", "desc").sort(mockSnapshots);
+		// const sortedSnapshots = new RestTickersSorter("change_pct", SortOrder.DESC).sort(mockSnapshots);
 		const sortedSnapshots = new RestTickersSorter().sort(mockSnapshots);
 
 		// WIP - tag the scan results
@@ -97,7 +98,7 @@ export default async function runProgram() {
 		// const storage = new RedisLeaderboardStorage(); // your implementation of LeaderboardStorage interface
 
 		// // 2. Create sorter (customize the field & order if needed)
-		// const sorter = new LeaderboardSnapshotSorter("score", "desc");
+		// const sorter = new LeaderboardSnapshotSorter("score", SortOrder.DESC);
 
 		// // 3. Create kineticsCalculator calculator
 		// const kineticsCalculator = new LeaderboardKineticsCalculator();
@@ -111,7 +112,7 @@ export default async function runProgram() {
 		// WIP - In-memory leaderboard storage
 
 		const storage = new InMemoryLeaderboardStorage();
-		const sorter = new LeaderboardSnapshotSorter("score", "desc");
+		const sorter = new LeaderboardSnapshotSorter("score", SortOrder.DESC);
 		const kineticsCalculator = new LeaderboardKineticsCalculator();
 		const leaderboard = await new LeaderboardService(storage, sorter, kineticsCalculator).processSnapshots(sortedSnapshots);
 
