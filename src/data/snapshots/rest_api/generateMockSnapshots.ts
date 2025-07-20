@@ -57,6 +57,7 @@ export function generateMockSnapshots(
 				change_pct,
 				price: 100 + random() * 10,
 				volume: 1000 + Math.floor(random() * 500),
+				sort_rank: i
 			});
 		}
 	}

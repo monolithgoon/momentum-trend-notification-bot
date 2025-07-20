@@ -1,13 +1,13 @@
 import { SessionMarketQuoteFetcher } from "../../../types/SessionMarketQuoteFetcher";
 import { PolygonRestApiQuoteFetchStrategy } from "@strategies/fetch/vendors/polygon/types/PolygonRestApiQuoteFetchStrategy.interface";
-import { RawRestApTickerTransformer } from "@data/snapshots/rest_api/transformers/types/RawRestApiTickerTransformer.interface";
+import { RawRestApiTickerTransformer } from "@data/snapshots/rest_api/transformers/types/RawRestApiTickerTransformer.interface";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
 import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { PolygonRestTickerSnapshot } from "@data/snapshots/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 
 export class PolygonMarketQuoteFetcher implements SessionMarketQuoteFetcher {
 	constructor(
-		private readonly transformer: RawRestApTickerTransformer<PolygonRestTickerSnapshot>,
+		private readonly transformer: RawRestApiTickerTransformer<PolygonRestTickerSnapshot>,
 		private readonly strategies: PolygonRestApiQuoteFetchStrategy[]
 	) {}
 
@@ -23,7 +23,7 @@ export class PolygonMarketQuoteFetcher implements SessionMarketQuoteFetcher {
 					}
 				}
 
-				const transformedSnapshots = allTickerSnapshots.map((s) => this.transformer.transform(s));
+				const transformedSnapshots = allTickerSnapshots.map((snapshot, idx) => this.transformer.transform(snapshot, idx));
 
 				// De-duplication
 				const seen = new Set();

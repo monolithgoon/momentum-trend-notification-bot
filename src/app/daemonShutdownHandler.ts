@@ -2,7 +2,7 @@ import { NotifierService } from "@services/notifier/NotifierService";
 import { TelegramNotifier } from "@services/notifier/TelegramService";
 
 let shuttingDown = false;
-export default async function gracefulShutdown(reason: string, code: number = 1) {
+export default async function gracefulDaemonShutdown(reason: string, code: number = 1) {
 	if (shuttingDown) return;
 
 	shuttingDown = true;

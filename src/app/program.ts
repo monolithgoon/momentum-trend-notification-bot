@@ -105,10 +105,6 @@ export default async function runProgram() {
 		const kineticsCalculator = new LeaderboardKineticsCalculator();
 		const leaderboardService = new LeaderboardService(storage);
 
-		// REMOVE - DEPRECATED
-		// Process sorted snapshots (simulate leaderboard population)
-		// await leaderboardService.processSnapshots(sortedSnapshots);
-
 		// Optionally, process tagged tickers for a session leaderboard
 		await leaderboardService.processSnapshots(taggedTickers, sorter, kineticsCalculator);
 

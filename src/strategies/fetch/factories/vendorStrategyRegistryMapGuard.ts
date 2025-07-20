@@ -1,5 +1,4 @@
-import { vendorStrategyRegistryMap } from "@strategies/fetch/registries/vendorStrategyRegistryMap";
-import { vendorStrategyRegistryMapTypes } from "@strategies/fetch/types/vendorStrategyRegistryMap.type";
+import { vendorStrategyRegistryMap, vendorStrategyRegistryMapTypes } from "@strategies/fetch/registries/vendorStrategyRegistryMap";
 
 /**
  * Type guard: is vendor present in the registry map?

@@ -2,7 +2,7 @@
 
 import { APP_CONFIG } from "@config/index";
 import { pauseForInternet } from "@net/pauseForInternet";
-import runProgram from "../program";
+import runProgram from "./program";
 
 export function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
 	let isRunning = false;
@@ -29,52 +29,52 @@ export function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
 	setInterval(safeRun, intervalMs);
 }
 
-// ---- START DAEMON ----
-
-startAppDaemon(APP_CONFIG.SCAN_DAEMON_INTERVAL_MS); // Every 1 minute
-
 // WIP
 
 // Updated startAppDaemon with failure cap
-export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.SCAN_DAEMON_INTERVAL_MS) {
+/**
+ * Updated daemon with failure cap.
+ * Shuts down after too many consecutive failures.
+ */
+export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.APP_DAEMON_SAFE_RUN_INTERVAL_MS) {
 	let isRunning = false;
 	let firstRun = true;
 	let consecutiveFailures = 0;
-	const MAX_CONSECUTIVE_FAILURES = 5; // TODO - MOVE TO APP_CONFIG
 
 	async function safeRun() {
 		if (isRunning) {
-			console.log("⏳ Previous scan still running. Skipping.");
-			return;
+			console.log("⏳ Previous scan still running. Skipping this cycle.");
+			return; // Prevent overlapping runs
 		}
 
 		try {
-			await pauseForInternet(); // Will block here if disconnected
+			await pauseForInternet(); // Wait for network connection
 
 			if (firstRun) {
 				console.log("🌐 Internet connection confirmed.");
-				firstRun = false;
+				firstRun = false; // Only print this on the first successful run
 			}
 
-			isRunning = true;
+			isRunning = true; // Mark as running
 
 			await runProgram();
 
-			consecutiveFailures = 0; // ✅ Reset on success
+			consecutiveFailures = 0; // ✅ Reset failure count on success
 		} catch (err) {
-			consecutiveFailures++;
+			consecutiveFailures++;  
 			console.error(`❌ Daemon error (${consecutiveFailures} failures):`, err);
 
-			if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+			// Shut down after too many consecutive failures
+			if (consecutiveFailures >= APP_CONFIG.APP_DAEMON_MAX_ALLOWED_CONSECUTIVE_FAILURES) {
 				console.error("🛑 Max consecutive failures reached. Shutting down daemon.");
-				process.exit(1); // hard kill – you could replace with emit / graceful shutdown
+				process.exit(1); // Hard shutdown (could be replaced with graceful exit)
 			}
 		} finally {
-			isRunning = false;
+			isRunning = false; // Always clear running flag
 		}
 	}
 
 	console.log(`📡 Scanner daemon started. Interval: ${intervalMs / 1000}s`);
-	safeRun();
-	setInterval(safeRun, intervalMs);
+	safeRun();                      // Run immediately on start
+	setInterval(safeRun, intervalMs); // Schedule recurring runs
 }

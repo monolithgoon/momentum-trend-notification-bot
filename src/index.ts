@@ -2,7 +2,7 @@ import { APP_CONFIG } from "@config/index";
 import { verifyRedisConnection } from "@infrastructure/__deprecated__redis/redis.service";
 import { initializeAlertListeners } from "./bootstrap/__deprecated__alertListeners";
 import startAppDaemon_2 from "./app/daemon";
-import gracefulShutdown from "./app/shutdownHandler";
+import gracefulDaemonShutdown from "./app/daemonShutdownHandler";
 
 // ---- main.ts (entry point) ----
 
@@ -10,21 +10,23 @@ import gracefulShutdown from "./app/shutdownHandler";
 	try {
 		console.log("🚀 Bootstrapping app...");
 
+		// REMOVE - DEPRECATD
 		// Step 1: Verify Redis (fail fast if down)
-		await verifyRedisConnection();
-
+		// await verifyRedisConnection();
+		
+		// REMOVE - DEPRECATD
 		// Step 2: Initialize listeners/subscriptions
-		await initializeAlertListeners();
+		// await initializeAlertListeners();
 
 		// Step 3: Defer daemon startup — don't block on flaky network
 		setTimeout(() => {
-			startAppDaemon_2(APP_CONFIG.SCAN_DAEMON_INTERVAL_MS);
+			startAppDaemon_2(APP_CONFIG.APP_DAEMON_SAFE_RUN_INTERVAL_MS);
 		}, 0); // async kickoff, non-blocking
 
 		console.log("✅ App fully initialized.");
 	} catch (err) {
 		console.error("❌ App failed to initialize:", err);
-		await gracefulShutdown(`Too many app daemon failures`);
+		await gracefulDaemonShutdown(`Too many app daemon failures`);
 	}
 })();
 
