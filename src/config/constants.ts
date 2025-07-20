@@ -23,16 +23,18 @@ interface AppConstantsInterface {
 	MAX_KC_TICKS: number;
 	TICKER_BUFFER_MAX_LENGTH: number;
 	REDIS_SNAPSHOT_LIMIT: number;
+	MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: number;
 	
+	// polygon
 	POLYGON_BASE_URL: string;
 	POLYGON_SOCKET_URL: string;
-
 	POLYGON_MARKET_MOVERS_ENDPOINTS: {
 		GAINERS: string;
 		LOSERS: string;
 		MOST_ACTIVE: string;
 	};
 
+	// eohd
 	EODHD_LIVE_US_QUOTE_URL: string;
 	EODHD_WEBSOCKET_URL: string;
 }
@@ -59,6 +61,7 @@ export const APP_CONSTANTS: AppConstantsInterface = {
 	MAX_KC_TICKS: 30,
 	TICKER_BUFFER_MAX_LENGTH: 200,
 	REDIS_SNAPSHOT_LIMIT: 10,
+	MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: 2,
 
 	// 🔽 POLYGON and EODHD API Constants
 	POLYGON_BASE_URL: "https://api.polygon.io",

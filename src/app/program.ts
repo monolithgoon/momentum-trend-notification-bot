@@ -1,42 +1,43 @@
-// ---- MAIN TASK ----
-
 import { APP_CONFIG } from "../config";
+import { TaggedMarketScanTickers } from "@data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
 import { MarketQuoteScanner } from "@scanners/MarketQuoteScanner";
 import { formatSessionLabel, getCurrentMarketSession } from "../utils";
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
 import { NotifierService } from "@services/notifier/NotifierService";
 import { TelegramNotifier } from "@services/notifier/TelegramService";
 import { generateMockSnapshots } from "@data/snapshots/rest_api/generateMockSnapshots";
-import { RestTickersSorter } from "@scanners/RestTickersSorter";
-import { RedisLeaderboardStorage } from "@analytics/leaderboard/__unused__RedisLeaderboardStorage";
-import { LeaderboardService, LeaderboardSnapshotSorter } from "@analytics/leaderboard/LeaderboardService";
+import { SortOrder } from "@core/enums/sortOrder.enum";
+import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { RankedRestTickerSnapshot } from "@data/snapshots/rest_api/types/RankedRestTickerSnapshot.interface";
+import { GenericRankedItemsFieldSorter } from "@core/generics/genericRankedItemsFieldSorter";
+import { InMemoryLeaderboardStorage } from "@analytics/leaderboard/InMemoryLeaderboardStorage";
+import { LeaderboardService } from "@analytics/leaderboard/LeaderboardService";
+import { LeaderboardTickersSorter } from "@analytics/leaderboard/leaderboardTickersSorter";
 import { LeaderboardKineticsCalculator } from "@analytics/leaderboard/LeaderboardKineticsCalculator";
 import { EODHDWebSocketClient } from "@strategies/stream/eodhd/eodhdWebSocketClient";
-import { InMemoryLeaderboardStorage } from "@analytics/leaderboard/InMemoryLeaderboardStorage";
 import handleWebSocketTickerUpdate from "@data/snapshots/websocket/handleWebSocketTickerUpdate";
-// WIP
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { SortOrder } from "@core/enums/sortOrder.enum";
 
-export interface TaggedMarketScanTickers {
-	scan_strategy_tag: string;
-	tickers: NormalizedRestTickerSnapshot[];
-}
-
-function tagMarketScanResult(
+function addTagsToMarketScanResult(
 	tickers: NormalizedRestTickerSnapshot[],
 	scan_strategy_tag: string = "OK"
-): TaggedMarketScanTickers[] {
-	return [
-		{
-			scan_strategy_tag,
-			tickers,
-		},
-	];
+): TaggedMarketScanTickers {
+	return {
+		scan_strategy_tag,
+		normalized_tickers: tickers.map((ticker) => ({
+			...ticker,
+		})),
+	};
 }
 
 function composeScanStrategyTag(scanStrategyKeys: string[]): string {
-	return Array.isArray(scanStrategyKeys) ? scanStrategyKeys.join(" | ") : scanStrategyKeys;
+	return Array.isArray(scanStrategyKeys) ? scanStrategyKeys.join("_") : String(scanStrategyKeys);
+}
+
+function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): RankedRestTickerSnapshot[] {
+	return snapshots.map((snapshot, index) => ({
+		...snapshot,
+		sort_rank: index,
+	}));
 }
 
 export default async function runProgram() {
@@ -44,97 +45,87 @@ export default async function runProgram() {
 
 	try {
 		const currentMarketSession = getCurrentMarketSession();
-
 		console.log({ currentMarketSession });
 
 		const scanStrategyKeys = [
 			"Pre-market top movers", // Must match keys in polygnRestApiFetchStrategyRegistry
-			// "Recent IPO Top Moving",     // Optional: if enabled in the registry
+			// "Recent IPO Top Moving", // Uncomment if needed
 		];
 
+		// 1. SCAN for tickers
 		const scanner = new MarketQuoteScanner({
 			vendor: MarketDataVendors.POLYGON,
 			marketSession: currentMarketSession,
 			strategyKeys: scanStrategyKeys,
 		});
 
-		const returnedTickers = await scanner.executeScan();
+		// Execute scan and get ticker symbols (e.g. ["AAPL", "TSLA"])
+		const returnedTickers = ["AAPL", "TSLA"];
+		// const returnedTickers: NormalizedRestTickerSnapshot[] = await scanner.executeScan();
 
-		if (!returnedTickers) return;
+		if (!returnedTickers || returnedTickers.length === 0) {
+			console.log("No tickers found from scan.");
+			return;
+		}
 
 		const activeTickersStr = returnedTickers.join(", ");
 		const sessionLabel = formatSessionLabel(currentMarketSession);
 		const notifierService = new NotifierService(new TelegramNotifier());
 
-		// WIP
+		// 2. Notify about the scan result
+		await notifierService.notify(
+			`${sessionLabel} scan – Found ${returnedTickers.length} active ticker(s): ${activeTickersStr}`
+		);
 
-		// await notifierService.notify(
-		// 	`${sessionLabel} scan – Found ${returnedTickers.length} active ticker(s): ${activeTickersStr}`
-		// );
-
-		// WIP - generate mock data
-
-		// 1. Input: ticker symbols
-		const returnedTickers_mock = ["AAPL", "MSFT", "TSLA"];
-
-		// 2. Generate 3 snapshots per ticker
-		const mockSnapshots = generateMockSnapshots(returnedTickers_mock, 3, {
-			changePctRange: [0.1, 0.2], // starting base
+		// 3. Generate mock snapshots for demonstration/testing
+		// (Replace with your actual snapshot acquisition logic in prod)
+		const mockSnapshots = generateMockSnapshots(returnedTickers, 3, {
+			changePctRange: [0.1, 0.2],
 			trend: "increasing",
 		});
 
-		// const sortedSnapshots = new RestTickersSorter("change_pct", SortOrder.DESC).sort(mockSnapshots);
-		const sortedSnapshots = new RestTickersSorter().sort(mockSnapshots);
+		// 4. Rank and sort snapshots
+		const rankedSnapshots: RankedRestTickerSnapshot[] = addRankFields(mockSnapshots);
 
-		// WIP - tag the scan results
+		// Use generic sorter (by change_pct, highest first, then by sort_rank)
+		const rankedSorter = new GenericRankedItemsFieldSorter<RankedRestTickerSnapshot, "change_pct">(
+			"change_pct",
+			SortOrder.DESC,
+			"sort_rank"
+		);
+		const sortedSnapshots: RankedRestTickerSnapshot[] = rankedSorter.sort(rankedSnapshots);
 
-		const taggedTickers: TaggedMarketScanTickers[] = tagMarketScanResult(returnedTickers);
-		const leaderboardTag = composeScanStrategyTag(scanStrategyKeys);
+		// 5. Tag the scan results for leaderboard
+		const leaderboardTag: string = composeScanStrategyTag(scanStrategyKeys);
+		const taggedTickers: TaggedMarketScanTickers = addTagsToMarketScanResult(sortedSnapshots, leaderboardTag);
+
+		// 6. Leaderboard: In-memory storage, sort by 'score', compute kinetics
+		const storage = new InMemoryLeaderboardStorage();
+		const sorter = new LeaderboardTickersSorter("score", SortOrder.DESC);
+		const kineticsCalculator = new LeaderboardKineticsCalculator();
+		const leaderboardService = new LeaderboardService(storage);
 
 		// REMOVE - DEPRECATED
-		// WIP - Redis leaderboard storage
+		// Process sorted snapshots (simulate leaderboard population)
+		// await leaderboardService.processSnapshots(sortedSnapshots);
 
-		// // 1. Create storage
-		// const storage = new RedisLeaderboardStorage(); // your implementation of LeaderboardStorage interface
+		// Optionally, process tagged tickers for a session leaderboard
+		await leaderboardService.processSnapshots(taggedTickers, sorter, kineticsCalculator);
 
-		// // 2. Create sorter (customize the field & order if needed)
-		// const sorter = new LeaderboardSnapshotSorter("score", SortOrder.DESC);
+		// Optionally, fetch the current leaderboard (if you have such a method)
+		// const leaderboard = await leaderboardService.getLeaderboard(leaderboardTag);
 
-		// // 3. Create kineticsCalculator calculator
-		// const kineticsCalculator = new LeaderboardKineticsCalculator();
+		// Show leaderboard object (may need to adapt based on your LeaderboardService implementation)
+		console.log({ leaderboard: storage });
 
-		// // 4. Inject everything into the service
-		// const leaderboard = new LeaderboardService(storage, sorter, kineticsCalculator);
-
-		// // 5. Process all snapshots at once (or in chunks if simulating time)
-		// await leaderboard.processSnapshots(sortedSnapshots);
-
-		// WIP - In-memory leaderboard storage
-
-		const storage = new InMemoryLeaderboardStorage();
-		const sorter = new LeaderboardSnapshotSorter("score", SortOrder.DESC);
-		const kineticsCalculator = new LeaderboardKineticsCalculator();
-		const leaderboard = await new LeaderboardService(storage, sorter, kineticsCalculator).processSnapshots(sortedSnapshots);
-
-		// WIP - Process tagged tickers
-		const leaderboardService = new LeaderboardService(storage, leaderboardTag);
-		leaderboardService.processSnapshots(taggedTickers, sorter, kineticsCalculator);
-
-		// WIP
-		// leaderboard = await leaderboard.getLeaderboard(leaderboardTag);
-
-		console.log({ leaderboard });
-
-		// Init websocket
+		// 7. Init WebSocket for live ticker updates
 		const wsClient = new EODHDWebSocketClient(
 			APP_CONFIG.EODHD_API_KEY,
-			"AAPL, TSLA", // use activeTickersStr if desired
+			activeTickersStr,
 			handleWebSocketTickerUpdate
 		);
-
-		// WIP
-		// Connect the WS client
-		// new WebSocketManager(wsClient).connect();
+		// If you have a WebSocketManager, connect here. Otherwise, connect directly:
+		// wsClient.connect();
 	} catch (error) {
 		console.error("❌ Error in runProgram:", error);
 	}

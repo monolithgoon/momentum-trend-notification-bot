@@ -1,5 +1,5 @@
 import { redisClient } from "@infrastructure/__deprecated__redis/redis.service";
-import { LeaderboardStorage } from "./LeaderboardStorage.interface";
+import { LeaderboardStorage } from "./leaderboardStorage.interface";
 import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 
