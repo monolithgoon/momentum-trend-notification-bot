@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { APP_CONFIG } from "../../../../config";
-import { safeAPICall } from "../../../../utils";
+import { safeAPICall } from "@utils/index";
 import { MarketSessionDataProvider } from "./MarketSessionDataProvider.interface";
 import { EodhdTickerSnapshot } from "../../../../data/snapshots/rest_api/vendors/eodhd/eodhdRestSnapshot.interface";
 

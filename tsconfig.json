@@ -22,7 +22,8 @@
 			"@scanners/*": ["src/scanners/*"],
 			"@services/*": ["src/services/*"],
 			"@strategies/*": ["src/strategies/*"],
-			"@utils/*": ["src/utils/*"]
+			"@tasks/*": ["src/tasks/*"],
+			"@utils/*": ["src/core/utils/*"]
 		},
 		"types": ["jest", "node"] // <-- Add jest and node types for testing
 	},
@@ -33,6 +34,10 @@
 	],
 	"exclude": [
 		"node_modules",
-		"dist"
+		"dist",
+		"src/**/__deprecated__*",
+		"src/**/__unused__*",
+		"src/app/__program__copy.ts",
+		"src/bootstrap/index.ts"
 	]
 }

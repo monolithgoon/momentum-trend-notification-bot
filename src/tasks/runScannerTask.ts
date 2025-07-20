@@ -40,7 +40,7 @@ function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): RankedRestTic
 	}));
 }
 
-export default async function runProgram() {
+export default async function runScannerTask() {
 	console.log("🟢 Running scanner task at", new Date().toLocaleString());
 
 	try {
@@ -123,6 +123,6 @@ export default async function runProgram() {
 		// If you have a WebSocketManager, connect here. Otherwise, connect directly:
 		// wsClient.connect();
 	} catch (error) {
-		console.error("❌ Error in runProgram:", error);
+		console.error("❌ Error in runScannerTask:", error);
 	}
 }
