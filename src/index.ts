@@ -3,6 +3,7 @@ import { verifyRedisConnection } from "@infrastructure/__deprecated__redis/redis
 import { initializeAlertListeners } from "./bootstrap/__deprecated__alertListeners";
 import startAppDaemon_2 from "./app/daemon";
 import gracefulDaemonShutdown from "./app/daemonShutdownHandler";
+import runScannerTask from "@tasks/runScannerTask";
 
 // ---- main.ts (entry point) ----
 
@@ -18,7 +19,10 @@ import gracefulDaemonShutdown from "./app/daemonShutdownHandler";
 		// Step 2: Initialize listeners/subscriptions
 		// await initializeAlertListeners();
 
-		// Step 3: Defer daemon startup — don't block on flaky network
+		// Step 3: Run scanner task immediately on startup
+		await runScannerTask();
+
+		// Step 4: Defer daemon startup — don't block on flaky network
 		setTimeout(() => {
 			startAppDaemon_2(APP_CONFIG.APP_DAEMON_SAFE_RUN_INTERVAL_MS);
 		}, 0); // async kickoff, non-blocking
