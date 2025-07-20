@@ -1,5 +1,5 @@
 import { DefaultTickerSnapshotTransformer } from "@data/snapshots/DefaultTickerSnapshotTransformer.interface";
-import { NormalizedRestTickerSnapshot } from "../../types/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
 
 /**
  // Specialized transformer for REST-normalized snapshot inputs 

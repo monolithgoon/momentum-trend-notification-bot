@@ -1,9 +1,9 @@
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardService } from "../LeaderboardService";
+import { LeaderboardService } from "@core/leaderboard/LeaderboardService";
 import { TickerSorter } from "@core/interfaces/tickerSorter.interface";
-import { LeaderboardKineticsCalculator } from "../LeaderboardKineticsCalculator";
-import { TaggedMarketScanTickers } from "@data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { LeaderboardKineticsCalculator } from "@core/leaderboard/LeaderboardKineticsCalculator";
+import { TaggedMarketScanTickers } from "@core/types/tagged-market-scan-tickers.interface";
 
 // --- Mock Config ---
 const APP_CONFIG = {

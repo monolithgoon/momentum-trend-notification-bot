@@ -1,4 +1,4 @@
-import { NormalizedRestTickerSnapshot } from "./types/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
 
 // Simple in-memory store for previous snapshots (could be replaced with Redis later)
 const snapshotHistory: Record<string, NormalizedRestTickerSnapshot[]> = {};

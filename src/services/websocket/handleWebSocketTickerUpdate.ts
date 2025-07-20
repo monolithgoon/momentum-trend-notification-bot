@@ -1,8 +1,8 @@
 // ---- HANDLE WEBSOCKET TICKER UPDATES ----
 
-import { isTrendingAboveKC } from "@analytics/indicators";
-import { EodhdWebSocketTickerSnapshot } from "../rest_api/vendors/eodhd/eodhdWebSocketSnapshot.interface";
-import { WebSocketTickerBuffer } from "./webSocketTickerBuffer";
+import { isTrendingAboveKC } from "@utils/indicators";
+import { EodhdWebSocketTickerSnapshot } from "@data/snapshots/rest_api/vendors/eodhd/eodhdWebSocketSnapshot.interface";
+import { WebSocketTickerBuffer } from "@data/snapshots/websocket/webSocketTickerBuffer";
 import { NotifierService } from "@services/notifier/NotifierService";
 import { TelegramNotifier } from "@services/notifier/TelegramService";
 

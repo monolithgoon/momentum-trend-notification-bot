@@ -1,21 +1,21 @@
 import { APP_CONFIG } from "../config";
-import { TaggedMarketScanTickers } from "@data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
-import { MarketQuoteScanner } from "@scanners/MarketQuoteScanner";
+import { TaggedMarketScanTickers } from "@core/types/tagged-market-scan-tickers.interface";
+import { MarketQuoteScanner } from "@core/scanners/MarketQuoteScanner";
 import { formatSessionLabel, getCurrentMarketSession } from "@utils/index";
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
 import { NotifierService } from "@services/notifier/NotifierService";
 import { TelegramNotifier } from "@services/notifier/TelegramService";
-import { generateMockSnapshots } from "@data/snapshots/rest_api/generateMockSnapshots";
+import { generateMockSnapshots } from "@core/scanners/generateMockSnapshots";
 import { SortOrder } from "@core/enums/sortOrder.enum";
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { RankedRestTickerSnapshot } from "@data/snapshots/rest_api/types/RankedRestTickerSnapshot.interface";
-import { GenericRankedItemsFieldSorter } from "@core/generics/genericRankedItemsFieldSorter";
-import { InMemoryLeaderboardStorage } from "@analytics/leaderboard/InMemoryLeaderboardStorage";
-import { LeaderboardService } from "@analytics/leaderboard/LeaderboardService";
-import { LeaderboardTickersSorter } from "@analytics/leaderboard/leaderboardTickersSorter";
-import { LeaderboardKineticsCalculator } from "@analytics/leaderboard/LeaderboardKineticsCalculator";
-import { EODHDWebSocketClient } from "@strategies/stream/eodhd/eodhdWebSocketClient";
-import handleWebSocketTickerUpdate from "@data/snapshots/websocket/handleWebSocketTickerUpdate";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
+import { RankedRestTickerSnapshot } from "@core/types/RankedRestTickerSnapshot.interface";
+import { GenericRankedItemsFieldSorter } from "@core/ranking/GenericRankedItemsFieldSorter";
+import { InMemoryLeaderboardStorage } from "@core/leaderboard/InMemoryLeaderboardStorage";
+import { LeaderboardService } from "@core/leaderboard/LeaderboardService";
+import { LeaderboardTickersSorter } from "@core/leaderboard/leaderboardTickersSorter";
+import { LeaderboardKineticsCalculator } from "@core/leaderboard/LeaderboardKineticsCalculator";
+import { EODHDWebSocketClient } from "@services/websocket/EODHDWebSocketClient";
+import handleWebSocketTickerUpdate from "@services/websocket/handleWebSocketTickerUpdate";
 
 function addTagsToMarketScanResult(
 	tickers: NormalizedRestTickerSnapshot[],

@@ -2,7 +2,7 @@ import { SessionMarketQuoteFetcher } from "../../../types/SessionMarketQuoteFetc
 import { PolygonRestApiQuoteFetchStrategy } from "@strategies/fetch/vendors/polygon/types/PolygonRestApiQuoteFetchStrategy.interface";
 import { RawRestApiTickerTransformer } from "@data/snapshots/rest_api/transformers/types/RawRestApiTickerTransformer.interface";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
 import { PolygonRestTickerSnapshot } from "@data/snapshots/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 
 export class PolygonMarketQuoteFetcher implements SessionMarketQuoteFetcher {

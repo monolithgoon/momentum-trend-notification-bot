@@ -1,4 +1,4 @@
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
 
 export interface KineticsCalculators {
   computeVelocity(history: NormalizedRestTickerSnapshot[]): number;

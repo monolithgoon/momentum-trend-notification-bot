@@ -1,7 +1,7 @@
 import { SortOrder } from "@core/enums/sortOrder.enum";
 import { TickerSorter } from "@core/interfaces/tickerSorter.interface";
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { RankedRestTickerSnapshot } from "@data/snapshots/rest_api/types/RankedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
+import { RankedRestTickerSnapshot } from "@core/types/RankedRestTickerSnapshot.interface";
 
 export type ScanSortableField = keyof Pick<NormalizedRestTickerSnapshot, "change_pct" | "volume" | "price">;
 

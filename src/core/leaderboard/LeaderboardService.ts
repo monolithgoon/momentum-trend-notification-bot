@@ -1,4 +1,4 @@
-import { TaggedMarketScanTickers } from "@data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { TaggedMarketScanTickers } from "@core/types/tagged-market-scan-tickers.interface";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 import { TickerSorter } from "@core/interfaces/tickerSorter.interface";

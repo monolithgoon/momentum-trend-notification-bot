@@ -1,7 +1,7 @@
-import { LeaderboardService } from "../LeaderboardService";
+import { LeaderboardService } from "@core/leaderboard/LeaderboardService";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { TaggedMarketScanTickers } from "@data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
+import { TaggedMarketScanTickers } from "@core/types/tagged-market-scan-tickers.interface";
 
 // Mock APP_CONFIG
 const APP_CONFIG = {

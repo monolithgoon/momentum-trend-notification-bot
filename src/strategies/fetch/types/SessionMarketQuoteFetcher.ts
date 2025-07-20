@@ -1,5 +1,5 @@
-import { MarketSessions } from "@core/enums/marketSessions.enum.js"
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface.js";
+import { MarketSessions } from "@core/enums/marketSessions.enum";
+import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
 
 export interface SessionMarketQuoteFetcher {
   getData(session: MarketSessions): Promise<NormalizedRestTickerSnapshot[]>;

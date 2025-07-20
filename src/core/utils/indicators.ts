@@ -1,6 +1,6 @@
 // src/indicators.ts
 
-import { APP_CONFIG } from "../config";
+import { APP_CONFIG } from "@config/index";
 
 export function calculateEMA(values: number[], period: number): number {
   if (values.length < period) return 0;
