@@ -2,7 +2,7 @@
 
 import { APP_CONFIG } from "@config/index";
 import { pauseForInternet } from "@net/pauseForInternet";
-import runProgram from "./program";
+import runScannerTask from "@tasks/runScannerTask";
 
 export function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
 	let isRunning = false;
@@ -16,7 +16,7 @@ export function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
 		try {
 			await pauseForInternet(); // Will block here if disconnected
 			isRunning = true;
-			await runProgram();
+			await runScannerTask();
 		} catch (err) {
 			console.error("Daemon error:", err);
 		} finally {
@@ -57,7 +57,7 @@ export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.APP_DAE
 
 			isRunning = true; // Mark as running
 
-			await runProgram();
+			await runScannerTask();
 
 			consecutiveFailures = 0; // ✅ Reset failure count on success
 		} catch (err) {

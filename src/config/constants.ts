@@ -1,6 +1,6 @@
 // src/constants.ts
 import { MarketDataVendors } from "../core/enums/marketDataVendors.enum";
-import { validateWebSocketUrl } from "../utils";
+import { validateWebSocketUrl } from "@utils/index";
 
 // --- App Constants Interface ---
 // Grouped by domain and usage for clarity
