@@ -1,6 +1,6 @@
 import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardStorage } from "./leaderboardStorage.interface";
+import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 
 // export class InMemoryLeaderboardStorage_0 implements LeaderboardStorage {
 // 	private data: Record<string, NormalizedRestTickerSnapshot[]> = {};

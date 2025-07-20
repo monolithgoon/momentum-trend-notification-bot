@@ -1,6 +1,6 @@
 import { TaggedMarketScanTickers } from "@data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardStorage } from "./leaderboardStorage.interface";
+import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 import { TickerSorter } from "@core/interfaces/tickerSorter.interface";
 import { LeaderboardKineticsCalculator } from "./LeaderboardKineticsCalculator";
 import { APP_CONFIG } from "@config/index";
