@@ -2,8 +2,8 @@ import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
 import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { buildMarketQuoteFetcherFromKeys } from "@strategies/fetch/factories/buildMarketQuoteFetcherFromKeys";
-import { PriceChangeScanFilter, VolumeChangeScanFilter } from "./scanFilters";
 import { SnapshotScreener } from "./SnapshotScreener";
+import { screenerConfigTypes } from "./types/screenerConfigs.type";
 
 export interface MarketQuoteScannerConfig {
 	vendor: MarketDataVendors;
@@ -26,7 +26,7 @@ export class MarketQuoteScanner {
 		}
 	}
 
-	async executeScan(): Promise<NormalizedRestTickerSnapshot[]> {
+	async executeScan(screenerConfigs: screenerConfigTypes[]): Promise<NormalizedRestTickerSnapshot[]> {
 		const marketSession = this.config.marketSession;
 
 		try {
@@ -34,17 +34,7 @@ export class MarketQuoteScanner {
 
 			const rawData = await fetcher.getData(marketSession);
 
-			// TODO - pass the screener and options into the executeScan() mtd.
-			const screener = new SnapshotScreener([
-				{
-					scanFilter: new VolumeChangeScanFilter(),
-					config: { volumeThreshold: 1_000_000, changePercentageThreshold: 3 },
-				},
-				{
-					scanFilter: new PriceChangeScanFilter(),
-					config: { minPriceJump: 2.5 },
-				},
-			]);
+			const screener = new SnapshotScreener(screenerConfigs);
 
 			const filtered = screener.runScreener(rawData);
 

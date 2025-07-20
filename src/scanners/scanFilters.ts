@@ -2,16 +2,16 @@ import { NormalizedRestTickerSnapshot } from "../data/snapshots/rest_api/types/N
 import { ScanFilter } from "./types/ScanFilter.interface";
 
 // Configs
-export interface VolumePecScanConfig {
+export interface VolumePricePctChangeConfig {
 	volumeThreshold: number;
 	changePercentageThreshold: number;
 }
 
-export class VolumeChangeScanFilter implements ScanFilter<VolumePecScanConfig> {
+export class VolumeChangeScanFilter implements ScanFilter<VolumePricePctChangeConfig> {
 	name = "volumeAndChange";
 	description = "Filters tickers based on volume and percentage change";
 
-	runFilter(data: NormalizedRestTickerSnapshot[], config: VolumePecScanConfig): NormalizedRestTickerSnapshot[] {
+	runFilter(data: NormalizedRestTickerSnapshot[], config: VolumePricePctChangeConfig): NormalizedRestTickerSnapshot[] {
 		return data.filter(
 			(ticker) =>
 				(ticker.volume ?? 0) >= config.volumeThreshold && ticker.change_pct >= config.changePercentageThreshold

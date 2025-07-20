@@ -16,6 +16,8 @@ import { LeaderboardTickersSorter } from "@analytics/leaderboard/leaderboardTick
 import { LeaderboardKineticsCalculator } from "@analytics/leaderboard/LeaderboardKineticsCalculator";
 import { EODHDWebSocketClient } from "@strategies/stream/eodhd/eodhdWebSocketClient";
 import handleWebSocketTickerUpdate from "@data/snapshots/websocket/handleWebSocketTickerUpdate";
+import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@scanners/scanFilters";
+import { screenerConfigTypes } from "@scanners/types/screenerConfigs.type";
 
 function addTagsToMarketScanResult(
 	tickers: NormalizedRestTickerSnapshot[],
@@ -40,6 +42,7 @@ function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): RankedRestTic
 	}));
 }
 
+
 export default async function runProgram() {
 	console.log("🟢 Running scanner task at", new Date().toLocaleString());
 
@@ -59,9 +62,20 @@ export default async function runProgram() {
 			strategyKeys: scanStrategyKeys,
 		});
 
-		// Execute scan and get ticker symbols (e.g. ["AAPL", "TSLA"])
-		const returnedTickers = ["AAPL", "TSLA"];
-		// const returnedTickers: NormalizedRestTickerSnapshot[] = await scanner.executeScan();
+		const screenerConfigs: screenerConfigTypes[] = [
+			{
+				scanFilter: new VolumeChangeScanFilter(),
+				config: { volumeThreshold: 1_000_000, changePercentageThreshold: 3 },
+			},
+			{
+				scanFilter: new PriceChangeScanFilter(),
+				config: { minPriceJump: 2.5 },
+			},
+		];
+
+
+		// Execute scan and get ticker symbols
+		const returnedTickers: NormalizedRestTickerSnapshot[] = await scanner.executeScan(screenerConfigs);
 
 		if (!returnedTickers || returnedTickers.length === 0) {
 			console.log("No tickers found from scan.");
@@ -79,13 +93,15 @@ export default async function runProgram() {
 
 		// 3. Generate mock snapshots for demonstration/testing
 		// (Replace with your actual snapshot acquisition logic in prod)
-		const mockSnapshots = generateMockSnapshots(returnedTickers, 3, {
+		const mockSnapshots = generateMockSnapshots(["AAPL", "TSLA"], 3, {
 			changePctRange: [0.1, 0.2],
 			trend: "increasing",
 		});
 
+		// WIP
 		// 4. Rank and sort snapshots
 		const rankedSnapshots: RankedRestTickerSnapshot[] = addRankFields(mockSnapshots);
+		// const rankedSnapshots: RankedRestTickerSnapshot[] = addRankFields(returnedTickers);
 
 		// Use generic sorter (by change_pct, highest first, then by sort_rank)
 		const rankedSorter = new GenericRankedItemsFieldSorter<RankedRestTickerSnapshot, "change_pct">(
@@ -93,6 +109,7 @@ export default async function runProgram() {
 			SortOrder.DESC,
 			"sort_rank"
 		);
+
 		const sortedSnapshots: RankedRestTickerSnapshot[] = rankedSorter.sort(rankedSnapshots);
 
 		// 5. Tag the scan results for leaderboard
