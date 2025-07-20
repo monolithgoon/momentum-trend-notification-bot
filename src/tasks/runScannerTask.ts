@@ -12,7 +12,7 @@ import { RankedRestTickerSnapshot } from "@core/types/RankedRestTickerSnapshot.i
 import { GenericRankedItemsFieldSorter } from "@core/ranking/GenericRankedItemsFieldSorter";
 import { InMemoryLeaderboardStorage } from "@core/leaderboard/InMemoryLeaderboardStorage";
 import { LeaderboardService } from "@core/leaderboard/LeaderboardService";
-import { LeaderboardTickersSorter } from "@core/leaderboard/leaderboardTickersSorter";
+import { LeaderboardTickersSorter } from "@core/leaderboard/LeaderboardTickersSorter";
 import { LeaderboardKineticsCalculator } from "@core/leaderboard/LeaderboardKineticsCalculator";
 import { EODHDWebSocketClient } from "@services/websocket/EODHDWebSocketClient";
 import handleWebSocketTickerUpdate from "@services/websocket/handleWebSocketTickerUpdate";

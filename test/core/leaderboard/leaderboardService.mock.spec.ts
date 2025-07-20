@@ -5,10 +5,14 @@ import { TickerSorter } from "@core/interfaces/tickerSorter.interface";
 import { LeaderboardKineticsCalculator } from "@core/leaderboard/LeaderboardKineticsCalculator";
 import { TaggedMarketScanTickers } from "@core/types/tagged-market-scan-tickers.interface";
 
-// --- Mock Config ---
-const APP_CONFIG = {
-  MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: 2
-};
+// Mock the config module before other imports
+jest.mock("@config/index", () => ({
+  APP_CONFIG: {
+    MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: 2,
+  },
+}));
+
+
 
 // --- Mock Storage ---
 class MockLeaderboardStorage {

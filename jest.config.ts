@@ -3,7 +3,7 @@ import type { Config } from 'jest';
 const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@config/(.*)$': '<rootDir>/src/config/$1',
     '^@core/(.*)$': '<rootDir>/src/core/$1',

@@ -3,10 +3,14 @@ import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/Le
 import { NormalizedRestTickerSnapshot } from "@core/types/NormalizedRestTickerSnapshot.interface";
 import { TaggedMarketScanTickers } from "@core/types/tagged-market-scan-tickers.interface";
 
-// Mock APP_CONFIG
-const APP_CONFIG = {
-  MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: 2,
-};
+// Mock the config module before other imports
+jest.mock("@config/index", () => ({
+  APP_CONFIG: {
+    MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: 2,
+  },
+}));
+
+
 
 // Mock Storage Implementation
 class MockLeaderboardStorage {
@@ -18,6 +22,7 @@ class MockLeaderboardStorage {
     if (!this.snapshots[name]) this.snapshots[name] = {};
   }
   async storeSnapshot(leaderboardName: string, ticker: string, snapshot: NormalizedRestTickerSnapshot) {
+    if (!this.snapshots[leaderboardName]) this.snapshots[leaderboardName] = {};
     if (!this.snapshots[leaderboardName][ticker]) this.snapshots[leaderboardName][ticker] = [];
     this.snapshots[leaderboardName][ticker].unshift(snapshot);
     if (this.snapshots[leaderboardName][ticker].length > 5) {
