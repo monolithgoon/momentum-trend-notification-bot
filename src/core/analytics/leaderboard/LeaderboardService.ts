@@ -17,7 +17,7 @@ export class LeaderboardService {
 		const leaderboardTag = data.scan_strategy_tag;
 
 		// Create leaderboard in storage if it doesn't exist
-		if (!this.storage.getCurrentLeaderboard(leaderboardTag)) this.storage.createLeaderboard(leaderboardTag);
+		if (!this.storage.retreiveLeaderboard(leaderboardTag)) this.storage.initializeLeaderboardStore(leaderboardTag);
 
 		for (const snapshot of data.normalized_tickers) {
 			await this.storage.storeSnapshot(leaderboardTag, snapshot.ticker, snapshot);
@@ -43,11 +43,11 @@ export class LeaderboardService {
 		const sorted = sorter.sort(leaderboard);
 		sorted.forEach((snapshot, idx) => (snapshot.leaderboard_rank = idx + 1));
 
-		await this.storage.setLeaderboard(leaderboardTag, sorted);
+		await this.storage.persistLeaderboard(leaderboardTag, sorted);
 		return sorted;
 	}
 
-	async getCurrentLeaderboard(leaderboardTag: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
-		return this.storage.getCurrentLeaderboard(leaderboardTag);
+	async retreiveLeaderboard(leaderboardTag: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
+		return this.storage.retreiveLeaderboard(leaderboardTag);
 	}
 }

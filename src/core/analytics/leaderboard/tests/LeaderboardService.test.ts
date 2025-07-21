@@ -13,7 +13,7 @@ class MockLeaderboardStorage {
   public leaderboards: Record<string, LeaderboardRestTickerSnapshot[]> = {};
   public snapshots: Record<string, Record<string, NormalizedRestTickerSnapshot[]>> = {};
 
-  createLeaderboard(name: string) {
+  initializeLeaderboardStore(name: string) {
     if (!this.leaderboards[name]) this.leaderboards[name] = [];
     if (!this.snapshots[name]) this.snapshots[name] = {};
   }
@@ -27,10 +27,10 @@ class MockLeaderboardStorage {
   async retrieveAllSnapshotsForTicker(leaderboardName: string, ticker: string) {
     return this.snapshots[leaderboardName][ticker] || [];
   }
-  async setLeaderboard(leaderboardName: string, data: LeaderboardRestTickerSnapshot[]) {
+  async persistLeaderboard(leaderboardName: string, data: LeaderboardRestTickerSnapshot[]) {
     this.leaderboards[leaderboardName] = [...data];
   }
-  async getCurrentLeaderboard(leaderboardName: string) {
+  async retreiveLeaderboard(leaderboardName: string) {
     return this.leaderboards[leaderboardName] || null;
   }
 }
@@ -102,7 +102,7 @@ describe("LeaderboardService", () => {
     expect(result[0]).toHaveProperty("leaderboard_rank");
 
     // The storage should have the current leaderboard
-    const leaderboard = await service.getCurrentLeaderboard(leaderboardTag);
+    const leaderboard = await service.retreiveLeaderboard(leaderboardTag);
     expect(leaderboard).toEqual(result);
   });
 
@@ -123,7 +123,7 @@ describe("LeaderboardService", () => {
     );
 
     expect(result).toHaveLength(0);
-    const leaderboard = await service.getCurrentLeaderboard(leaderboardTag);
+    const leaderboard = await service.retreiveLeaderboard(leaderboardTag);
     expect(leaderboard).toEqual([]);
   });
 });

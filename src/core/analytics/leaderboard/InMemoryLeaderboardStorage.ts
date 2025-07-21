@@ -28,7 +28,7 @@ import { LeaderboardStorage } from "./leaderboardStorage.interface";
 // 		return all.slice(-limit);
 // 	}
 
-// 	async getCurrentLeaderboard(): Promise<LeaderboardRestTickerSnapshot[] | null> {
+// 	async retreiveLeaderboard(): Promise<LeaderboardRestTickerSnapshot[] | null> {
 // 		return this.currentLeaderboard;
 // 	}
 
@@ -36,7 +36,7 @@ import { LeaderboardStorage } from "./leaderboardStorage.interface";
 // 		return (this.data[ticker]?.length ?? 0) >= min;
 // 	}
 
-// 	async setLeaderboard(data: LeaderboardRestTickerSnapshot[]): Promise<void> {
+// 	async persistLeaderboard(data: LeaderboardRestTickerSnapshot[]): Promise<void> {
 // 		this.currentLeaderboard = [...data];
 // 	}
 // }
@@ -47,7 +47,7 @@ export class InMemoryLeaderboardStorage implements LeaderboardStorage {
 
 	private readonly MIN_SNAPSHOT_HISTORY_COUNT = 2;
 
-	createLeaderboard(leaderboardName: string): void {
+	initializeLeaderboardStore(leaderboardName: string): void {
 		if (!this.data[leaderboardName]) {
 			this.data[leaderboardName] = {};
 		}
@@ -57,7 +57,7 @@ export class InMemoryLeaderboardStorage implements LeaderboardStorage {
 	}
 
 	async storeSnapshot(leaderboardName: string, ticker: string, snapshot: NormalizedRestTickerSnapshot): Promise<void> {
-		this.createLeaderboard(leaderboardName);
+		this.initializeLeaderboardStore(leaderboardName);
 		if (!this.data[leaderboardName][ticker]) {
 			this.data[leaderboardName][ticker] = [];
 		}
@@ -68,7 +68,7 @@ export class InMemoryLeaderboardStorage implements LeaderboardStorage {
 	}
 
 	async retrieveAllSnapshotsForTicker(leaderboardName: string, ticker: string): Promise<NormalizedRestTickerSnapshot[]> {
-		this.createLeaderboard(leaderboardName);
+		this.initializeLeaderboardStore(leaderboardName);
 		return this.data[leaderboardName][ticker] ?? [];
 	}
 
@@ -77,18 +77,18 @@ export class InMemoryLeaderboardStorage implements LeaderboardStorage {
 		return all.slice(-limit);
 	}
 
-	async getCurrentLeaderboard(leaderboardName: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
-		this.createLeaderboard(leaderboardName);
+	async retreiveLeaderboard(leaderboardName: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
+		this.initializeLeaderboardStore(leaderboardName);
 		return this.currentLeaderboards[leaderboardName];
 	}
 
 	async hasMinimumSnapshots(leaderboardName: string, ticker: string, min: number): Promise<boolean> {
-		this.createLeaderboard(leaderboardName);
+		this.initializeLeaderboardStore(leaderboardName);
 		return (this.data[leaderboardName][ticker]?.length ?? 0) >= min;
 	}
 
-	async setLeaderboard(leaderboardName: string, data: LeaderboardRestTickerSnapshot[]): Promise<void> {
-		this.createLeaderboard(leaderboardName);
+	async persistLeaderboard(leaderboardName: string, data: LeaderboardRestTickerSnapshot[]): Promise<void> {
+		this.initializeLeaderboardStore(leaderboardName);
 		this.currentLeaderboards[leaderboardName] = [...data];
 	}
 }

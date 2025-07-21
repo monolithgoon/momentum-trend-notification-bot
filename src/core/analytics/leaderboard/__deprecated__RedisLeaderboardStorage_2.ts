@@ -32,11 +32,11 @@ export class RedisLeaderboardStorage implements LeaderboardStorage {
 		return count >= min;
 	}
 
-	async setLeaderboard(leaderboard: LeaderboardRestTickerSnapshot[]): Promise<void> {
+	async persistLeaderboard(leaderboard: LeaderboardRestTickerSnapshot[]): Promise<void> {
 		await this.redis.set("leaderboard:current", JSON.stringify(leaderboard));
 	}
 
-	async getCurrentLeaderboard(): Promise<LeaderboardRestTickerSnapshot[] | null> {
+	async retreiveLeaderboard(): Promise<LeaderboardRestTickerSnapshot[] | null> {
 		const data = await this.redis.get("leaderboard:current");
 		return data ? JSON.parse(data) : null;
 	}

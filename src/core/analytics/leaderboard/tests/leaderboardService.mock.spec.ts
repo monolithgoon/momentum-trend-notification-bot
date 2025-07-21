@@ -15,7 +15,7 @@ class MockLeaderboardStorage {
   public leaderboards: Record<string, LeaderboardRestTickerSnapshot[]> = {};
   public snapshots: Record<string, Record<string, NormalizedRestTickerSnapshot[]>> = {};
 
-  createLeaderboard(name: string) {
+  initializeLeaderboardStore(name: string) {
     if (!this.leaderboards[name]) this.leaderboards[name] = [];
     if (!this.snapshots[name]) this.snapshots[name] = {};
   }
@@ -26,10 +26,10 @@ class MockLeaderboardStorage {
   async retrieveAllSnapshotsForTicker(leaderboardName: string, ticker: string) {
     return this.snapshots[leaderboardName][ticker] || [];
   }
-  async setLeaderboard(leaderboardName: string, data: LeaderboardRestTickerSnapshot[]) {
+  async persistLeaderboard(leaderboardName: string, data: LeaderboardRestTickerSnapshot[]) {
     this.leaderboards[leaderboardName] = [...data];
   }
-  async getCurrentLeaderboard(leaderboardName: string) {
+  async retreiveLeaderboard(leaderboardName: string) {
     return this.leaderboards[leaderboardName] || null;
   }
 }
@@ -77,7 +77,7 @@ async function testLeaderboardServiceLifecycle() {
   console.log("Processed Leaderboard:", result);
 
   // Read back leaderboard
-  const current = await service.getCurrentLeaderboard("test-strategy");
+  const current = await service.retreiveLeaderboard("test-strategy");
   console.log("Current Leaderboard:", current);
 }
 
