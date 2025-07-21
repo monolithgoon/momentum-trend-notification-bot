@@ -1,5 +1,5 @@
-import { NotifierService } from "@services/notifier/NotifierService";
-import { TelegramNotifier } from "@services/notifier/TelegramService";
+import { NotifierService } from "src/services/notifier/NotifierService";
+import { TelegramNotifier } from "src/services/notifier/TelegramService";
 
 let shuttingDown = false;
 export default async function gracefulDaemonShutdown(reason: string, code: number = 1) {

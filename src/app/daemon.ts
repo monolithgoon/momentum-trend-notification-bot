@@ -2,38 +2,35 @@
 
 import { APP_CONFIG } from "@config/index";
 import { pauseForInternet } from "@net/pauseForInternet";
-import runProgram from "./program";
+import runLiveMarketScannerTask from "@tasks/runLiveMarketScannerTask";
 
-export function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
-	let isRunning = false;
+// export function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
+// 	let isRunning = false;
 
-	async function safeRun() {
-		if (isRunning) {
-			console.log("⏳ Previous scan still running. Skipping this cycle.");
-			return;
-		}
+// 	async function safeRun() {
+// 		if (isRunning) {
+// 			console.log("⏳ Previous scan still running. Skipping this cycle.");
+// 			return;
+// 		}
 
-		try {
-			await pauseForInternet(); // Will block here if disconnected
-			isRunning = true;
-			await runProgram();
-		} catch (err) {
-			console.error("Daemon error:", err);
-		} finally {
-			isRunning = false;
-		}
-	}
+// 		try {
+// 			await pauseForInternet(); // Will block here if disconnected
+// 			isRunning = true;
+// 			await runLiveMarketScannerTask();
+// 		} catch (err) {
+// 			console.error("Daemon error:", err);
+// 		} finally {
+// 			isRunning = false;
+// 		}
+// 	}
 
-	console.log(`📡 Scanner daemon started. Interval: ${intervalMs / 1000} seconds`);
-	safeRun();
-	setInterval(safeRun, intervalMs);
-}
+// 	console.log(`📡 Scanner daemon started. Interval: ${intervalMs / 1000} seconds`);
+// 	safeRun();
+// 	setInterval(safeRun, intervalMs);
+// }
 
-// WIP
-
-// Updated startAppDaemon with failure cap
 /**
- * Updated daemon with failure cap.
+ * Updated startAppDaemon with failure cap.
  * Shuts down after too many consecutive failures.
  */
 export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.APP_DAEMON_SAFE_RUN_INTERVAL_MS) {
@@ -57,7 +54,7 @@ export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.APP_DAE
 
 			isRunning = true; // Mark as running
 
-			await runProgram();
+			await runLiveMarketScannerTask();
 
 			consecutiveFailures = 0; // ✅ Reset failure count on success
 		} catch (err) {

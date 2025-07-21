@@ -12,17 +12,18 @@
 		"baseUrl": ".", // This is the root of your project
 		"paths": {
 			"@app/*": ["src/app/*"],
-			"@analytics/*": ["src/analytics/*"],
+			"@analytics/*": ["src/core/analytics/*"],
 			"@config/*": ["src/config/*"],
 			"@core/*": ["src/core/*"],
-			"@data/*": ["src/data/*"],
+			"@data/*": ["src/core/data/*"],
 			"@enums/*": ["src/core/enums/*"],
 			"@infrastructure/*": ["src/infrastructure/*"],
 			"@net/*": ["src/net/*"],
-			"@scanners/*": ["src/scanners/*"],
+			"@tasks/*": ["src/tasks/*"],
+			"@scanners/*": ["src/core/scanners/*"],
 			"@services/*": ["src/services/*"],
-			"@strategies/*": ["src/strategies/*"],
-			"@utils/*": ["src/utils/*"]
+			"@strategies/*": ["src/core/strategies/*"],
+			"@utils/*": ["src/core/utils/*"]
 		},
 		"types": ["jest", "node"] // <-- Add jest and node types for testing
 	},
