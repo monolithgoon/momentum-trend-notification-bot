@@ -10,7 +10,7 @@ export class PolygonTickerTransformer implements RawRestApiTickerTransformer<Pol
 			change_pct: snapshot.priceChangeTodayPerc,
 			price: snapshot.lastTrade?.p,
 			volume: snapshot.tradingVolumeToday,
-			sort_rank: sortRank,
+			ordinal_sort_position: sortRank,
 		};
 	}
 }

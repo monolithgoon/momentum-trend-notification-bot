@@ -36,9 +36,9 @@ import { APP_CONFIG } from "@config/index";
  *       - Compute velocity and acceleration using most recent snapshots (based on change_pct and timestamp).
  *    e. Create Leaderboard Entry:
  *       - Create an entry containing:
- *           - ticker, timestamp, velocity, acceleration, original sort_rank
+ *           - ticker, timestamp, velocity, acceleration, original ordinal_sort_position
  *           - consecutiveAppearances: how many consecutive batches the ticker has been on the leaderboard
- *           - score: calculated using velocity, acceleration, and consecutiveAppearances (see scoring strategy below)
+ *           - leaderboard_momentum_score: calculated using velocity, acceleration, and consecutiveAppearances (see scoring strategy below)
  *       - Add to in-memory leaderboard map.
  *
  * 3. Merge with Previous Leaderboard:
@@ -47,14 +47,14 @@ import { APP_CONFIG } from "@config/index";
  *    - For absent tickers (present last time but missing now), increment their consecutiveAppearances and retain them.
  *
  * 4. Scoring:
- *    - For each leaderboard entry, compute score using:
- *        score = velocity + 0.5 * acceleration
+ *    - For each leaderboard entry, compute leaderboard_momentum_score using:
+ *        leaderboard_momentum_score = velocity + 0.5 * acceleration
  *        if consecutiveAppearances == 1: add popBonus (e.g. 1.5)
- *        apply decay: score *= decayFactor^(consecutiveAppearances - 1) (e.g. decayFactor = 0.95)
+ *        apply decay: leaderboard_momentum_score *= decayFactor^(consecutiveAppearances - 1) (e.g. decayFactor = 0.95)
  *    - This boosts new "pop-up" tickers and penalizes those that linger.
  *
  * 5. Sorting and Ranking:
- *    - Sort leaderboard by score (descending).
+ *    - Sort leaderboard by leaderboard_momentum_score (descending).
  *    - Assign leaderboard_rank (starting from 1).
  *
  * 6. Persistence:
@@ -93,7 +93,7 @@ export class LeaderboardService {
 
 		// Compute scores now that appearances are updated
 		for (const entry of mergedMap.values()) {
-			entry.score = this.scoreFn({
+			entry.leaderboard_momentum_score = this.scoreFn({
 				velocity: entry.velocity,
 				acceleration: entry.acceleration,
 				consecutiveAppearances: entry.consecutiveAppearances ?? 1,
@@ -148,8 +148,8 @@ export class LeaderboardService {
 					timestamp: snapshot.timestamp,
 					velocity,
 					acceleration,
-					score: 0, // Temp, will compute after appearances set
-					leaderboard_rank: snapshot.sort_rank,
+					leaderboard_momentum_score: 0, // Temp, will compute after appearances set
+					leaderboard_rank: snapshot.ordinal_sort_position,
 					consecutiveAppearances: 1, // Default to 1, will update in merge step
 				};
 				tickerEntries.set(snapshot.ticker, leaderboardEntry);
@@ -205,7 +205,7 @@ export class LeaderboardService {
 	}
 
 	/**
-	 * Sorts leaderboard entries by score using the provided sorter,
+	 * Sorts leaderboard entries by leaderboard_momentum_score using the provided sorter,
 	 * assigns sequential ranks, and returns the sorted array.
 	 */
 	private sortAndRankLeaderboard(

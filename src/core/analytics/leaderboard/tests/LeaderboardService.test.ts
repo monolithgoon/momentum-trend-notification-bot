@@ -38,7 +38,7 @@ class MockLeaderboardStorage {
 // Mock Sorter
 const mockSorter = {
   sort: (arr: LeaderboardRestTickerSnapshot[]) =>
-    [...arr].sort((a, b) => b.score - a.score),
+    [...arr].sort((a, b) => b.leaderboard_momentum_score - a.leaderboard_momentum_score),
 };
 
 // Mock KineticsCalculator
@@ -63,10 +63,10 @@ describe("LeaderboardService", () => {
   it("should process snapshots and create a sorted leaderboard", async () => {
     const leaderboardTag = "test-strategy";
     const initialSnapshots: NormalizedRestTickerSnapshot[] = [
-      { ticker: "AAA", timestamp: 98, sort_rank: 0, change_pct: 1.0 },
-      { ticker: "AAA", timestamp: 99, sort_rank: 0, change_pct: 1.1 },
-      { ticker: "BBB", timestamp: 195, sort_rank: 1, change_pct: -0.3 },
-      { ticker: "BBB", timestamp: 197, sort_rank: 1, change_pct: -0.4 },
+      { ticker: "AAA", timestamp: 98, ordinal_sort_position: 0, change_pct: 1.0 },
+      { ticker: "AAA", timestamp: 99, ordinal_sort_position: 0, change_pct: 1.1 },
+      { ticker: "BBB", timestamp: 195, ordinal_sort_position: 1, change_pct: -0.3 },
+      { ticker: "BBB", timestamp: 197, ordinal_sort_position: 1, change_pct: -0.4 },
     ];
 
     // Pre-populate storage with enough history for AAA and BBB
@@ -78,8 +78,8 @@ describe("LeaderboardService", () => {
     const testData: TaggedNormalizedMarketScanTickers = {
       scan_strategy_tag: leaderboardTag,
       normalized_tickers: [
-        { ticker: "AAA", timestamp: 100, sort_rank: 0, change_pct: 1.2 },
-        { ticker: "BBB", timestamp: 200, sort_rank: 1, change_pct: -0.5 },
+        { ticker: "AAA", timestamp: 100, ordinal_sort_position: 0, change_pct: 1.2 },
+        { ticker: "BBB", timestamp: 200, ordinal_sort_position: 1, change_pct: -0.5 },
       ],
     };
 
@@ -89,16 +89,16 @@ describe("LeaderboardService", () => {
       mockKineticsCalculator
     );
 
-    // Should be sorted by score descending
+    // Should be sorted by leaderboard_momentum_score descending
     expect(result).toHaveLength(2);
-    expect(result[0].score).toBeGreaterThanOrEqual(result[1].score);
+    expect(result[0].leaderboard_momentum_score).toBeGreaterThanOrEqual(result[1].leaderboard_momentum_score);
 
     // velocity and acceleration calculations should be correct
     expect(result[0]).toHaveProperty("ticker");
     expect(result[0]).toHaveProperty("timestamp");
     expect(result[0]).toHaveProperty("velocity");
     expect(result[0]).toHaveProperty("acceleration");
-    expect(result[0]).toHaveProperty("score");
+    expect(result[0]).toHaveProperty("leaderboard_momentum_score");
     expect(result[0]).toHaveProperty("leaderboard_rank");
 
     // The storage should have the current leaderboard
@@ -111,7 +111,7 @@ describe("LeaderboardService", () => {
     const testData: TaggedNormalizedMarketScanTickers = {
       scan_strategy_tag: leaderboardTag,
       normalized_tickers: [
-        { ticker: "CCC", timestamp: 150, sort_rank: 0, change_pct: 0.9 }, // only one snapshot
+        { ticker: "CCC", timestamp: 150, ordinal_sort_position: 0, change_pct: 0.9 }, // only one snapshot
       ],
     };
 

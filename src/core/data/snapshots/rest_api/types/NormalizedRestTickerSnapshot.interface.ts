@@ -1,5 +1,5 @@
 export interface NormalizedRestTickerSnapshot {
-	sort_rank: number;
+	ordinal_sort_position: number;
 	timestamp: number;
 	ticker: string;
 	change_pct: number;

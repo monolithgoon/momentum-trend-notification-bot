@@ -47,7 +47,7 @@ export class InMemoryLeaderboardStorage implements LeaderboardStorage {
 
 	private readonly MIN_SNAPSHOT_HISTORY_COUNT = 2;
 
-	initializeLeaderboardStore(leaderboardName: string): void {
+	async initializeLeaderboardStore(leaderboardName: string): Promise<void> {
 		if (!this.data[leaderboardName]) {
 			this.data[leaderboardName] = {};
 		}

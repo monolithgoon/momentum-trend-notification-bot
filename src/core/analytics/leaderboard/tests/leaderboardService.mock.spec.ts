@@ -36,7 +36,7 @@ class MockLeaderboardStorage {
 
 // --- Mock Sorter ---
 const mockSorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> = {
-  sort: (arr) => arr.sort((a, b) => b.score - a.score) // descending by score
+  sort: (arr) => arr.sort((a, b) => b.leaderboard_momentum_score - a.leaderboard_momentum_score) // descending by leaderboard_momentum_score
 };
 
 // --- Mock KineticsCalculator ---
@@ -49,8 +49,8 @@ const mockKineticsCalculator: LeaderboardKineticsCalculator = {
 const testData: TaggedNormalizedMarketScanTickers = {
   scan_strategy_tag: "test-strategy",
   normalized_tickers: [
-    { ticker: "AAA", timestamp: 100, sort_rank: 0, change_pct: 1.2 },
-    { ticker: "BBB", timestamp: 200, sort_rank: 1, change_pct: -0.5 }
+    { ticker: "AAA", timestamp: 100, ordinal_sort_position: 0, change_pct: 1.2 },
+    { ticker: "BBB", timestamp: 200, ordinal_sort_position: 1, change_pct: -0.5 }
   ]
 };
 
@@ -60,11 +60,11 @@ async function testLeaderboardServiceLifecycle() {
   const service = new LeaderboardService(storage as any);
 
   // Pre-populate with enough snapshots for velocity/acceleration calculation
-  await storage.storeSnapshot("test-strategy", "AAA", { ticker: "AAA", timestamp: 98, sort_rank: 0, change_pct: 1.0 });
-  await storage.storeSnapshot("test-strategy", "AAA", { ticker: "AAA", timestamp: 99, sort_rank: 0, change_pct: 1.1 });
-  await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 195, sort_rank: 1, change_pct: -0.3 });
-  await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 197, sort_rank: 1, change_pct: -0.4 });
-  await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 197, sort_rank: 1, change_pct: -0.5 });
+  await storage.storeSnapshot("test-strategy", "AAA", { ticker: "AAA", timestamp: 98, ordinal_sort_position: 0, change_pct: 1.0 });
+  await storage.storeSnapshot("test-strategy", "AAA", { ticker: "AAA", timestamp: 99, ordinal_sort_position: 0, change_pct: 1.1 });
+  await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 195, ordinal_sort_position: 1, change_pct: -0.3 });
+  await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 197, ordinal_sort_position: 1, change_pct: -0.4 });
+  await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 197, ordinal_sort_position: 1, change_pct: -0.5 });
 
   // Process incoming data
   const result: LeaderboardRestTickerSnapshot[] = await service.processSnapshots(
