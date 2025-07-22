@@ -22,7 +22,7 @@ export class MarketQuoteScanner {
 
 		console.log(`✅ Found ${tickers.length} active tickers:`);
 		for (const t of tickers) {
-			console.log(`→ ${t.ticker} | Δ ${t.change_pct}% | Volume: ${t.volume ?? "?"}`);
+			console.log(`→ ${t.n_ticker_name} | Δ ${t.change_pct}% | Volume: ${t.volume ?? "?"}`);
 		}
 	}
 

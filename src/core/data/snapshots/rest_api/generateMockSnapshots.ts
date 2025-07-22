@@ -31,7 +31,7 @@ export function generateMockSnapshots(
 		};
 	}
 
-	for (const ticker of tickers) {
+	for (const n_ticker_name of tickers) {
 		let base = changePctRange[0] + random() * (changePctRange[1] - changePctRange[0]);
 
 		for (let i = 0; i < numPerTicker; i++) {
@@ -52,7 +52,7 @@ export function generateMockSnapshots(
 			}
 
 			snapshots.push({
-				ticker,
+				n_ticker_name,
 				timestamp,
 				change_pct,
 				price: 100 + random() * 10,
@@ -64,8 +64,8 @@ export function generateMockSnapshots(
 
 	// Sort descending per ticker by timestamp (optional)
 	return snapshots.sort((a, b) =>
-		a.ticker === b.ticker
+		a.n_ticker_name === b.n_ticker_name
 			? b.timestamp - a.timestamp
-			: a.ticker.localeCompare(b.ticker)
+			: a.n_ticker_name.localeCompare(b.n_ticker_name)
 	);
 }

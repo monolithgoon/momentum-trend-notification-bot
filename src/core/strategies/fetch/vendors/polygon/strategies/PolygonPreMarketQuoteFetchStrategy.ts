@@ -42,7 +42,7 @@ export class PolygonPreMarketQuoteFetchStrategy implements PolygonRestApiQuoteFe
 				.filter((t: any) => t.lastTradeTimestampNs && this.isPreMarket(t.lastTradeTimestampNs))
 				.map(
 					(t: any): PolygonRestTickerSnapshot => ({
-						tickerName: t.tickerName,
+						polygon_ticker_name: t.polygon_ticker_name,
 						tradingVolumeToday: t.tradingVolumeToday ?? 0,
 						priceChangeTodayPerc: t.priceChangeTodayPerc ?? 0,
 						lastTradeTimestampNs: t.lastTradeTimestampNs,

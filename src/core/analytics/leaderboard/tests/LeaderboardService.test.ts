@@ -43,9 +43,9 @@ const mockSorter = {
 
 // Mock KineticsCalculator
 const mockKineticsCalculator = {
-  computeVelocity: (history: NormalizedRestTickerSnapshot[]) =>
+  computePercChangeVelocity: (history: NormalizedRestTickerSnapshot[]) =>
     (history[0]?.change_pct ?? 0) - (history[1]?.change_pct ?? 0),
-  computeAcceleration: (history: NormalizedRestTickerSnapshot[]) =>
+  computePercChangeAcceleration: (history: NormalizedRestTickerSnapshot[]) =>
     history.length > 2
       ? (history[0]?.change_pct ?? 0) - 2 * (history[1]?.change_pct ?? 0) + (history[2]?.change_pct ?? 0)
       : 0,
@@ -83,7 +83,7 @@ describe("LeaderboardService", () => {
       ],
     };
 
-    const result: LeaderboardRestTickerSnapshot[] = await service.processSnapshots(
+    const result: LeaderboardRestTickerSnapshot[] = await service.processNewSnapshots(
       testData,
       mockSorter,
       mockKineticsCalculator
@@ -93,11 +93,11 @@ describe("LeaderboardService", () => {
     expect(result).toHaveLength(2);
     expect(result[0].leaderboard_momentum_score).toBeGreaterThanOrEqual(result[1].leaderboard_momentum_score);
 
-    // velocity and acceleration calculations should be correct
+    // perc_change_velocity and perc_change_acceleration calculations should be correct
     expect(result[0]).toHaveProperty("ticker");
     expect(result[0]).toHaveProperty("timestamp");
-    expect(result[0]).toHaveProperty("velocity");
-    expect(result[0]).toHaveProperty("acceleration");
+    expect(result[0]).toHaveProperty("perc_change_velocity");
+    expect(result[0]).toHaveProperty("perc_change_acceleration");
     expect(result[0]).toHaveProperty("leaderboard_momentum_score");
     expect(result[0]).toHaveProperty("leaderboard_rank");
 
@@ -116,7 +116,7 @@ describe("LeaderboardService", () => {
     };
 
     // No pre-population for CCC, so not enough history
-    const result = await service.processSnapshots(
+    const result = await service.processNewSnapshots(
       testData,
       mockSorter,
       mockKineticsCalculator

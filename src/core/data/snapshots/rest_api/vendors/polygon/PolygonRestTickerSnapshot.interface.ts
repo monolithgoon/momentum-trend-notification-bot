@@ -1,5 +1,5 @@
 export interface PolygonRestTickerSnapshot {
-	tickerName: RawTickerSnapshot["ticker"];
+	polygon_ticker_name: RawTickerSnapshot["ticker"];
 	priceChangeTodayAbs: RawTickerSnapshot["todaysChange"];
 	priceChangeTodayPerc: RawTickerSnapshot["todaysChangePerc"];
 	lastTradeTimestampNs: RawTickerSnapshot["updated"];
@@ -83,18 +83,18 @@ export function fromMilliSecToDate(ms: number): Date {
  * Useful for testing or initializing empty snapshots
  */
 export function createTickerSnapshot(overrides: Partial<PolygonRestTickerSnapshot> = {}): PolygonRestTickerSnapshot {
-	const tickerName = "TICKER";
+	const polygon_ticker_name = "TICKER";
 	const lastTradeTimestampNs = Date.now() * 1_000_000;
 	return {
 		...overrides,
 
-		tickerName: tickerName,
+		polygon_ticker_name: polygon_ticker_name,
 		priceChangeTodayAbs: 0,
 		priceChangeTodayPerc: 0,
 		lastTradeTimestampNs, // nanoseconds
 		tradingVolumeToday: 0,
 		rawTickerSnapshot: {
-			ticker: tickerName,
+			ticker: polygon_ticker_name,
 			todaysChange: 0,
 			todaysChangePerc: 0,
 			updated: lastTradeTimestampNs,

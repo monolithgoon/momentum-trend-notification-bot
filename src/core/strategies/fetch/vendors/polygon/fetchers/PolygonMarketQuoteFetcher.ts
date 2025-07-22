@@ -29,8 +29,8 @@ export class PolygonMarketQuoteFetcher implements SessionMarketQuoteFetcher {
 				const seen = new Set();
 
 				return transformedSnapshots.filter((snap) => {
-					if (seen.has(snap.ticker)) return false;
-					seen.add(snap.ticker);
+					if (seen.has(snap.n_ticker_name)) return false;
+					seen.add(snap.n_ticker_name);
 					return true;
 				});
 

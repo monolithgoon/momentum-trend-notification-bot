@@ -2,7 +2,7 @@ import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/type
 import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardService } from "../LeaderboardService";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { LeaderboardKineticsCalculator } from "../kineticsCalculators";
+import { LeaderboardKineticsCalculator } from "../percChangeKineticsCalculators";
 import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
 
 // --- Mock Config ---
@@ -41,8 +41,8 @@ const mockSorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, Leaderboard
 
 // --- Mock KineticsCalculator ---
 const mockKineticsCalculator: LeaderboardKineticsCalculator = {
-  computeVelocity: (history) => (history[0]?.timestamp ?? 0) - (history[1]?.timestamp ?? 0), // fake velocity
-  computeAcceleration: (history) => history.length > 2 ? 1 : 0 // fake acceleration
+  computePercChangeVelocity: (history) => (history[0]?.timestamp ?? 0) - (history[1]?.timestamp ?? 0), // fake perc_change_velocity
+  computePercChangeAcceleration: (history) => history.length > 2 ? 1 : 0 // fake perc_change_acceleration
 };
 
 // --- Mock Data In ---
@@ -59,7 +59,7 @@ async function testLeaderboardServiceLifecycle() {
   const storage = new MockLeaderboardStorage();
   const service = new LeaderboardService(storage as any);
 
-  // Pre-populate with enough snapshots for velocity/acceleration calculation
+  // Pre-populate with enough snapshots for perc_change_velocity/perc_change_acceleration calculation
   await storage.storeSnapshot("test-strategy", "AAA", { ticker: "AAA", timestamp: 98, ordinal_sort_position: 0, change_pct: 1.0 });
   await storage.storeSnapshot("test-strategy", "AAA", { ticker: "AAA", timestamp: 99, ordinal_sort_position: 0, change_pct: 1.1 });
   await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 195, ordinal_sort_position: 1, change_pct: -0.3 });
@@ -67,7 +67,7 @@ async function testLeaderboardServiceLifecycle() {
   await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 197, ordinal_sort_position: 1, change_pct: -0.5 });
 
   // Process incoming data
-  const result: LeaderboardRestTickerSnapshot[] = await service.processSnapshots(
+  const result: LeaderboardRestTickerSnapshot[] = await service.processNewSnapshots(
     testData,
     mockSorter,
     mockKineticsCalculator

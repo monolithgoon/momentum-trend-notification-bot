@@ -1,7 +1,7 @@
 export interface NormalizedRestTickerSnapshot {
 	ordinal_sort_position: number;
 	timestamp: number;
-	ticker: string;
+	n_ticker_name: string;
 	change_pct: number;
 	price?: number;
 	volume?: number;

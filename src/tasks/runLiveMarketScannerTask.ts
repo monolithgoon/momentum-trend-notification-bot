@@ -8,8 +8,8 @@ import { TelegramNotifier } from "src/services/notifier/TelegramService";
 import { generateMockSnapshots } from "@core/data/snapshots/rest_api/generateMockSnapshots";
 import { SortOrder } from "@core/enums/sortOrder.enum";
 import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { RankedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/RankedRestTickerSnapshot.interface";
-import { GenericRankedItemsFieldSorter } from "@core/generics/GenericRankedItemsFieldSorter";
+import { SortedNormalizedTicker } from "@core/data/snapshots/rest_api/types/SortedNormalizedTicker.interface";
+import { GenericSorter } from "@core/generics/GenericSorter";
 import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
 import { LeaderboardTickersSorter } from "@core/analytics/leaderboard/leaderboardTickersSorter";
@@ -36,10 +36,10 @@ function composeScanStrategyTag(scanStrategyKeys: string[]): string {
 	return Array.isArray(scanStrategyKeys) ? scanStrategyKeys.join("_") : String(scanStrategyKeys);
 }
 
-function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): RankedRestTickerSnapshot[] {
+function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): SortedNormalizedTicker[] {
 	return snapshots.map((snapshot, index) => ({
 		...snapshot,
-		sort_rank: index,
+		ordinal_sort_position: index,
 	}));
 }
 
@@ -94,13 +94,13 @@ export default async function runLiveMarketScannerTask() {
 		});
 
 		// 4. Rank & Sort
-		const rankedSnapshots: RankedRestTickerSnapshot[] = addRankFields(mockSnapshots);
-		const rankedSorter = new GenericRankedItemsFieldSorter<RankedRestTickerSnapshot, "change_pct">(
+		const rankedSnapshots: SortedNormalizedTicker[] = addRankFields(mockSnapshots);
+		const rankedSorter = new GenericSorter<SortedNormalizedTicker, "change_pct">(
 			"change_pct",
 			SortOrder.DESC,
-			"sort_rank"
+			"ordinal_sort_position"
 		);
-		const sortedSnapshots: RankedRestTickerSnapshot[] = rankedSorter.sort(rankedSnapshots);
+		const sortedSnapshots: SortedNormalizedTicker[] = rankedSorter.sort(rankedSnapshots);
 
 		// 5. Tag the scan results for leaderboard
 		const leaderboardTag: string = composeScanStrategyTag(scanStrategyKeys);
@@ -114,10 +114,10 @@ export default async function runLiveMarketScannerTask() {
 		const storage = new FileLeaderboardStorage();
 		await storage.initializeLeaderboardStore(leaderboardTag);
 		const scoringFn = scoringStrategies.popUpDecay;
-		const sorter = new LeaderboardTickersSorter("score", SortOrder.DESC);
+		const sorter = new LeaderboardTickersSorter("leaderboard_momentum_score", SortOrder.DESC); // When invoking the leaderboard service, you should always sort by leaderboard_momentum_score (not leaderboard_rank), as rank is assigned after sorting.
 		const leaderboardService = new LeaderboardService(storage, scoringFn);
 
-		await leaderboardService.processSnapshots(taggedTickers, sorter);
+		await leaderboardService.processNewSnapshots(taggedTickers, sorter);
 		console.log({ leaderboard: storage });
 
 		// 7. WebSocket

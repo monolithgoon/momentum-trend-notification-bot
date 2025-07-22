@@ -6,7 +6,7 @@ export class PolygonTickerTransformer implements RawRestApiTickerTransformer<Pol
 	transform(snapshot: PolygonRestTickerSnapshot, sortRank: number): NormalizedRestTickerSnapshot {
 		return {
 			timestamp: snapshot.lastTradeTimestampNs,
-			ticker: snapshot.tickerName,
+			n_ticker_name: snapshot.polygon_ticker_name,
 			change_pct: snapshot.priceChangeTodayPerc,
 			price: snapshot.lastTrade?.p,
 			volume: snapshot.tradingVolumeToday,

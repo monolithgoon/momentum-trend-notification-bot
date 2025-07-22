@@ -22,29 +22,65 @@ import { SortOrder } from "@core/enums/sortOrder.enum";
 // 	}
 // }
 
+/**
+ * GenericSorter
+ * 
+ * A utility class for sorting an array of objects by a given field, order, and assigning 
+ * an ordinal sort position to each item. This is useful for ranking items in a leaderboard 
+ * or any sorted list, without mutating the original array.
+ * 
+ * Type Parameters:
+ *   T - The object type being sorted (must have string keys).
+ *   F - The field name in T used for sorting.
+ *   P - The name of the field to assign the ordinal position (default: "ordinal_sort_position").
+ * 
+ * Constructor Arguments:
+ *   sortField           - The field to sort by (e.g., "score", "change_pct").
+ *   sortOrder           - The sort order (SortOrder.ASC or SortOrder.DESC).
+ *   ordinalSortPosition - The name of the field to assign the 1-based position (default: "ordinal_sort_position").
+ * 
+ * The 'multiplier' variable determines sorting direction:
+ *   - If sortOrder is ASC, multiplier is 1 (ascending).
+ *   - If sortOrder is DESC, multiplier is -1 (descending).
+ *   - This allows using a single comparison function for both directions.
+ * 
+ * The 'sort' method returns the sorted array with each item assigned its ordinal position.
+ */
 export class GenericSorter<
-	T extends Record<string, any>,
-	F extends keyof T,
-	P extends string = "ordinal_sort_position"
+  T extends Record<string, any>,
+  F extends keyof T,
+  P extends string = "ordinal_sort_position"
 > {
-	constructor(
-		private readonly sortField: F,
-		private readonly sortOrder: SortOrder = SortOrder.DESC,
-		private readonly ordinalSortPosition: P = "ordinal_sort_position" as P // default position field is "ordinal_sort_position"
-	) {}
+  constructor(
+    private readonly sortField: F,
+    private readonly sortOrder: SortOrder = SortOrder.DESC,
+    private readonly ordinalSortPosition: P = "ordinal_sort_position" as P // default position field is "ordinal_sort_position"
+  ) {}
 
-	sort(items: T[]): (T & { [K in P]: number })[] {
-		const multiplier = this.sortOrder === SortOrder.ASC ? 1 : -1;
-		const sorted = items
-			.slice()
-			.sort((a, b) => multiplier * (((a[this.sortField] ?? 0) as number) - ((b[this.sortField] ?? 0) as number)));
+  /**
+   * Sorts the items array by the specified field and order,
+   * then assigns an ordinal position field to each item (1-based).
+   * 
+   * @param items - Array of objects to be sorted and ranked.
+   * @returns The sorted array, with each object assigned its sort position.
+   */
+  sort(items: T[]): (T & { [K in P]: number })[] {
+    // multiplier determines sort direction: 1 for ascending, -1 for descending
+    const multiplier = this.sortOrder === SortOrder.ASC ? 1 : -1;
+    const sorted = items
+      .slice() // non-mutating
+      .sort(
+        (a, b) =>
+          multiplier *
+          (((a[this.sortField] ?? 0) as number) - ((b[this.sortField] ?? 0) as number))
+      );
 
-		// assign the sort ranking field
-		return sorted.map((item, idx) => ({
-			...item,
-			[this.ordinalSortPosition]: idx + 1, // 1-based position
-		}));
-	}
+    // Assign the ordinal sort position (1-based) to each item
+    return sorted.map((item, idx) => ({
+      ...item,
+      [this.ordinalSortPosition]: idx + 1,
+    }));
+  }
 }
 
 /**
@@ -74,7 +110,7 @@ export class GenericSorter<
  * Rationale: From Specific to Generic Sorting Abstractions
  *
  * Previously, sorting implementations like LeaderboardTickersSorter were tightly coupled to a specific data structure (e.g., LeaderboardRestTickerSnapshot)
- * and a limited set of sortable fields (defined as type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "velocity" | "acceleration">).
+ * and a limited set of sortable fields (defined as type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "perc_change_acceleration">).
  * This approach required creating a new sorter class and a dedicated field union type for each new data shape, leading to code duplication
  * and limited flexibility.
  *
@@ -90,7 +126,7 @@ export class GenericSorter<
  * and field unions like LeaderboardSortableField, enabling reusable, maintainable, and type-safe sorting logic for any object-based data in the codebase.
  */
 
-// type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "velocity" | "acceleration">;
+// type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "perc_change_acceleration">;
 
 // export class LeaderboardTickersSorter implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
 // 	constructor(

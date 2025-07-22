@@ -2,13 +2,13 @@ import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/type
 
 // REMOVE - DEPRECATED
 export interface kineticsCalculators {
-  computeVelocity(history: NormalizedRestTickerSnapshot[]): number;
-	computeAcceleration(history: NormalizedRestTickerSnapshot[]): number;
+  computePercChangeVelocity(history: NormalizedRestTickerSnapshot[]): number;
+	computePercChangeAcceleration(history: NormalizedRestTickerSnapshot[]): number;
 }
 
 // REMOVE - DEPRECATED
 export class LeaderboardKineticsCalculator implements kineticsCalculators {
-	computeVelocity(history: NormalizedRestTickerSnapshot[]): number {
+	computePercChangeVelocity(history: NormalizedRestTickerSnapshot[]): number {
 		if (history.length < 2) return 0;
 		const [latest, prev] = history;
 
@@ -17,7 +17,7 @@ export class LeaderboardKineticsCalculator implements kineticsCalculators {
 		return deltaTime > 0 ? deltaPct / deltaTime : 0;
 	}
 
-	computeAcceleration(history: NormalizedRestTickerSnapshot[]): number {
+	computePercChangeAcceleration(history: NormalizedRestTickerSnapshot[]): number {
 		if (history.length < 3) return 0;
 		const [s3, s2, s1] = history;
 
@@ -33,7 +33,7 @@ export class LeaderboardKineticsCalculator implements kineticsCalculators {
 	}
 }
 
-export function computeVelocity(history: NormalizedRestTickerSnapshot[]): number {
+export function computePercChangeVelocity(history: NormalizedRestTickerSnapshot[]): number {
 	if (history.length < 2) return 0;
 	const [latest, prev] = history;
 	const deltaPct = latest.change_pct - prev.change_pct;
@@ -41,7 +41,7 @@ export function computeVelocity(history: NormalizedRestTickerSnapshot[]): number
 	return deltaTime > 0 ? deltaPct / deltaTime : 0;
 }
 
-export function computeAcceleration(history: NormalizedRestTickerSnapshot[]): number {
+export function computePercChangeAcceleration(history: NormalizedRestTickerSnapshot[]): number {
 	if (history.length < 3) return 0;
 	const [s3, s2, s1] = history;
 	const dt1 = (s2.timestamp - s1.timestamp) / 1000;
@@ -52,9 +52,7 @@ export function computeAcceleration(history: NormalizedRestTickerSnapshot[]): nu
 	return (v2 - v1) / dt2;
 }
 
-export const kineticsCalculators = {
-	computeVelocity,
-	computeAcceleration,
+export const percChangeKineticsCalculators = {
+	computePercChangeVelocity,
+	computePercChangeAcceleration,
 };
-
-export type kineticsCalculatorType = typeof kineticsCalculators;

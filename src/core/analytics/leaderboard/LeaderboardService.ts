@@ -3,7 +3,7 @@ import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardStorage } from "./leaderboardStorage.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { kineticsCalculators } from "./kineticsCalculators";
+import { percChangeKineticsCalculators } from "./percChangeKineticsCalculators";
 import { APP_CONFIG } from "@config/index";
 
 /**
@@ -33,24 +33,24 @@ import { APP_CONFIG } from "@config/index";
  *    c. History Length Check:
  *       - If history is too short (less than required), skip further processing for this ticker.
  *    d. Calculate Kinetics:
- *       - Compute velocity and acceleration using most recent snapshots (based on change_pct and timestamp).
+ *       - Compute perc_change_velocity and perc_change_acceleration using most recent snapshots (based on change_pct and timestamp).
  *    e. Create Leaderboard Entry:
  *       - Create an entry containing:
- *           - ticker, timestamp, velocity, acceleration, original ordinal_sort_position
- *           - consecutiveAppearances: how many consecutive batches the ticker has been on the leaderboard
- *           - leaderboard_momentum_score: calculated using velocity, acceleration, and consecutiveAppearances (see scoring strategy below)
+ *           - ticker, timestamp, perc_change_velocity, perc_change_acceleration, original ordinal_sort_position
+ *           - num_consecutive_appearances: how many consecutive batches the ticker has been on the leaderboard
+ *           - leaderboard_momentum_score: calculated using perc_change_velocity, perc_change_acceleration, and num_consecutive_appearances (see scoring strategy below)
  *       - Add to in-memory leaderboard map.
  *
  * 3. Merge with Previous Leaderboard:
- *    - For tickers present in both batches, increment consecutiveAppearances.
- *    - For new tickers, set consecutiveAppearances to 1.
- *    - For absent tickers (present last time but missing now), increment their consecutiveAppearances and retain them.
+ *    - For tickers present in both batches, increment num_consecutive_appearances.
+ *    - For new tickers, set num_consecutive_appearances to 1.
+ *    - For absent tickers (present last time but missing now), increment their num_consecutive_appearances and retain them.
  *
  * 4. Scoring:
  *    - For each leaderboard entry, compute leaderboard_momentum_score using:
- *        leaderboard_momentum_score = velocity + 0.5 * acceleration
- *        if consecutiveAppearances == 1: add popBonus (e.g. 1.5)
- *        apply decay: leaderboard_momentum_score *= decayFactor^(consecutiveAppearances - 1) (e.g. decayFactor = 0.95)
+ *        leaderboard_momentum_score = perc_change_velocity + 0.5 * perc_change_acceleration
+ *        if num_consecutive_appearances == 1: add popBonus (e.g. 1.5)
+ *        apply decay: leaderboard_momentum_score *= decayFactor^(num_consecutive_appearances - 1) (e.g. decayFactor = 0.95)
  *    - This boosts new "pop-up" tickers and penalizes those that linger.
  *
  * 5. Sorting and Ranking:
@@ -66,10 +66,40 @@ import { APP_CONFIG } from "@config/index";
  * Summary:
  *   - Each batch detects fresh and fast-moving tickers, favoring new "pop-ups."
  *   - Tickers that linger are progressively penalized, keeping the leaderboard dynamic.
- *   - Velocity and acceleration are computed from change_pct and timestamp.
+ *   - Velocity and perc_change_acceleration are computed from change_pct and timestamp.
  *   - The algorithm is modular: scoring strategy can be swapped for experimentation.
  */
 
+/**
+ * Service for managing and processing leaderboard data for market ticker momentum analysis.
+ *
+ * The `LeaderboardService` coordinates the storage, scoring, ranking, and retrieval of leaderboard entries
+ * based on batches of normalized market scan ticker snapshots. It supports customizable scoring strategies,
+ * handles appearance counts for tickers, and ensures leaderboard persistence and retrieval.
+ *
+ * ### Responsibilities
+ * - Initializes leaderboard storage for specific tags.
+ * - Stores new ticker snapshots and maintains historical data for kinetics calculations.
+ * - Calculates velocity and acceleration metrics for tickers.
+ * - Merges current batch data with previous leaderboard state, updating consecutive appearance counts.
+ * - Scores tickers using a configurable scoring function.
+ * - Sorts and ranks leaderboard entries using a provided sorter.
+ * - Persists updated leaderboard data.
+ * - Retrieves leaderboard data for a given tag.
+ *
+ * ### Usage
+ * Construct with a storage implementation and an optional scoring function.
+ * Use `processNewSnapshots` to process a batch of ticker data and update the leaderboard.
+ *
+ * @example
+ * const service = new LeaderboardService(storage, scoringStrategies.popUpDecay);
+ * const ranked = await service.processNewSnapshots(data, sorter);
+ *
+ * @see LeaderboardStorage
+ * @see leaderboardScoringFnType
+ * @see LeaderboardRestTickerSnapshot
+ * @see GenericTickerSorter
+ */
 export class LeaderboardService {
 	constructor(
 		private readonly storage: LeaderboardStorage,
@@ -78,25 +108,35 @@ export class LeaderboardService {
 
 	/**
 	 * Processes a batch of ticker snapshots, updates the leaderboard,
-	 * scores each ticker based on velocity, acceleration, and appearance count,
+	 * scores each ticker based on perc_change_velocity, perc_change_acceleration, and appearance count,
 	 * sorts and ranks the leaderboard, then persists and returns the results.
 	 */
-	async processSnapshots(
+
+	async processNewSnapshots(
 		data: TaggedNormalizedMarketScanTickers,
 		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
 	): Promise<LeaderboardRestTickerSnapshot[]> {
 		const leaderboardTag = data.scan_strategy_tag;
 		await this.initializeLeaderboardIfMissing(leaderboardTag);
-
-		const batchMap = await this.processBatchSnapshots(data, leaderboardTag);
-		const mergedMap = await this.mergeWithPreviousLeaderboard(leaderboardTag, batchMap);
+		await this.storeNewSnapshots(data, leaderboardTag); // store the new snapshots in the leaderboard storage
+		const batchMap = await this.computeBatchKinetics(data, leaderboardTag); // process each snapshot in the batch
+		const mergedMap = await this.mergeWithPreviousLeaderboard(leaderboardTag, batchMap); // merge with previous leaderboard
 
 		// Compute scores now that appearances are updated
 		for (const entry of mergedMap.values()) {
+			// WIP ->
+			// const score_fn_score = +Infinity; // TOOD - each scoring fn. should return it's own score
+			// entry.leaderboard_momentum_score = scoringStrategies.percentageChangeOnly({
+			// 	change_pct: entry.change_pct,
+			// 	perc_change_velocity: entry.perc_change_velocity,
+			// 	perc_change_acceleration: entry.perc_change_acceleration,
+			// 	num_consecutive_appearances: entry.num_consecutive_appearances ?? 1,
+			// });
+			// WIP <-
 			entry.leaderboard_momentum_score = this.scoreFn({
-				velocity: entry.velocity,
-				acceleration: entry.acceleration,
-				consecutiveAppearances: entry.consecutiveAppearances ?? 1,
+				perc_change_velocity: entry.perc_change_velocity,
+				perc_change_acceleration: entry.perc_change_acceleration,
+				num_consecutive_appearances: entry.num_consecutive_appearances ?? 1,
 			});
 		}
 
@@ -114,15 +154,33 @@ export class LeaderboardService {
 		await this.storage.initializeLeaderboardStore(leaderboardTag);
 	}
 
+	// TODO
+	// I feel like the velocity and acceleration calculations are too tightly coupled with the methods in the leaderboard service. Would it not be better to have them calculated in a dedicated scoring function
+	/**
+	 * Stores new ticker snapshots in the leaderboard storage.
+	 * - Each snapshot is stored with its ticker name and the associated leaderboard tag.
+	 * @param data - TaggedNormalizedMarketScanTickers containing the snapshots to store.
+	 * @param leaderboardTag - The tag identifying the leaderboard context for storage.
+	 */
+	private async storeNewSnapshots(data: TaggedNormalizedMarketScanTickers, leaderboardTag: string): Promise<void> {
+		for (const snapshot of data.normalized_tickers) {
+			try {
+				await this.storage.storeSnapshot(leaderboardTag, snapshot.n_ticker_name, snapshot);
+			} catch (err) {
+				console.error(`[LeaderboardService] Error storing snapshot for ${snapshot.n_ticker_name}:`, err);
+			}
+		}
+	}
+
 	/**
 	 * Processes each ticker snapshot in the current batch:
 	 * - Stores the snapshot
 	 * - Retrieves recent history for kinetics calculations
-	 * - Computes velocity and acceleration
+	 * - Computes perc_change_velocity and perc_change_acceleration
 	 * - Creates leaderboard entry with initial consecutive appearance count
 	 * Returns a map of ticker symbols to their leaderboard entries.
 	 */
-	private async processBatchSnapshots(
+	private async computeBatchKinetics(
 		data: TaggedNormalizedMarketScanTickers,
 		leaderboardTag: string
 	): Promise<Map<string, LeaderboardRestTickerSnapshot>> {
@@ -130,31 +188,36 @@ export class LeaderboardService {
 
 		for (const snapshot of data.normalized_tickers) {
 			try {
-				await this.storage.storeSnapshot(leaderboardTag, snapshot.ticker, snapshot);
 				const history = await this.storage.retrieveRecentSnapshots(
 					leaderboardTag,
-					snapshot.ticker,
+					snapshot.n_ticker_name,
 					Math.max(3, APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT)
 				);
 
 				if (history.length < APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT) {
 					continue;
 				}
-				const velocity = kineticsCalculators.computeVelocity(history.slice(0, 2));
-				const acceleration = kineticsCalculators.computeAcceleration(history.slice(0, 3));
-				// We'll update consecutiveAppearances after merging
+
+				const velocity = percChangeKineticsCalculators.computePercChangeVelocity(history.slice(0, 2));
+				const acceleration = percChangeKineticsCalculators.computePercChangeAcceleration(history.slice(0, 3));
+				// We'll update num_consecutive_appearances after merging
 				const leaderboardEntry: LeaderboardRestTickerSnapshot = {
-					ticker: snapshot.ticker,
+					ld_ticker_name: snapshot.n_ticker_name,
 					timestamp: snapshot.timestamp,
-					velocity,
-					acceleration,
+					perc_change_velocity: velocity,
+					perc_change_acceleration: acceleration,
 					leaderboard_momentum_score: 0, // Temp, will compute after appearances set
 					leaderboard_rank: snapshot.ordinal_sort_position,
-					consecutiveAppearances: 1, // Default to 1, will update in merge step
+					num_consecutive_appearances: 1,
+					// TODO - WHY DID THIS DEFAULT TO UNDEFINED
+					// FIXME ->
+					change_pct: snapshot.change_pct,
 				};
-				tickerEntries.set(snapshot.ticker, leaderboardEntry);
+
+				// Store
+				tickerEntries.set(snapshot.n_ticker_name, leaderboardEntry);
 			} catch (err) {
-				console.error(`[LeaderboardService] Error processing snapshot for ${snapshot.ticker}:`, err);
+				console.error(`[LeaderboardService] Error processing snapshot for ${snapshot.n_ticker_name}:`, err);
 			}
 		}
 		return tickerEntries;
@@ -176,26 +239,26 @@ export class LeaderboardService {
 			const previous = await this.storage.retreiveLeaderboard(leaderboardTag);
 			if (previous && previous.length > 0) {
 				for (const entry of previous) {
-					const current = mergedMap.get(entry.ticker);
+					const current = mergedMap.get(entry.ld_ticker_name);
 					if (current) {
 						// Ticker was present last time and still present
-						current.consecutiveAppearances = (entry.consecutiveAppearances ?? 0) + 1;
+						current.num_consecutive_appearances = (entry.num_consecutive_appearances ?? 0) + 1;
 					} else {
 						// Keep previous entry if not present in current batch
-						entry.consecutiveAppearances = (entry.consecutiveAppearances ?? 0) + 1;
-						mergedMap.set(entry.ticker, entry);
+						entry.num_consecutive_appearances = (entry.num_consecutive_appearances ?? 0) + 1;
+						mergedMap.set(entry.ld_ticker_name, entry);
 					}
 				}
 				// For new entries not present previously, set appearances to 1
 				for (const [ticker, entry] of mergedMap) {
-					if (!previous.some((prev) => prev.ticker === ticker)) {
-						entry.consecutiveAppearances = 1;
+					if (!previous.some((prev) => prev.ld_ticker_name === ticker)) {
+						entry.num_consecutive_appearances = 1;
 					}
 				}
 			} else {
 				// First run, set appearances to 1 for all
 				for (const entry of mergedMap.values()) {
-					entry.consecutiveAppearances = 1;
+					entry.num_consecutive_appearances = 1;
 				}
 			}
 		} catch (err) {

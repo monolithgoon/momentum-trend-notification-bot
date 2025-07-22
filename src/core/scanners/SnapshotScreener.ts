@@ -26,7 +26,7 @@ export class SnapshotScreener {
 
 		const uniqueByTicker = new Map<string, NormalizedRestTickerSnapshot>();
 		for (const snapshot of results) {
-			if (snapshot.ticker) uniqueByTicker.set(snapshot.ticker, snapshot);
+			if (snapshot.n_ticker_name) uniqueByTicker.set(snapshot.n_ticker_name, snapshot);
 		}
 
 		return [...uniqueByTicker.values()];
