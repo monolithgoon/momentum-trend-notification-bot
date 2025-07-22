@@ -1,5 +1,5 @@
 import { APP_CONFIG } from "../config";
-import { TaggedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
 import { MarketQuoteScanner } from "@core/scanners/MarketQuoteScanner";
 import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
@@ -13,7 +13,7 @@ import { GenericRankedItemsFieldSorter } from "@core/generics/GenericRankedItems
 import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
 import { LeaderboardTickersSorter } from "@core/analytics/leaderboard/leaderboardTickersSorter";
-import { LeaderboardKineticsCalculator } from "@core/analytics/leaderboard/LeaderboardKineticsCalculator";
+import { LeaderboardKineticsCalculator } from "@analytics/leaderboard/kineticsCalculators";
 import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
 import handleWebSocketTickerUpdate from "@core/data/snapshots/websocket/handleWebSocketTickerUpdate";
 import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@core/scanners/scanFilters";
@@ -22,7 +22,7 @@ import { scanScreenerConfigTypes } from "@core/scanners/types/scanScreenerConfig
 function addTagsToMarketScanResult(
 	tickers: NormalizedRestTickerSnapshot[],
 	scan_strategy_tag: string = "OK"
-): TaggedMarketScanTickers {
+): TaggedNormalizedMarketScanTickers {
 	return {
 		scan_strategy_tag,
 		normalized_tickers: tickers.map((ticker) => ({
@@ -112,7 +112,7 @@ export default async function runLiveMarketScannerTask() {
 
 		// 5. Tag the scan results for leaderboard
 		const leaderboardTag: string = composeScanStrategyTag(scanStrategyKeys);
-		const taggedTickers: TaggedMarketScanTickers = addTagsToMarketScanResult(sortedSnapshots, leaderboardTag);
+		const taggedTickers: TaggedNormalizedMarketScanTickers = addTagsToMarketScanResult(sortedSnapshots, leaderboardTag);
 
 		// 6. Leaderboard: In-memory storage, sort by 'score', compute kinetics
 		const storage = new InMemoryLeaderboardStorage();

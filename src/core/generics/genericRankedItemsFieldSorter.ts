@@ -70,7 +70,7 @@ export class GenericRankedItemsFieldSorter<
 
 // type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "score" | "velocity" | "acceleration">;
 
-// export class LeaderboardTickersSorter implements TickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
+// export class LeaderboardTickersSorter implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
 // 	constructor(
 // 		private readonly sortField: LeaderboardSortableField = "score",
 // 		private readonly sortOrder: SortOrder = SortOrder.DESC

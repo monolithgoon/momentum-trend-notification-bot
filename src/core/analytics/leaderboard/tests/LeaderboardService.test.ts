@@ -1,11 +1,11 @@
 import { LeaderboardService } from "../LeaderboardService";
 import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { TaggedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
 
 // Mock APP_CONFIG
 const APP_CONFIG = {
-  MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: 2,
+  MIN_LEADERBOARD_TICKER_HISTORY_COUNT: 2,
 };
 
 // Mock Storage Implementation
@@ -75,7 +75,7 @@ describe("LeaderboardService", () => {
     await storage.storeSnapshot(leaderboardTag, "BBB", initialSnapshots[2]);
     await storage.storeSnapshot(leaderboardTag, "BBB", initialSnapshots[3]);
 
-    const testData: TaggedMarketScanTickers = {
+    const testData: TaggedNormalizedMarketScanTickers = {
       scan_strategy_tag: leaderboardTag,
       normalized_tickers: [
         { ticker: "AAA", timestamp: 100, sort_rank: 0, change_pct: 1.2 },
@@ -108,7 +108,7 @@ describe("LeaderboardService", () => {
 
   it("should skip tickers without enough history", async () => {
     const leaderboardTag = "insufficient-history";
-    const testData: TaggedMarketScanTickers = {
+    const testData: TaggedNormalizedMarketScanTickers = {
       scan_strategy_tag: leaderboardTag,
       normalized_tickers: [
         { ticker: "CCC", timestamp: 150, sort_rank: 0, change_pct: 0.9 }, // only one snapshot

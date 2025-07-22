@@ -1,13 +1,13 @@
 import { SortOrder } from "@core/enums/sortOrder.enum";
-import { TickerSorter } from "@core/interfaces/tickerSorter.interface";
+import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 
 
 type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "score" | "velocity" | "acceleration">;
 
-export class LeaderboardTickersSorter implements TickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
+export class LeaderboardTickersSorter implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
   constructor(
-    private readonly sortField: LeaderboardSortableField = "score",
+    private readonly sortField: LeaderboardSortableField,
     private readonly sortOrder: SortOrder = SortOrder.DESC
   ) {}
 

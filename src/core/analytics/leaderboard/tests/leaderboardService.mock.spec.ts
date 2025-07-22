@@ -1,13 +1,13 @@
 import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardService } from "../LeaderboardService";
-import { TickerSorter } from "@core/interfaces/tickerSorter.interface";
-import { LeaderboardKineticsCalculator } from "../LeaderboardKineticsCalculator";
-import { TaggedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
+import { LeaderboardKineticsCalculator } from "../kineticsCalculators";
+import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
 
 // --- Mock Config ---
 const APP_CONFIG = {
-  MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: 2
+  MIN_LEADERBOARD_TICKER_HISTORY_COUNT: 2
 };
 
 // --- Mock Storage ---
@@ -35,7 +35,7 @@ class MockLeaderboardStorage {
 }
 
 // --- Mock Sorter ---
-const mockSorter: TickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> = {
+const mockSorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> = {
   sort: (arr) => arr.sort((a, b) => b.score - a.score) // descending by score
 };
 
@@ -46,7 +46,7 @@ const mockKineticsCalculator: LeaderboardKineticsCalculator = {
 };
 
 // --- Mock Data In ---
-const testData: TaggedMarketScanTickers = {
+const testData: TaggedNormalizedMarketScanTickers = {
   scan_strategy_tag: "test-strategy",
   normalized_tickers: [
     { ticker: "AAA", timestamp: 100, sort_rank: 0, change_pct: 1.2 },

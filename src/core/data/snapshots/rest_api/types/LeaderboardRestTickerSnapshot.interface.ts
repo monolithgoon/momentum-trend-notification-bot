@@ -5,4 +5,5 @@ export interface LeaderboardRestTickerSnapshot {
 	score: number;
 	leaderboard_rank: number;
 	timestamp: number;
+	consecutiveAppearances?: number; // Optional, will be set during merge
 }

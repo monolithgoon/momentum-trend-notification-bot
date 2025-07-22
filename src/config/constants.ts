@@ -39,7 +39,7 @@ interface AppConstantsInterface {
 	// --- Data Buffering/Storage ---
 	TICKER_BUFFER_MAX_LENGTH: number;
 	REDIS_SNAPSHOT_LIMIT: number;
-	MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: number;
+	MIN_LEADERBOARD_TICKER_HISTORY_COUNT: number;
 
 	// --- Polygon API ---
 	POLYGON_BASE_URL: string;
@@ -90,7 +90,7 @@ export const APP_CONSTANTS: AppConstantsInterface = {
 	// --- Data Buffering/Storage ---
 	TICKER_BUFFER_MAX_LENGTH: 200,
 	REDIS_SNAPSHOT_LIMIT: 10,
-	MIN_LEADERBOARD_SNAPSHOT_HISTORY_COUNT: 2,
+	MIN_LEADERBOARD_TICKER_HISTORY_COUNT: 2,
 
 	// --- Polygon API ---
 	POLYGON_BASE_URL: "https://api.polygon.io",
