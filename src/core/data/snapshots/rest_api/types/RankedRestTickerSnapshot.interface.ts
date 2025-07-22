@@ -1,5 +1,7 @@
 import { NormalizedRestTickerSnapshot } from "./NormalizedRestTickerSnapshot.interface";
 
-export interface RankedRestTickerSnapshot extends NormalizedRestTickerSnapshot {
-	sort_rank: number;
+export interface SortedNormalizedTicker extends NormalizedRestTickerSnapshot {
+	sort_rank: number
+	// ordinal_sort_rank: number;
+	// ordinal_sort_position: number;
 }
