@@ -22,7 +22,7 @@ import { SortOrder } from "@core/enums/sortOrder.enum";
 // 	}
 // }
 
-export class GenericRankedItemsFieldSorter<
+export class GenericSorter<
 	T extends Record<string, any>,
 	F extends keyof T,
 	R extends string = "sort_rank"
