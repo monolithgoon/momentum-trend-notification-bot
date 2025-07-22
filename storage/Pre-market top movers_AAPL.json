@@ -1,0 +1,82 @@
+[
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200951272,
+    "change_pct": 0.13592835798230962,
+    "price": 108.66172874773747,
+    "volume": 1166,
+    "ordinal_sort_position": 6
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200952272,
+    "change_pct": 0.23592835798230963,
+    "price": 100.98140545358258,
+    "volume": 1297,
+    "ordinal_sort_position": 4
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200953272,
+    "change_pct": 0.33592835798230963,
+    "price": 109.15313412928532,
+    "volume": 1269,
+    "ordinal_sort_position": 2
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200882509,
+    "change_pct": 0.180034608597625,
+    "price": 109.03088053082094,
+    "volume": 1412,
+    "ordinal_sort_position": 5
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200883509,
+    "change_pct": 0.28003460859762497,
+    "price": 105.96115550277544,
+    "volume": 1089,
+    "ordinal_sort_position": 3
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200884509,
+    "change_pct": 0.380034608597625,
+    "price": 103.488733677218,
+    "volume": 1402,
+    "ordinal_sort_position": 1
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200825403,
+    "change_pct": 0.10304721134187696,
+    "price": 101.67559165748835,
+    "volume": 1145,
+    "ordinal_sort_position": 6
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200826403,
+    "change_pct": 0.20304721134187698,
+    "price": 105.9815835654687,
+    "volume": 1129,
+    "ordinal_sort_position": 4
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200827403,
+    "change_pct": 0.30304721134187695,
+    "price": 102.47863279782284,
+    "volume": 1127,
+    "ordinal_sort_position": 2
+  },
+  {
+    "n_ticker_name": "AAPL",
+    "timestamp": 1753200763308,
+    "change_pct": 0.11786136538587247,
+    "price": 104.80469087028713,
+    "volume": 1105,
+    "ordinal_sort_position": 6
+  }
+]

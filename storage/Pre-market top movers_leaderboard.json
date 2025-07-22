@@ -1,0 +1,29 @@
+[
+  {
+    "ld_ticker_name": "TSLA",
+    "timestamp": 1753200951272,
+    "perc_change_velocity": 0,
+    "perc_change_acceleration": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 1,
+    "num_consecutive_appearances": 9
+  },
+  {
+    "ld_ticker_name": "AAPL",
+    "timestamp": 1753200951272,
+    "perc_change_velocity": 0,
+    "perc_change_acceleration": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 2,
+    "num_consecutive_appearances": 9
+  },
+  {
+    "ticker": "AAPL",
+    "timestamp": 1753200039265,
+    "perc_change_velocity": 0,
+    "perc_change_acceleration": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 3,
+    "num_consecutive_appearances": 19
+  }
+]
