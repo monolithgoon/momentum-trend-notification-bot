@@ -1,5 +1,27 @@
 import { SortOrder } from "@core/enums/sortOrder.enum";
 
+// REMOVE - DEPRECATED
+// export class RankedTickersSorter {
+// 	constructor(private readonly sortField: ScanSortableField, private readonly sortOrder: SortOrder = SortOrder.DESC) {}
+
+// 	sort(snapshots: SortedNormalizedTicker[]): SortedNormalizedTicker[] {
+// 		if (!this.sortField) return snapshots.slice();
+
+// 		const multiplier = this.sortOrder === SortOrder.ASC ? 1 : -1;
+
+// 		// 2. Sort by field
+// 		const sorted = snapshots
+// 			.slice() // Create a shallow copy to avoid mutating the original array
+// 			.sort((a, b) => multiplier * (((a[this.sortField!] ?? 0) as number) - ((b[this.sortField!] ?? 0) as number)));
+
+// 		// Step 3: Re-assign sort_rank (sorted order)
+// 		return sorted.map((snapshot, idx) => ({
+// 			...snapshot,
+// 			sort_rank: idx + 1, // 1-based rank
+// 		}));
+// 	}
+// }
+
 export class GenericRankedItemsFieldSorter<
 	T extends Record<string, any>,
 	F extends keyof T,
