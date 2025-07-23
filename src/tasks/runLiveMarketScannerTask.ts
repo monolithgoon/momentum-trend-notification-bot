@@ -72,6 +72,7 @@ export default async function runLiveMarketScannerTask() {
 		];
 
 		const returnedTickers = await scanner.executeScan(screenerConfigs);
+
 		// WIP
 		// if (!returnedTickers?.length) {
 		// 	console.log("No tickers found from scan.");
@@ -95,12 +96,12 @@ export default async function runLiveMarketScannerTask() {
 
 		// 4. Rank & Sort
 		const rankedSnapshots: SortedNormalizedTicker[] = addRankFields(mockSnapshots);
-		const rankedSorter = new GenericSorter<SortedNormalizedTicker, "change_pct">(
+		const ordinalSorter = new GenericSorter<SortedNormalizedTicker, "change_pct">(
 			"change_pct",
 			SortOrder.DESC,
 			"ordinal_sort_position"
 		);
-		const sortedSnapshots: SortedNormalizedTicker[] = rankedSorter.sort(rankedSnapshots);
+		const sortedSnapshots: SortedNormalizedTicker[] = ordinalSorter.sort(rankedSnapshots);
 
 		// 5. Tag the scan results for leaderboard
 		const leaderboardTag: string = composeScanStrategyTag(scanStrategyKeys);
@@ -114,7 +115,8 @@ export default async function runLiveMarketScannerTask() {
 		const storage = new FileLeaderboardStorage();
 		await storage.initializeLeaderboardStore(leaderboardTag);
 		const scoringFn = scoringStrategies.popUpDecay;
-		const sorter = new LeaderboardTickersSorter("leaderboard_momentum_score", SortOrder.DESC); // When invoking the leaderboard service, you should always sort by leaderboard_momentum_score (not leaderboard_rank), as rank is assigned after sorting.
+		// When invoking the leaderboard service sorter, you should always sort by leaderboard_momentum_score (not leaderboard_rank), as rank is assigned after sorting.
+		const sorter = new LeaderboardTickersSorter("leaderboard_momentum_score" as const, SortOrder.DESC); 
 		const leaderboardService = new LeaderboardService(storage, scoringFn);
 
 		await leaderboardService.processNewSnapshots(taggedTickers, sorter);

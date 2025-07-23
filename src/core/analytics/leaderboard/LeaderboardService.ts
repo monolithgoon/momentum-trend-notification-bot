@@ -119,20 +119,11 @@ export class LeaderboardService {
 		const leaderboardTag = data.scan_strategy_tag;
 		await this.initializeLeaderboardIfMissing(leaderboardTag);
 		await this.storeNewSnapshots(data, leaderboardTag); // store the new snapshots in the leaderboard storage
-		const batchMap = await this.computeBatchKinetics(data, leaderboardTag); // process each snapshot in the batch
-		const updatedBatchMap = await this.mergeWithExistingLeaderboard(leaderboardTag, batchMap); // merge with oldEntries leaderboard
+		const newBatchMap = await this.computeNewBatchKinetics(data, leaderboardTag); // process each snapshot in the batch
+		const mergedUpdatedBatchMap = await this.mergeWithExistingLeaderboard(leaderboardTag, newBatchMap); // merge with oldEntries leaderboard
 
 		// Compute scores now that appearances are updated
-		for (const newEntry of updatedBatchMap.values()) {
-			// WIP ->
-			// const score_fn_score = +Infinity; // TOOD - each scoring fn. should return it's own score
-			// newEntry.leaderboard_momentum_score = scoringStrategies.percentageChangeOnly({
-			// 	change_pct: newEntry.change_pct,
-			// 	perc_change_velocity: newEntry.perc_change_velocity,
-			// 	perc_change_acceleration: newEntry.perc_change_acceleration,
-			// 	num_consecutive_appearances: newEntry.num_consecutive_appearances ?? 1,
-			// });
-			// WIP <-
+		for (const newEntry of mergedUpdatedBatchMap.values()) {
 			newEntry.leaderboard_momentum_score = this.scoreFn({
 				perc_change_velocity: newEntry.perc_change_velocity,
 				perc_change_acceleration: newEntry.perc_change_acceleration,
@@ -140,7 +131,7 @@ export class LeaderboardService {
 			});
 		}
 
-		const rankedLeaderboard = this.sortAndRankLeaderboard(Array.from(updatedBatchMap.values()), sorter);
+		const rankedLeaderboard = this.sortAndRankLeaderboard(Array.from(mergedUpdatedBatchMap.values()), sorter);
 
 		await this.persistLeaderboard(leaderboardTag, rankedLeaderboard);
 		return rankedLeaderboard;
@@ -180,7 +171,7 @@ export class LeaderboardService {
 	 * - Creates leaderboard oldEntry with initial consecutive appearance count
 	 * Returns a map of ticker symbols to their leaderboard entries.
 	 */
-	private async computeBatchKinetics(
+	private async computeNewBatchKinetics(
 		data: TaggedNormalizedMarketScanTickers,
 		leaderboardTag: string
 	): Promise<Map<string, LeaderboardRestTickerSnapshot>> {
@@ -198,8 +189,8 @@ export class LeaderboardService {
 					continue;
 				}
 
-				const velocity = percChangeKineticsCalculators.computePercChangeVelocity(history.slice(0, 2));
-				const acceleration = percChangeKineticsCalculators.computePercChangeAcceleration(history.slice(0, 3));
+				const velocity = percChangeKineticsCalculators.computePercChangeVelocity(history);
+				const acceleration = percChangeKineticsCalculators.computePercChangeAcceleration(history);
 				// We'll update num_consecutive_appearances after merging
 				const leaderboardEntry: LeaderboardRestTickerSnapshot = {
 					ld_ticker_name: snapshot.n_ticker_name,

@@ -1,82 +1,82 @@
 [
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753246941530,
-    "change_pct": 0.11885060272961952,
-    "price": 101.14463523305837,
-    "volume": 1321,
+    "timestamp": 1753250403826,
+    "change_pct": 0.18457831672784653,
+    "price": 106.41998602261823,
+    "volume": 1461,
     "ordinal_sort_position": 6
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753246942530,
-    "change_pct": 0.21885060272961954,
-    "price": 100.36523662848694,
-    "volume": 1457,
+    "timestamp": 1753250404826,
+    "change_pct": 0.2845783167278465,
+    "price": 103.45628865154994,
+    "volume": 1105,
     "ordinal_sort_position": 4
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753246943530,
-    "change_pct": 0.3188506027296195,
-    "price": 105.31230735026415,
-    "volume": 1151,
+    "timestamp": 1753250405826,
+    "change_pct": 0.38457831672784654,
+    "price": 102.53218314864785,
+    "volume": 1401,
     "ordinal_sort_position": 2
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753246619899,
-    "change_pct": 0.14190642351632052,
-    "price": 109.15897046886194,
-    "volume": 1360,
+    "timestamp": 1753250338019,
+    "change_pct": 0.12079935713785848,
+    "price": 104.96075159114683,
+    "volume": 1218,
     "ordinal_sort_position": 6
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753246620899,
-    "change_pct": 0.24190642351632052,
-    "price": 105.83356592662697,
-    "volume": 1073,
+    "timestamp": 1753250339019,
+    "change_pct": 0.22079935713785848,
+    "price": 102.35791704157711,
+    "volume": 1137,
     "ordinal_sort_position": 4
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753246621899,
-    "change_pct": 0.3419064235163205,
-    "price": 106.14501020654967,
-    "volume": 1305,
+    "timestamp": 1753250340019,
+    "change_pct": 0.3207993571378585,
+    "price": 103.20738692251604,
+    "volume": 1425,
     "ordinal_sort_position": 2
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753219624868,
-    "change_pct": 0.18742284582142243,
-    "price": 107.52098571866907,
-    "volume": 1472,
+    "timestamp": 1753250282972,
+    "change_pct": 0.11757484333988698,
+    "price": 104.87303997398087,
+    "volume": 1208,
     "ordinal_sort_position": 5
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753219625868,
-    "change_pct": 0.2874228458214224,
-    "price": 108.54860415463965,
-    "volume": 1433,
+    "timestamp": 1753250283972,
+    "change_pct": 0.21757484333988697,
+    "price": 107.14332416993324,
+    "volume": 1308,
     "ordinal_sort_position": 3
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753219626868,
-    "change_pct": 0.38742284582142245,
-    "price": 107.16691576125945,
-    "volume": 1478,
+    "timestamp": 1753250284972,
+    "change_pct": 0.317574843339887,
+    "price": 102.31078751405963,
+    "volume": 1208,
     "ordinal_sort_position": 1
   },
   {
     "n_ticker_name": "TSLA",
-    "timestamp": 1753219437423,
-    "change_pct": 0.14039950425152578,
-    "price": 102.85233241273346,
-    "volume": 1406,
+    "timestamp": 1753250220053,
+    "change_pct": 0.1682594313400267,
+    "price": 107.96257951681618,
+    "volume": 1028,
     "ordinal_sort_position": 5
   }
 ]

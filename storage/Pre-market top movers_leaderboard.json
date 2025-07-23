@@ -1,22 +1,22 @@
 [
   {
-    "ld_ticker_name": "AAPL",
-    "timestamp": 1753246941530,
-    "perc_change_velocity": 0,
+    "ld_ticker_name": "TSLA",
+    "timestamp": 1753250403826,
+    "perc_change_velocity": 0.1,
     "perc_change_acceleration": 0,
-    "leaderboard_momentum_score": 0,
+    "leaderboard_momentum_score": 0.011598222130000557,
     "leaderboard_rank": 1,
-    "num_consecutive_appearances": 18,
-    "change_pct": 0.18266992357152034
+    "num_consecutive_appearances": 43,
+    "change_pct": 0.18457831672784653
   },
   {
-    "ld_ticker_name": "TSLA",
-    "timestamp": 1753246941530,
-    "perc_change_velocity": 0,
+    "ld_ticker_name": "AAPL",
+    "timestamp": 1753250403826,
+    "perc_change_velocity": 0.09999999999999999,
     "perc_change_acceleration": 0,
-    "leaderboard_momentum_score": 0,
+    "leaderboard_momentum_score": 0.011598222130000556,
     "leaderboard_rank": 2,
-    "num_consecutive_appearances": 18,
-    "change_pct": 0.11885060272961952
+    "num_consecutive_appearances": 43,
+    "change_pct": 0.19837112948720445
   }
 ]
