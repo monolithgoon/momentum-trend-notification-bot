@@ -1,0 +1,106 @@
+%% MarketQuoteScanner Dependency Flow Graph 
+%% (class nodes: very bold, dashed black outlines, pink fill; types/enums: grey; clean subgraphs: SnapshotScreener, buildMarketQuoteFetcherFromKeys, bold headers, private methods bright yellow)
+
+graph TD
+  %% Main class
+  MarketQuoteScanner["📈 <b>MarketQuoteScanner</b><br/><b>Scans and filters market quotes</b>
+  <br/>🏛️ <b>Class</b> | 🔒 <b>private</b>, 🟢 <b>public</b>
+  <br/><i>Executes scan, filters, logs results</i>
+  "]:::classnode
+
+  %% Dependencies
+  MarketQuoteScannerConfig["⚙️ <b>MarketQuoteScannerConfig</b>
+  <br/>🏷️ <b>Type</b>
+  <br/><i>Configures vendor, session, keys</i>
+  "]:::typenode
+
+  MarketDataVendors["🏷️ <b>MarketDataVendors</b>
+  <br/>🏷️ <b>Enum</b>
+  <br/><i>Vendor for quote fetching</i>
+  "]:::typenode
+
+  MarketSessions["🏷️ <b>MarketSessions</b>
+  <br/>🏷️ <b>Enum</b>
+  <br/><i>Market session (PRE, REGULAR, POST)</i>
+  "]:::typenode
+
+  scanScreenerConfigTypes["🏷️ <b>scanScreenerConfigTypes</b>
+  <br/>🏷️ <b>Type</b>
+  <br/><i>Configures screener logic</i>
+  "]:::typenode
+
+  NormalizedRestTickerSnapshot["📊 <b>NormalizedRestTickerSnapshot</b>
+  <br/>🏷️ <b>Type</b>
+  <br/><i>Ticker snapshot result</i>
+  "]:::typenode
+
+  %% Methods
+  logResults["🗒️ <b>logResults()</b>
+  <br/>🔒 <b>private</b>
+  <br/><b>Input:</b> 📊 NormalizedRestTickerSnapshot[]
+  <br/><b>Output:</b> void
+  <br/>🖨️ logs to console
+  <br/><i>Logs active tickers to console</i>
+  "]:::privatemethod
+
+  executeScan["▶️ <b>executeScan()</b>
+  <br/>🟢 <b>public</b> ⚡ <b>async</b>
+  <br/><b>Input:</b> 🏷️ scanScreenerConfigTypes[]
+  <br/><b>Output:</b> 📊 Promise&lt;NormalizedRestTickerSnapshot[]&gt;
+  <br/>💾 fetches, 🖨️ logs, ⚠️ may throw
+  <br/><i>Fetches, screens, logs, returns tickers</i>
+  "]:::method
+
+  %% SnapshotScreener subgraph
+  subgraph "🔎 <b>SnapshotScreener</b> <br/> <b>Class</b> | 🟢 <b>public</b><br/><i>Screens and filters tickers by scan filters</i>"
+    SS_Ctor["<b>constructor()</b><br/>🟢 <b>public</b><br/><b>Input:</b> {scanFilter, config}[]<br/><b>Output:</b> SnapshotScreener instance<br/><i>Initializes filters</i>"]:::method
+    SS_Class["<b>SnapshotScreener</b><br/>🏛️ <b>Class</b>"]:::classnode
+    SS_runScreener["<b>runScreener()</b><br/>🟢 <b>public</b><br/><b>Input:</b> 📊 NormalizedRestTickerSnapshot[]<br/><b>Output:</b> 📊 NormalizedRestTickerSnapshot[]<br/><i>Runs all filters, deduplicates by ticker name</i>"]:::method
+    SS_Class --> SS_Ctor
+    SS_Ctor --> SS_runScreener
+    SS_runScreener --> NormalizedRestTickerSnapshot
+  end
+
+  %% buildMarketQuoteFetcherFromKeys subgraph (clear, logical edges)
+  subgraph "🏗️ <b>buildMarketQuoteFetcherFromKeys</b><br/>🧩 <b>Function</b><br/><i>Builds quote fetcher for vendor/session</i>"
+    BQ_isValid["<b>isValidVendorAndStrategyRegistryMapKeys()</b><br/>🧩 <b>Function</b><br/><b>Input:</b> vendor, strategyKeys<br/><b>Output:</b> boolean<br/><i>Validates vendor and keys</i>"]:::util
+    BQ_vendorMap["<b>vendorStrategyRegistryMap</b><br/>📦 <b>Object</b><br/><i>Maps vendors to their registry</i>"]:::util
+    BQ_POLYGON["<b>PolygonMarketQuoteFetcher</b><br/>🏛️ <b>Class</b><br/><i>Fetches quotes from Polygon</i>"]:::classnode
+    BQ_POLYGON_transform["<b>PolygonTickerTransformer</b><br/>🏛️ <b>Class</b><br/><i>Transforms Polygon data</i>"]:::classnode
+    BQ_Interface["<b>SessionMarketQuoteFetcher</b><br/>🏷️ <b>Interface</b><br/><i>Fetcher interface</i>"]:::typenode
+
+    BQ_isValid --> BQ_vendorMap
+    BQ_vendorMap --> BQ_POLYGON
+    BQ_POLYGON --> BQ_POLYGON_transform
+    BQ_POLYGON --> BQ_Interface
+  end
+
+  %% Constructor
+  MarketQuoteScannerConfig -->|used by| MarketQuoteScanner
+
+  %% Flow
+  MarketQuoteScanner --> executeScan
+  MarketQuoteScanner --> logResults
+
+  executeScan --> MarketQuoteScannerConfig
+  executeScan --> MarketDataVendors
+  executeScan --> MarketSessions
+  executeScan --> scanScreenerConfigTypes
+  executeScan --> NormalizedRestTickerSnapshot
+  executeScan --> logResults
+  executeScan --> SS_runScreener
+  executeScan --> BQ_isValid
+  executeScan --> BQ_vendorMap
+  executeScan --> BQ_POLYGON
+  executeScan --> BQ_POLYGON_transform
+  executeScan --> BQ_Interface
+
+  logResults --> NormalizedRestTickerSnapshot
+
+  %% Styles
+  classDef classnode stroke:#000,stroke-width:5px,stroke-dasharray: 8 4,stroke-linecap:round,fill:#ffb6e6;
+  classDef typenode fill:#e0e0e0,stroke:#222,stroke-width:1.5px;
+  classDef service fill:#f9f,stroke:#222,stroke-width:2px;
+  classDef util fill:#e3e7f9,stroke:#222,stroke-width:1.5px;
+  classDef method fill:#fff,stroke:#666,stroke-width:1px;
+  classDef privatemethod fill:#ffff33,stroke:#666,stroke-width:2px;

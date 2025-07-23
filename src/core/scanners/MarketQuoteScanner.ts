@@ -32,11 +32,11 @@ export class MarketQuoteScanner {
 		try {
 			const fetcher = buildMarketQuoteFetcherFromKeys(this.config.vendor, this.config.strategyKeys);
 
-			const rawData = await fetcher.getData(marketSession);
+			const marketData = await fetcher.getData(marketSession);
 
 			const screener = new SnapshotScreener(screenerConfigs);
 
-			const filtered = screener.runScreener(rawData);
+			const filtered = screener.runScreener(marketData);
 
 			this.logResults(filtered);
 			return filtered;
