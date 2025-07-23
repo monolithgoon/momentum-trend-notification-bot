@@ -1,0 +1,308 @@
+%% runLiveMarketScannerTask Dependency Flow Graph (with full data type I/O spelled out)
+%% Classes now have solid outlines; each module lists full input and output types.
+
+graph TD
+  %% Main orchestrator function
+  runLiveMarketScannerTask["🟢 <b>runLiveMarketScannerTask()</b>
+  <br/>🏗️ <b>Function</b> | 🟢 <b>public</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> Promise&lt;void&gt;
+  <br/><i>Main entrypoint: scan, notify, process, sort, setup WebSocket</i>
+  "]:::mainnode
+
+  %% Dependencies
+  MarketQuoteScanner["📈 <b>MarketQuoteScanner</b>
+  <br/>🏛️ <b>Class</b>
+  <br/><b>Input:</b> { vendor: MarketDataVendors, marketSession: MarketSessions, strategyKeys: string[] }
+  <br/><b>Output:</b> Instance of MarketQuoteScanner
+  <br/><i>Scans and filters market quotes</i>
+  "]:::classnode
+
+  MarketDataVendors["🏷️ <b>MarketDataVendors</b>
+  <br/>🏷️ <b>Enum</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> MarketDataVendors
+  <br/><i>Enum of data vendors</i>
+  "]:::typenode
+
+  MarketSessions["🏷️ <b>MarketSessions</b>
+  <br/>🏷️ <b>Enum</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> MarketSessions
+  <br/><i>Enum of market sessions</i>
+  "]:::typenode
+
+  scanScreenerConfigTypes["🏷️ <b>scanScreenerConfigTypes</b>
+  <br/>🏷️ <b>Type</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> scanScreenerConfigTypes
+  <br/><i>Type for screener configs</i>
+  "]:::typenode
+
+  NotifierService["🔔 <b>NotifierService</b>
+  <br/>🏛️ <b>Class</b>
+  <br/><b>Input:</b> notifier: TelegramNotifier
+  <br/><b>Output:</b> Instance of NotifierService
+  <br/><i>Handles notifications</i>
+  "]:::classnode
+
+  TelegramNotifier["💬 <b>TelegramNotifier</b>
+  <br/>🏛️ <b>Class</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> Instance of TelegramNotifier
+  <br/><i>Sends Telegram messages</i>
+  "]:::classnode
+
+  FileLeaderboardStorage["📂 <b>FileLeaderboardStorage</b>
+  <br/>🏛️ <b>Class</b>
+  <br/><b>Input:</b> None (constructor), string (methods)
+  <br/><b>Output:</b> Instance of FileLeaderboardStorage
+  <br/><i>Stores leaderboard data</i>
+  "]:::classnode
+
+  LeaderboardService["🏆 <b>LeaderboardService</b>
+  <br/>🏛️ <b>Class</b>
+  <br/><b>Input:</b> storage: FileLeaderboardStorage, scorer: Function
+  <br/><b>Output:</b> Instance of LeaderboardService
+  <br/><i>Processes leaderboard ticks</i>
+  "]:::classnode
+
+  LeaderboardTickersSorter["⏫ <b>LeaderboardTickersSorter</b>
+  <br/>🏛️ <b>Class</b>
+  <br/><b>Input:</b> field: string, order: SortOrder
+  <br/><b>Output:</b> Instance of LeaderboardTickersSorter
+  <br/><i>Sorts leaderboard tickers</i>
+  "]:::classnode
+
+  scoringStrategies["⚡ <b>scoringStrategies</b>
+  <br/>📦 <b>Object</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> { [strategyName: string]: (snapshots) => number }
+  <br/><i>Leaderboard scoring functions</i>
+  "]:::util
+
+  EODHDWebSocketClient["🌐 <b>EODHDWebSocketClient</b>
+  <br/>🏛️ <b>Class</b>
+  <br/><b>Input:</b> apiKey: string, tickers: string, callback: Function
+  <br/><b>Output:</b> Instance of EODHDWebSocketClient
+  <br/><i>Streams live ticker data</i>
+  "]:::classnode
+
+  NormalizedRestTickerSnapshot["📊 <b>NormalizedRestTickerSnapshot</b>
+  <br/>🏷️ <b>Type</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> NormalizedRestTickerSnapshot
+  <br/><i>Ticker snapshot result</i>
+  "]:::typenode
+
+  SortedNormalizedTicker["🏅 <b>SortedNormalizedTicker</b>
+  <br/>🏷️ <b>Type</b>
+  <br/><b>Input:</b> NormalizedRestTickerSnapshot
+  <br/><b>Output:</b> SortedNormalizedTicker
+  <br/><i>Ranked snapshot result</i>
+  "]:::typenode
+
+  TaggedNormalizedMarketScanTickers["🏷️ <b>TaggedNormalizedMarketScanTickers</b>
+  <br/>🏷️ <b>Type</b>
+  <br/><b>Input:</b> { scan_strategy_tag: string, normalized_tickers: NormalizedRestTickerSnapshot[] }
+  <br/><b>Output:</b> TaggedNormalizedMarketScanTickers
+  <br/><i>Tagged scan result</i>
+  "]:::typenode
+
+  SortOrder["🔢 <b>SortOrder</b>
+  <br/>🏷️ <b>Enum</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> SortOrder
+  <br/><i>Sort direction</i>
+  "]:::typenode
+
+  %% Utility functions
+  addTagsToMarketScanResult["🏷️ <b>addTagsToMarketScanResult()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> tickers: NormalizedRestTickerSnapshot[], scan_strategy_tag?: string
+  <br/><b>Output:</b> TaggedNormalizedMarketScanTickers
+  <br/><i>Tags scan results</i>
+  "]:::util
+
+  composeScanStrategyTag["🏷️ <b>composeScanStrategyTag()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> scanStrategyKeys: string[]
+  <br/><b>Output:</b> string
+  <br/><i>Builds tag from scan strategy keys</i>
+  "]:::util
+
+  addRankFields["🏅 <b>addRankFields()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> snapshots: NormalizedRestTickerSnapshot[]
+  <br/><b>Output:</b> SortedNormalizedTicker[]
+  <br/><i>Adds ordinal rank to snapshots</i>
+  "]:::util
+
+  buildScreenerConfigs["🔎 <b>buildScreenerConfigs()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> scanScreenerConfigTypes[]
+  <br/><i>Builds filter configs</i>
+  "]:::util
+
+  scanMarketTickers["🔍 <b>scanMarketTickers()</b>
+  <br/>🧩 <b>Async Function</b>
+  <br/><b>Input:</b> currentMarketSession: string, scanStrategyKeys: string[]
+  <br/><b>Output:</b> Promise&lt;string[]&gt;
+  <br/><i>Performs quote scan</i>
+  "]:::util
+
+  notifyScanResult["🔔 <b>notifyScanResult()</b>
+  <br/>🧩 <b>Async Function</b>
+  <br/><b>Input:</b> currentMarketSession: string, returnedTickers: string[]
+  <br/><b>Output:</b> Promise&lt;void&gt;
+  <br/><i>Sends scan notification</i>
+  "]:::util
+
+  getSortedMockSnapshots["🧪 <b>getSortedMockSnapshots()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> SortedNormalizedTicker[]
+  <br/><i>Creates sorted mock data</i>
+  "]:::util
+
+  processLeaderboard["🏆 <b>processLeaderboard()</b>
+  <br/>🧩 <b>Async Function</b>
+  <br/><b>Input:</b> taggedTickers: TaggedNormalizedMarketScanTickers, leaderboardTag: string
+  <br/><b>Output:</b> Promise&lt;FileLeaderboardStorage&gt;
+  <br/><i>Processes leaderboard with tagged tickers</i>
+  "]:::util
+
+  setupWebSocketClient["🌐 <b>setupWebSocketClient()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> activeTickersStr: string
+  <br/><b>Output:</b> EODHDWebSocketClient
+  <br/><i>Creates WebSocket client</i>
+  "]:::util
+
+  getCurrentMarketSession["⏲️ <b>getCurrentMarketSession()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> None
+  <br/><b>Output:</b> string
+  <br/><i>Detects market session</i>
+  "]:::util
+
+  formatSessionLabel["🏷️ <b>formatSessionLabel()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> currentMarketSession: MarketSessions
+  <br/><b>Output:</b> string
+  <br/><i>Formats session name</i>
+  "]:::util
+
+  generateMockSnapshots["🧪 <b>generateMockSnapshots()</b>
+  <br/>🧩 <b>Function</b>
+  <br/><b>Input:</b> tickers: string[], n: number, opts: object
+  <br/><b>Output:</b> NormalizedRestTickerSnapshot[]
+  <br/><i>Creates mock ticker data</i>
+  "]:::util
+
+  GenericSorter["🌀 <b>GenericSorter</b>
+  <br/>🏛️ <b>Class</b>
+  <br/><b>Input:</b> field: string, order: SortOrder, tieBreakerField?: string
+  <br/><b>Output:</b> Instance of GenericSorter
+  <br/><i>Sorts data by field</i>
+  "]:::classnode
+
+  %% Orchestration flow (subgraphs for clarity)
+  subgraph "🚦 <b>Initialization</b>"
+    getCurrentMarketSession
+    buildScreenerConfigs
+    composeScanStrategyTag
+  end
+
+  subgraph "🔍 <b>Scan & Filter</b>"
+    scanMarketTickers
+    MarketQuoteScanner
+    MarketDataVendors
+    MarketSessions
+    scanScreenerConfigTypes
+    NormalizedRestTickerSnapshot
+  end
+
+  subgraph "🔔 <b>Notification</b>"
+    notifyScanResult
+    NotifierService
+    TelegramNotifier
+    formatSessionLabel
+  end
+
+  subgraph "🧪 <b>Mock Data & Sorting</b>"
+    getSortedMockSnapshots
+    generateMockSnapshots
+    addRankFields
+    SortedNormalizedTicker
+    GenericSorter
+    SortOrder
+  end
+
+  subgraph "🏷️ <b>Tagging & Leaderboard</b>"
+    addTagsToMarketScanResult
+    TaggedNormalizedMarketScanTickers
+    processLeaderboard
+    FileLeaderboardStorage
+    scoringStrategies
+    LeaderboardTickersSorter
+    LeaderboardService
+  end
+
+  subgraph "🌐 <b>WebSocket Setup</b>"
+    setupWebSocketClient
+    EODHDWebSocketClient
+  end
+
+  %% Main flow links
+  runLiveMarketScannerTask --> getCurrentMarketSession
+  runLiveMarketScannerTask --> scanMarketTickers
+  runLiveMarketScannerTask --> notifyScanResult
+  runLiveMarketScannerTask --> getSortedMockSnapshots
+  runLiveMarketScannerTask --> composeScanStrategyTag
+  runLiveMarketScannerTask --> addTagsToMarketScanResult
+  runLiveMarketScannerTask --> processLeaderboard
+  runLiveMarketScannerTask --> setupWebSocketClient
+
+  %% scanMarketTickers
+  scanMarketTickers --> MarketQuoteScanner
+  scanMarketTickers --> MarketDataVendors
+  scanMarketTickers --> MarketSessions
+  scanMarketTickers --> scanScreenerConfigTypes
+  scanMarketTickers --> NormalizedRestTickerSnapshot
+  scanMarketTickers --> buildScreenerConfigs
+
+  %% notifyScanResult
+  notifyScanResult --> NotifierService
+  NotifierService --> TelegramNotifier
+  notifyScanResult --> formatSessionLabel
+
+  %% getSortedMockSnapshots
+  getSortedMockSnapshots --> generateMockSnapshots
+  getSortedMockSnapshots --> addRankFields
+  getSortedMockSnapshots --> SortedNormalizedTicker
+  getSortedMockSnapshots --> GenericSorter
+  getSortedMockSnapshots --> SortOrder
+
+  %% processLeaderboard
+  processLeaderboard --> FileLeaderboardStorage
+  processLeaderboard --> scoringStrategies
+  processLeaderboard --> LeaderboardTickersSorter
+  processLeaderboard --> LeaderboardService
+  processLeaderboard --> TaggedNormalizedMarketScanTickers
+
+  %% Tagging
+  addTagsToMarketScanResult --> TaggedNormalizedMarketScanTickers
+
+  %% Compose tag
+  composeScanStrategyTag --> addTagsToMarketScanResult
+
+  %% WebSocket setup
+  setupWebSocketClient --> EODHDWebSocketClient
+
+  %% Styles
+  classDef mainnode stroke:#000,stroke-width:5px,fill:#a7f6ff;
+  classDef classnode stroke:#000,stroke-width:3px,fill:#ffb6e6;
+  classDef typenode fill:#e0e0e0,stroke-dasharray: 5, 5:#222,stroke-width:1.5px;
+  classDef util fill:#e3e7f9,stroke:#222,stroke-width:1.5px;
