@@ -27,7 +27,7 @@ import { APP_CONFIG } from "@config/index";
  *
  * 2. For Each Snapshot in the Batch:
  *    a. Store Snapshot:
- *       - Save the current snapshot for the ticker and tag to persistent storage.
+ *       - Save the newTicker snapshot for the ticker and tag to persistent storage.
  *    b. Retrieve Snapshot History:
  *       - Fetch recent snapshots for this ticker and tag (e.g., last 3).
  *    c. History Length Check:
@@ -81,7 +81,7 @@ import { APP_CONFIG } from "@config/index";
  * - Initializes leaderboard storage for specific tags.
  * - Stores new ticker snapshots and maintains historical data for kinetics calculations.
  * - Calculates velocity and acceleration metrics for tickers.
- * - Merges current batch data with previous leaderboard state, updating consecutive appearance counts.
+ * - Merges newTicker batch data with oldEntries leaderboard state, updating consecutive appearance counts.
  * - Scores tickers using a configurable scoring function.
  * - Sorts and ranks leaderboard entries using a provided sorter.
  * - Persists updated leaderboard data.
@@ -120,27 +120,27 @@ export class LeaderboardService {
 		await this.initializeLeaderboardIfMissing(leaderboardTag);
 		await this.storeNewSnapshots(data, leaderboardTag); // store the new snapshots in the leaderboard storage
 		const batchMap = await this.computeBatchKinetics(data, leaderboardTag); // process each snapshot in the batch
-		const mergedMap = await this.mergeWithPreviousLeaderboard(leaderboardTag, batchMap); // merge with previous leaderboard
+		const updatedBatchMap = await this.mergeWithExistingLeaderboard(leaderboardTag, batchMap); // merge with oldEntries leaderboard
 
 		// Compute scores now that appearances are updated
-		for (const entry of mergedMap.values()) {
+		for (const newEntry of updatedBatchMap.values()) {
 			// WIP ->
 			// const score_fn_score = +Infinity; // TOOD - each scoring fn. should return it's own score
-			// entry.leaderboard_momentum_score = scoringStrategies.percentageChangeOnly({
-			// 	change_pct: entry.change_pct,
-			// 	perc_change_velocity: entry.perc_change_velocity,
-			// 	perc_change_acceleration: entry.perc_change_acceleration,
-			// 	num_consecutive_appearances: entry.num_consecutive_appearances ?? 1,
+			// newEntry.leaderboard_momentum_score = scoringStrategies.percentageChangeOnly({
+			// 	change_pct: newEntry.change_pct,
+			// 	perc_change_velocity: newEntry.perc_change_velocity,
+			// 	perc_change_acceleration: newEntry.perc_change_acceleration,
+			// 	num_consecutive_appearances: newEntry.num_consecutive_appearances ?? 1,
 			// });
 			// WIP <-
-			entry.leaderboard_momentum_score = this.scoreFn({
-				perc_change_velocity: entry.perc_change_velocity,
-				perc_change_acceleration: entry.perc_change_acceleration,
-				num_consecutive_appearances: entry.num_consecutive_appearances ?? 1,
+			newEntry.leaderboard_momentum_score = this.scoreFn({
+				perc_change_velocity: newEntry.perc_change_velocity,
+				perc_change_acceleration: newEntry.perc_change_acceleration,
+				num_consecutive_appearances: newEntry.num_consecutive_appearances ?? 1,
 			});
 		}
 
-		const rankedLeaderboard = this.sortAndRankLeaderboard(Array.from(mergedMap.values()), sorter);
+		const rankedLeaderboard = this.sortAndRankLeaderboard(Array.from(updatedBatchMap.values()), sorter);
 
 		await this.persistLeaderboard(leaderboardTag, rankedLeaderboard);
 		return rankedLeaderboard;
@@ -173,11 +173,11 @@ export class LeaderboardService {
 	}
 
 	/**
-	 * Processes each ticker snapshot in the current batch:
+	 * Processes each ticker snapshot in the newTicker batch:
 	 * - Stores the snapshot
 	 * - Retrieves recent history for kinetics calculations
 	 * - Computes perc_change_velocity and perc_change_acceleration
-	 * - Creates leaderboard entry with initial consecutive appearance count
+	 * - Creates leaderboard oldEntry with initial consecutive appearance count
 	 * Returns a map of ticker symbols to their leaderboard entries.
 	 */
 	private async computeBatchKinetics(
@@ -207,14 +207,15 @@ export class LeaderboardService {
 					perc_change_velocity: velocity,
 					perc_change_acceleration: acceleration,
 					leaderboard_momentum_score: 0, // Temp, will compute after appearances set
-					leaderboard_rank: snapshot.ordinal_sort_position,
+					leaderboard_rank: snapshot.ordinal_sort_position, // Still 0-based as of here, I believe
 					num_consecutive_appearances: 1,
 					// TODO - WHY DID THIS DEFAULT TO UNDEFINED
 					// FIXME ->
 					change_pct: snapshot.change_pct,
 				};
 
-				// Store
+				// Assemble a key-value pair for the ticker oldEntry
+				// This will be used to merge with previous leaderboard entries later
 				tickerEntries.set(snapshot.n_ticker_name, leaderboardEntry);
 			} catch (err) {
 				console.error(`[LeaderboardService] Error processing snapshot for ${snapshot.n_ticker_name}:`, err);
@@ -224,49 +225,58 @@ export class LeaderboardService {
 	}
 
 	/**
-	 * Merges the current batch of leaderboard entries with the previous leaderboard:
+	 * Merges the newTicker batch of leaderboard entries with the previous leaderboard:
 	 * - Increments consecutive appearance counts for persistent tickers
 	 * - Sets appearance count to 1 for new tickers
-	 * - Preserves entries for tickers absent in the current batch
+	 * - Preserves entries for tickers absent in the newTicker batch
 	 * Returns a map of ticker symbols to their updated leaderboard entries.
 	 */
-	private async mergeWithPreviousLeaderboard(
+	private async mergeWithExistingLeaderboard(
 		leaderboardTag: string,
 		currentBatchMap: Map<string, LeaderboardRestTickerSnapshot>
 	): Promise<Map<string, LeaderboardRestTickerSnapshot>> {
-		const mergedMap = new Map(currentBatchMap);
+		const newBatchMap = new Map(currentBatchMap);
+		let oldEntries: LeaderboardRestTickerSnapshot[] = [];
+
 		try {
-			const previous = await this.storage.retreiveLeaderboard(leaderboardTag);
-			if (previous && previous.length > 0) {
-				for (const entry of previous) {
-					const current = mergedMap.get(entry.ld_ticker_name);
-					if (current) {
-						// Ticker was present last time and still present
-						current.num_consecutive_appearances = (entry.num_consecutive_appearances ?? 0) + 1;
-					} else {
-						// Keep previous entry if not present in current batch
-						entry.num_consecutive_appearances = (entry.num_consecutive_appearances ?? 0) + 1;
-						mergedMap.set(entry.ld_ticker_name, entry);
-					}
-				}
-				// For new entries not present previously, set appearances to 1
-				for (const [ticker, entry] of mergedMap) {
-					if (!previous.some((prev) => prev.ld_ticker_name === ticker)) {
-						entry.num_consecutive_appearances = 1;
-					}
-				}
-			} else {
-				// First run, set appearances to 1 for all
-				for (const entry of mergedMap.values()) {
-					entry.num_consecutive_appearances = 1;
-				}
-			}
+			const result = await this.storage.retreiveLeaderboard(leaderboardTag) ?? [];
+			oldEntries = result ?? [];
 		} catch (err) {
 			console.error(`[LeaderboardService] Error retrieving previous leaderboard for merging:`, err);
+			// Even if error, proceed with first run logic below
 		}
-		return mergedMap;
-	}
 
+		// If existing leaderboard is empty, set appearances for all tickers in curr. batch to 1 and return
+		if (!oldEntries || oldEntries.length === 0) {
+			for (const newEntry of newBatchMap.values()) {
+				newEntry.num_consecutive_appearances = 1;
+			}
+			return newBatchMap;
+		}
+
+		// Evaluate previous existing entries
+		for (const oldEntry of oldEntries) {
+			const newTicker = newBatchMap.get(oldEntry.ld_ticker_name);
+			if (newTicker) {
+				// Ticker was present last time and still present
+				newTicker.num_consecutive_appearances = (oldEntry.num_consecutive_appearances ?? 0) + 1;
+			} else {
+				// Ticker was present last time but is NOT in the current batch; retain it
+				oldEntry.num_consecutive_appearances = (oldEntry.num_consecutive_appearances ?? 0) + 1;
+				newBatchMap.set(oldEntry.ld_ticker_name, oldEntry);
+			}
+		}
+
+		// For new entries not present before, set appearances to 1
+		for (const [tickerName, newTickerEntry] of newBatchMap) {
+			const wasPresentChk = oldEntries.some((prev) => prev.ld_ticker_name === tickerName);
+			if (!wasPresentChk) {
+				newTickerEntry.num_consecutive_appearances = 1;
+			}
+		}
+
+		return newBatchMap;
+	}
 	/**
 	 * Sorts leaderboard entries by leaderboard_momentum_score using the provided sorter,
 	 * assigns sequential ranks, and returns the sorted array.
@@ -296,7 +306,7 @@ export class LeaderboardService {
 	}
 
 	/**
-	 * Retrieves the current leaderboard for the given tag from storage.
+	 * Retrieves the newTicker leaderboard for the given tag from storage.
 	 */
 	async retreiveLeaderboard(leaderboardTag: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
 		return this.storage.retreiveLeaderboard(leaderboardTag);
