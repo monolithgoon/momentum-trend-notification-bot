@@ -15,7 +15,7 @@ export function generateMockSnapshots(
 	const snapshots: NormalizedRestTickerSnapshot[] = [];
 
 	const {
-		changePctRange = [0, 2],
+		changePctRange = [0, 200],
 		trend = "random",
 		seed,
 	} = options;

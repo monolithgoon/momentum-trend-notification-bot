@@ -1,9 +1,9 @@
 import { leaderboardScoringFnType, scoringStrategies } from "./scoringStrategies";
 import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardStorage } from "./leaderboardStorage.interface";
+import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { KineticsCalculator } from "./kineticsCalculators";
+import { KineticsCalculator } from "./KineticsCalculator";
 import { APP_CONFIG } from "@config/index";
 
 /**

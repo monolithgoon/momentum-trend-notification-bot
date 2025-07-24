@@ -19,7 +19,7 @@ import { SortOrder } from "@core/enums/sortOrder.enum";
 import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage";
 import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
-import { LeaderboardTickersSorter } from "@core/analytics/leaderboard/leaderboardTickersSorter";
+import { LeaderboardTickersSorter } from "@analytics/leaderboard/LeaderboardTickersSorter";
 import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 
 import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
@@ -75,39 +75,43 @@ function buildScreenerConfigs(): scanScreenerConfigTypes[] {
 }
 
 /**
- * Executes the market scan and returns the found tickers.
+ * Executes the market scan and returns the found ticker snapshots.
  */
-async function scanMarketTickers(currentMarketSession: string, scanStrategyKeys: string[]): Promise<string[]> {
+async function scanMarketTickers(
+	currentMarketSession: string,
+	scanStrategyKeys: string[]
+): Promise<NormalizedRestTickerSnapshot[]> {
 	const scanner = new MarketQuoteScanner({
 		vendor: MarketDataVendors.POLYGON,
 		marketSession: currentMarketSession as MarketSessions,
 		strategyKeys: scanStrategyKeys,
 	});
 	const screenerConfigs = buildScreenerConfigs();
-	const returnedSnapshots: NormalizedRestTickerSnapshot[] = await scanner.executeScan(screenerConfigs);
-	const returnedTickers: string[] = returnedSnapshots.map((snapshot) => snapshot.ticker_name__nz_tick);
-	return returnedTickers;
+	return await scanner.executeScan(screenerConfigs);
 }
 
 /**
  * Notifies about the scan result.
  */
-async function notifyScanResult(currentMarketSession: string, returnedTickers: string[]): Promise<void> {
+async function notifyScanResult(currentMarketSession: string, returnedTickerNames: string[]): Promise<void> {
 	const sessionLabel = formatSessionLabel(currentMarketSession as MarketSessions);
 	const notifierService = new NotifierService(new TelegramNotifier());
-	const activeTickersStr = returnedTickers.join(", ");
+	const activeTickersStr = returnedTickerNames.join(", ");
 	await notifierService.notify(
-		`${sessionLabel} scan – Found ${returnedTickers.length} active ticker(s): ${activeTickersStr}`
+		`${sessionLabel} scan – Found ${returnedTickerNames.length} active ticker(s): ${activeTickersStr}`
 	);
 }
 
 /**
  * Generates and sorts mock snapshots for demonstration/testing.
  */
-function getSortedSnapshots(snapshots: NormalizedRestTickerSnapshot[]): SortedNormalizedTicker[] {
+function getSortedSnapshots(
+	snapshots: NormalizedRestTickerSnapshot[],
+	sortField: keyof NormalizedRestTickerSnapshot
+): SortedNormalizedTicker[] {
 	const rankedSnapshots: SortedNormalizedTicker[] = addRankFields(snapshots);
-	const rankedSorter = new GenericSorter<SortedNormalizedTicker, "change_pct">(
-		"change_pct",
+	const rankedSorter = new GenericSorter<SortedNormalizedTicker, typeof sortField>(
+		sortField,
 		SortOrder.DESC,
 		"ordinal_sort_position"
 	);
@@ -156,29 +160,37 @@ export default async function runLiveMarketScannerTask() {
 		];
 
 		// 1a. Scan
-		// FIXME -> this is returning a string array and NOT snapshots
-		const returnedTickers = await scanMarketTickers(currentMarketSession, scanStrategyKeys);
+		const returnedSnapshots: NormalizedRestTickerSnapshot[] = await scanMarketTickers(
+			currentMarketSession,
+			scanStrategyKeys
+		);
+		const returnedTickerNames: string[] = returnedSnapshots.map((snapshot) => snapshot.ticker_name__nz_tick);
 
 		// 1b. Check if any tickers were returned
-		if (!returnedTickers?.length) {
+		if (!returnedTickerNames?.length) {
 			console.log("⚠️ No active tickers found from scan.");
 			return;
 		}
 
 		// 2. Notify
-		await notifyScanResult(currentMarketSession, returnedTickers);
+		await notifyScanResult(currentMarketSession, returnedTickerNames);
 
-		// FIXME -> replace with the actual returned snapshots
 		// 3. Demo/mock: Generate sorted mock snapshots
 		const mockSnapshots = generateMockSnapshots(["AAPL", "TSLA"], 3, {
 			changePctRange: [0.1, 0.2],
 			trend: "increasing",
 		});
-		const sortedSnapshots = getSortedSnapshots(mockSnapshots);
+		// FIXME -> replace with the actual returned snapshots
+		const sortFieldTypes = ["change_pct", "volume", "price"];
+		const sortField = sortFieldTypes[0] as keyof NormalizedRestTickerSnapshot;
+		const sortedSnapshots = getSortedSnapshots(mockSnapshots, sortField);
+		console.log({ sortedSnapshots });
 
 		// 4. Tag scan results
 		const leaderboardTag = composeScanStrategyTag(scanStrategyKeys);
-		const leaderboardTickers = sortedSnapshots.map(snapshot => new LeaderboardTickerTransformer().transform(snapshot));
+		const leaderboardTickers = sortedSnapshots.map((snapshot) =>
+			new LeaderboardTickerTransformer().transform(snapshot)
+		);
 		const snapshotsMap = addTagsToMarketScanResult(leaderboardTickers, leaderboardTag);
 
 		// 5. Process leaderboard
@@ -186,7 +198,7 @@ export default async function runLiveMarketScannerTask() {
 		console.log({ leaderboard: storage });
 
 		// 6. WebSocket (optional, currently disabled)
-		const activeTickersStr = returnedTickers.join(", ");
+		const activeTickersStr = returnedTickerNames.join(", ");
 		setupWebSocketClient(activeTickersStr);
 	} catch (error) {
 		console.error("❌ Error in runLiveMarketScannerTask:", error);

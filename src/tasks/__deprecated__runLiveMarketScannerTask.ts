@@ -12,7 +12,7 @@ import { SortedNormalizedTicker } from "@core/data/snapshots/rest_api/types/Sort
 import { GenericSorter } from "@core/generics/GenericSorter";
 import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
-import { LeaderboardTickersSorter } from "@core/analytics/leaderboard/leaderboardTickersSorter";
+import { LeaderboardTickersSorter } from "@analytics/leaderboard/LeaderboardTickersSorter";
 import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
 import handleWebSocketTickerUpdate from "@core/data/snapshots/websocket/handleWebSocketTickerUpdate";
 import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@core/scanners/scanFilters";

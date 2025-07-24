@@ -4,7 +4,7 @@
  *   const leaderboardScore = scoringStrategies.weightedLinear({ pctChangeVelocity, pctChangeAcceleration, change_pct__ld_tick, ... });
  */
 
-import { KineticsCalculator } from "./kineticsCalculators";
+import { KineticsCalculator } from "./KineticsCalculator";
 
 type scoringParams = {
 	changePct: number;

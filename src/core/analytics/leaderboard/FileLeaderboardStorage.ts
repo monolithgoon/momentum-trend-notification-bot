@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { LeaderboardStorage } from "./leaderboardStorage.interface";
+import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { existsSync } from "fs";
 

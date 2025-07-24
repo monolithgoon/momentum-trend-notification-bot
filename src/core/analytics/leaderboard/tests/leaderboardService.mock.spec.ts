@@ -2,7 +2,7 @@ import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/type
 import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardService } from "../LeaderboardService";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { LeaderboardKineticsCalculator } from "../kineticsCalculators";
+import { LeaderboardKineticsCalculator } from "../KineticsCalculator";
 import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 
 // --- Mock Config ---

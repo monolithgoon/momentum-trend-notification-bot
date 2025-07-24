@@ -1,22 +1,30 @@
 [
   {
-    "ld_ticker_name": "TSLA",
-    "timestamp": 1753283184579,
-    "pct_change_velocity": 0.0999999999999915,
-    "pct_change_acceleration": 0,
-    "leaderboard_momentum_score": 0.000847803669294312,
+    "ticker_name__ld_tick": "AAPL",
+    "timestamp__ld_tick": 1753369588410,
+    "change_pct__ld_tick": 0.1884908205646739,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
     "leaderboard_rank": 1,
-    "num_consecutive_appearances": 94,
-    "change_pct": 0.12838211878693942
+    "leaderboard_momentum_score": 0,
+    "num_consecutive_appearances": 15,
+    "volume__ld_tick": 0,
+    "ordinal_sort_position__ld_tick": 0
   },
   {
-    "ld_ticker_name": "AAPL",
-    "timestamp": 1753283184579,
-    "perc_change_velocity": 0.09999999999999148,
-    "pct_change_acceleration": 0,
-    "leaderboard_momentum_score": 0.0008478036692943119,
+    "ticker_name__ld_tick": "TSLA",
+    "timestamp__ld_tick": 1753369588410,
+    "change_pct__ld_tick": 0.10088492888122261,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
     "leaderboard_rank": 2,
-    "num_consecutive_appearances": 94,
-    "change_pct": 0.17447998723164315
+    "leaderboard_momentum_score": 0,
+    "num_consecutive_appearances": 15,
+    "volume__ld_tick": 0,
+    "ordinal_sort_position__ld_tick": 0
   }
 ]
