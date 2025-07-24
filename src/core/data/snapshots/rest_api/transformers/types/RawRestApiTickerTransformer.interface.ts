@@ -3,5 +3,6 @@ import { NormalizedRestTickerSnapshot } from "../../types/NormalizedRestTickerSn
 
 export interface RawRestApiTickerTransformer<TIn>
   extends DefaultTickerSnapshotTransformer<TIn, NormalizedRestTickerSnapshot> {
-  transform(snapshot: TIn, sortRank: number): NormalizedRestTickerSnapshot;
+    // TODO -> use better vaiable names
+  transform(snapshot: TIn, sortRank: number): NormalizedRestTickerSnapshot; 
 }

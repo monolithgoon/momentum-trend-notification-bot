@@ -102,10 +102,10 @@ graph TD
   <br/><i>Ranked snapshot result</i>
   "]:::typenode
 
-  TaggedNormalizedMarketScanTickers["🏷️ <b>TaggedNormalizedMarketScanTickers</b>
+  LeaderboardSnapshotsMap["🏷️ <b>LeaderboardSnapshotsMap</b>
   <br/>🏷️ <b>Type</b>
-  <br/><b>Input:</b> { scan_strategy_tag: string, normalized_tickers: NormalizedRestTickerSnapshot[] }
-  <br/><b>Output:</b> TaggedNormalizedMarketScanTickers
+  <br/><b>Input:</b> { scan_strategy_tag: string, normalized_leaderboard_tickers: NormalizedRestTickerSnapshot[] }
+  <br/><b>Output:</b> LeaderboardSnapshotsMap
   <br/><i>Tagged scan result</i>
   "]:::typenode
 
@@ -120,7 +120,7 @@ graph TD
   addTagsToMarketScanResult["🏷️ <b>addTagsToMarketScanResult()</b>
   <br/>🧩 <b>Function</b>
   <br/><b>Input:</b> tickers: NormalizedRestTickerSnapshot[], scan_strategy_tag?: string
-  <br/><b>Output:</b> TaggedNormalizedMarketScanTickers
+  <br/><b>Output:</b> LeaderboardSnapshotsMap
   <br/><i>Tags scan results</i>
   "]:::util
 
@@ -168,7 +168,7 @@ graph TD
 
   processLeaderboard["🏆 <b>processLeaderboard()</b>
   <br/>🧩 <b>Async Function</b>
-  <br/><b>Input:</b> taggedTickers: TaggedNormalizedMarketScanTickers, leaderboardTag: string
+  <br/><b>Input:</b> taggedTickers: LeaderboardSnapshotsMap, leaderboardTag: string
   <br/><b>Output:</b> Promise&lt;FileLeaderboardStorage&gt;
   <br/><i>Processes leaderboard with tagged tickers</i>
   "]:::util
@@ -242,7 +242,7 @@ graph TD
 
   subgraph "🏷️ <b>Tagging & Leaderboard</b>"
     addTagsToMarketScanResult
-    TaggedNormalizedMarketScanTickers
+    LeaderboardSnapshotsMap
     processLeaderboard
     FileLeaderboardStorage
     scoringStrategies
@@ -290,10 +290,10 @@ graph TD
   processLeaderboard --> scoringStrategies
   processLeaderboard --> LeaderboardTickersSorter
   processLeaderboard --> LeaderboardService
-  processLeaderboard --> TaggedNormalizedMarketScanTickers
+  processLeaderboard --> LeaderboardSnapshotsMap
 
   %% Tagging
-  addTagsToMarketScanResult --> TaggedNormalizedMarketScanTickers
+  addTagsToMarketScanResult --> LeaderboardSnapshotsMap
 
   %% Compose tag
   composeScanStrategyTag --> addTagsToMarketScanResult

@@ -1,7 +1,7 @@
 import { LeaderboardService } from "../LeaderboardService";
 import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 
 // Mock APP_CONFIG
 const APP_CONFIG = {
@@ -75,9 +75,9 @@ describe("LeaderboardService", () => {
     await storage.storeSnapshot(leaderboardTag, "BBB", initialSnapshots[2]);
     await storage.storeSnapshot(leaderboardTag, "BBB", initialSnapshots[3]);
 
-    const testData: TaggedNormalizedMarketScanTickers = {
+    const testData: LeaderboardSnapshotsMap = {
       scan_strategy_tag: leaderboardTag,
-      normalized_tickers: [
+      normalized_leaderboard_tickers: [
         { ticker: "AAA", timestamp: 100, ordinal_sort_position: 0, change_pct: 1.2 },
         { ticker: "BBB", timestamp: 200, ordinal_sort_position: 1, change_pct: -0.5 },
       ],
@@ -93,11 +93,11 @@ describe("LeaderboardService", () => {
     expect(result).toHaveLength(2);
     expect(result[0].leaderboard_momentum_score).toBeGreaterThanOrEqual(result[1].leaderboard_momentum_score);
 
-    // perc_change_velocity and perc_change_acceleration calculations should be correct
+    // perc_change_velocity and pct_change_acceleration calculations should be correct
     expect(result[0]).toHaveProperty("ticker");
     expect(result[0]).toHaveProperty("timestamp");
     expect(result[0]).toHaveProperty("perc_change_velocity");
-    expect(result[0]).toHaveProperty("perc_change_acceleration");
+    expect(result[0]).toHaveProperty("pct_change_acceleration");
     expect(result[0]).toHaveProperty("leaderboard_momentum_score");
     expect(result[0]).toHaveProperty("leaderboard_rank");
 
@@ -108,9 +108,9 @@ describe("LeaderboardService", () => {
 
   it("should skip tickers without enough history", async () => {
     const leaderboardTag = "insufficient-history";
-    const testData: TaggedNormalizedMarketScanTickers = {
+    const testData: LeaderboardSnapshotsMap = {
       scan_strategy_tag: leaderboardTag,
-      normalized_tickers: [
+      normalized_leaderboard_tickers: [
         { ticker: "CCC", timestamp: 150, ordinal_sort_position: 0, change_pct: 0.9 }, // only one snapshot
       ],
     };

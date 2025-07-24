@@ -1,4 +1,4 @@
-import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 
 /**
  * Calculates the velocity (rate of percent change per second) from ticker history
@@ -9,13 +9,14 @@ import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/type
  * @param minPoints Minimum number of points to use regression (default: 3).
  */
 
-export function computePercChangeVelocity(history: NormalizedRestTickerSnapshot[], minPoints: number = 3): number {
+
+export function computePercChangeVelocity(history: LeaderboardRestTickerSnapshot[], minPoints: number = 3): number {
 	if (history.length < minPoints) return 0;
 
 	// Use last N points (reverse to oldest first for regression)
 	const slice = history.slice(0, minPoints).reverse();
-	const times = slice.map((h) => h.timestamp / 1000);
-	const changes = slice.map((h) => h.change_pct);
+	const times = slice.map((h) => h.ld_timestamp / 1000);
+	const changes = slice.map((h) => h.ld_change_pct);
 
 	// Linear regression: velocity = slope of best-fit line
 	const n = times.length;
@@ -41,13 +42,13 @@ export function computePercChangeVelocity(history: NormalizedRestTickerSnapshot[
  * @param minPoints Minimum number of points for acceleration (default: 4).
  */
 
-export function computePercChangeAcceleration(history: NormalizedRestTickerSnapshot[], minPoints: number = 4): number {
+export function computePercChangeAcceleration(history: LeaderboardRestTickerSnapshot[], minPoints: number = 4): number {
 	if (history.length < minPoints) return 0;
 
 	// Use last N points (reverse to oldest first)
 	const slice = history.slice(0, minPoints).reverse();
-	const times = slice.map((h) => h.timestamp / 1000);
-	const changes = slice.map((h) => h.change_pct);
+	const times = slice.map((h) => h.ld_timestamp / 1000);
+	const changes = slice.map((h) => h.ld_change_pct);
 
 	// Second finite difference for acceleration
 	// acceleration ≈ (Δv2 - Δv1) / Δt
@@ -71,7 +72,44 @@ export function computePercChangeAcceleration(history: NormalizedRestTickerSnaps
 	return totalAccel / count;
 }
 
-export const percChangeKineticsCalculators = {
+// TODO -> move to own file??
+// Allowed numeric fields for acceleration calculation
+export type kineticsComputationField = "ld_change_pct" | "ld_volume" | "ld_pct_change_velocity" | "ld_pct_change_acceleration";
+
+function computeFieldAcceleration(
+	history: LeaderboardRestTickerSnapshot[],
+	field: kineticsComputationField,
+	minPoints: number = 4
+): number {
+	if (history.length < minPoints) return 0;
+
+	// Use last N points (reverse to oldest first)
+	const slice = history.slice(0, minPoints).reverse();
+	const times = slice.map((h) => h.ld_timestamp / 1000);
+	const values = slice.map((h) => Number(h[field]));
+
+	// Second finite difference for acceleration
+	const n = times.length;
+	let totalAccel = 0,
+		count = 0;
+	for (let i = 0; i < n - 2; i++) {
+		const dt1 = times[i + 1] - times[i];
+		const dt2 = times[i + 2] - times[i + 1];
+		if (dt1 <= 0 || dt2 <= 0) continue;
+		const v1 = (values[i + 1] - values[i]) / dt1;
+		const v2 = (values[i + 2] - values[i + 1]) / dt2;
+		const totalTime = times[i + 2] - times[i];
+		if (totalTime > 0) {
+			totalAccel += (v2 - v1) / totalTime;
+			count++;
+		}
+	}
+	if (count === 0) return 0;
+	return totalAccel / count;
+}
+
+export const kineticsCalculators = {
 	computePercChangeVelocity,
 	computePercChangeAcceleration,
+	computeFieldAcceleration,
 };

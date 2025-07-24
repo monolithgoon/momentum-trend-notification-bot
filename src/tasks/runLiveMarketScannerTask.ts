@@ -20,23 +20,25 @@ import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardSt
 import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
 import { LeaderboardTickersSorter } from "@core/analytics/leaderboard/leaderboardTickersSorter";
-import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 
 import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
 import handleWebSocketTickerUpdate from "@core/data/snapshots/websocket/handleWebSocketTickerUpdate";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
+import { LeaderboardTickerTransformer } from "@core/data/snapshots/rest_api/transformers/vendors/polygon/polygonTickerTransformer";
+import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 // import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
 
 /**
  * Adds a tag to the market scan result.
  */
 function addTagsToMarketScanResult(
-	tickers: NormalizedRestTickerSnapshot[],
+	tickers: LeaderboardRestTickerSnapshot[],
 	scan_strategy_tag: string = "OK"
-): TaggedNormalizedMarketScanTickers {
+): LeaderboardSnapshotsMap {
 	return {
 		scan_strategy_tag,
-		normalized_tickers: tickers.map((ticker) => ({
+		normalized_leaderboard_tickers: tickers.map((ticker) => ({
 			...ticker,
 		})),
 	};
@@ -83,7 +85,7 @@ async function scanMarketTickers(currentMarketSession: string, scanStrategyKeys:
 	});
 	const screenerConfigs = buildScreenerConfigs();
 	const returnedSnapshots: NormalizedRestTickerSnapshot[] = await scanner.executeScan(screenerConfigs);
-	const returnedTickers: string[] = returnedSnapshots.map(snapshot => snapshot.n_ticker_name);
+	const returnedTickers: string[] = returnedSnapshots.map((snapshot) => snapshot.n_ticker_name);
 	return returnedTickers;
 }
 
@@ -102,12 +104,8 @@ async function notifyScanResult(currentMarketSession: string, returnedTickers: s
 /**
  * Generates and sorts mock snapshots for demonstration/testing.
  */
-function getSortedMockSnapshots(): SortedNormalizedTicker[] {
-	const mockSnapshots = generateMockSnapshots(["AAPL", "TSLA"], 3, {
-		changePctRange: [0.1, 0.2],
-		trend: "increasing",
-	});
-	const rankedSnapshots: SortedNormalizedTicker[] = addRankFields(mockSnapshots);
+function getSortedSnapshots(snapshots: NormalizedRestTickerSnapshot[]): SortedNormalizedTicker[] {
+	const rankedSnapshots: SortedNormalizedTicker[] = addRankFields(snapshots);
 	const rankedSorter = new GenericSorter<SortedNormalizedTicker, "change_pct">(
 		"change_pct",
 		SortOrder.DESC,
@@ -121,15 +119,14 @@ function getSortedMockSnapshots(): SortedNormalizedTicker[] {
  * Processes the leaderboard with tagged tickers.
  */
 async function processLeaderboard(
-	taggedTickers: TaggedNormalizedMarketScanTickers,
+	snapshotsMap: LeaderboardSnapshotsMap,
 	leaderboardTag: string
 ): Promise<FileLeaderboardStorage> {
 	const storage = new FileLeaderboardStorage();
 	await storage.initializeLeaderboardStore(leaderboardTag);
-	const scoringFn = scoringStrategies.popUpDecay;
 	const sorter = new LeaderboardTickersSorter("leaderboard_momentum_score", SortOrder.DESC);
-	const leaderboardService = new LeaderboardService(storage, scoringFn);
-	await leaderboardService.processNewSnapshots(taggedTickers, sorter);
+	const leaderboardService = new LeaderboardService(storage, scoringStrategies.popUpDecayMomentum);
+	await leaderboardService.processNewSnapshots(snapshotsMap, sorter);
 	return storage;
 }
 
@@ -137,11 +134,7 @@ async function processLeaderboard(
  * Initializes the EODHD WebSocket client.
  */
 function setupWebSocketClient(activeTickersStr: string) {
-	const wsClient = new EODHDWebSocketClient(
-		APP_CONFIG.EODHD_API_KEY,
-		activeTickersStr,
-		handleWebSocketTickerUpdate
-	);
+	const wsClient = new EODHDWebSocketClient(APP_CONFIG.EODHD_API_KEY, activeTickersStr, handleWebSocketTickerUpdate);
 	// wsClient.connect();
 	return wsClient;
 }
@@ -163,6 +156,7 @@ export default async function runLiveMarketScannerTask() {
 		];
 
 		// 1a. Scan
+		// FIXME -> this is returning a string array and NOT snapshots
 		const returnedTickers = await scanMarketTickers(currentMarketSession, scanStrategyKeys);
 
 		// 1b. Check if any tickers were returned
@@ -174,15 +168,21 @@ export default async function runLiveMarketScannerTask() {
 		// 2. Notify
 		await notifyScanResult(currentMarketSession, returnedTickers);
 
+		// FIXME -> replace with the actual returned snapshots
 		// 3. Demo/mock: Generate sorted mock snapshots
-		const sortedSnapshots = getSortedMockSnapshots();
+		const mockSnapshots = generateMockSnapshots(["AAPL", "TSLA"], 3, {
+			changePctRange: [0.1, 0.2],
+			trend: "increasing",
+		});
+		const sortedSnapshots = getSortedSnapshots(mockSnapshots);
 
 		// 4. Tag scan results
 		const leaderboardTag = composeScanStrategyTag(scanStrategyKeys);
-		const taggedTickers = addTagsToMarketScanResult(sortedSnapshots, leaderboardTag);
+		const leaderboardTickers = sortedSnapshots.map(snapshot => new LeaderboardTickerTransformer().transform(snapshot));
+		const snapshotsMap = addTagsToMarketScanResult(leaderboardTickers, leaderboardTag);
 
 		// 5. Process leaderboard
-		const storage = await processLeaderboard(taggedTickers, leaderboardTag);
+		const storage = await processLeaderboard(snapshotsMap, leaderboardTag);
 		console.log({ leaderboard: storage });
 
 		// 6. WebSocket (optional, currently disabled)

@@ -1,9 +1,9 @@
 import { leaderboardScoringFnType, scoringStrategies } from "./scoringStrategies";
-import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardStorage } from "./leaderboardStorage.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { percChangeKineticsCalculators } from "./percChangeKineticsCalculators";
+import { kineticsCalculators } from "./kineticsCalculators";
 import { APP_CONFIG } from "@config/index";
 
 /**
@@ -17,7 +17,7 @@ import { APP_CONFIG } from "@config/index";
  *   - Favor tickers with strong short-term moves and penalize those that linger.
  *
  * Input:
- *   - Batch of normalized ticker snapshots (data.normalized_tickers), each representing a ticker's state at a moment.
+ *   - Batch of normalized ticker snapshots (data.normalized_leaderboard_tickers), each representing a ticker's state at a moment.
  *   - Scan strategy tag to identify the leaderboard context.
  *
  * Steps:
@@ -33,12 +33,12 @@ import { APP_CONFIG } from "@config/index";
  *    c. History Length Check:
  *       - If history is too short (less than required), skip further processing for this ticker.
  *    d. Calculate Kinetics:
- *       - Compute perc_change_velocity and perc_change_acceleration using most recent snapshots (based on change_pct and timestamp).
+ *       - Compute pct_change_velocity and pct_change_acceleration using most recent snapshots (based on change_pct and timestamp).
  *    e. Create Leaderboard Entry:
  *       - Create an entry containing:
- *           - ticker, timestamp, perc_change_velocity, perc_change_acceleration, original ordinal_sort_position
+ *           - ticker, timestamp, pct_change_velocity, pct_change_acceleration, original ordinal_sort_position
  *           - num_consecutive_appearances: how many consecutive batches the ticker has been on the leaderboard
- *           - leaderboard_momentum_score: calculated using perc_change_velocity, perc_change_acceleration, and num_consecutive_appearances (see scoring strategy below)
+ *           - leaderboard_momentum_score: calculated using pct_change_velocity, pct_change_acceleration, and num_consecutive_appearances (see scoring strategy below)
  *       - Add to in-memory leaderboard map.
  *
  * 3. Merge with Previous Leaderboard:
@@ -48,7 +48,7 @@ import { APP_CONFIG } from "@config/index";
  *
  * 4. Scoring:
  *    - For each leaderboard entry, compute leaderboard_momentum_score using:
- *        leaderboard_momentum_score = perc_change_velocity + 0.5 * perc_change_acceleration
+ *        leaderboard_momentum_score = pct_change_velocity + 0.5 * pct_change_acceleration
  *        if num_consecutive_appearances == 1: add popBonus (e.g. 1.5)
  *        apply decay: leaderboard_momentum_score *= decayFactor^(num_consecutive_appearances - 1) (e.g. decayFactor = 0.95)
  *    - This boosts new "pop-up" tickers and penalizes those that linger.
@@ -66,7 +66,7 @@ import { APP_CONFIG } from "@config/index";
  * Summary:
  *   - Each batch detects fresh and fast-moving tickers, favoring new "pop-ups."
  *   - Tickers that linger are progressively penalized, keeping the leaderboard dynamic.
- *   - Velocity and perc_change_acceleration are computed from change_pct and timestamp.
+ *   - Velocity and pct_change_acceleration are computed from change_pct and timestamp.
  *   - The algorithm is modular: scoring strategy can be swapped for experimentation.
  */
 
@@ -103,36 +103,54 @@ import { APP_CONFIG } from "@config/index";
 export class LeaderboardService {
 	constructor(
 		private readonly storage: LeaderboardStorage,
-		private readonly scoreFn: leaderboardScoringFnType = scoringStrategies.popUpDecay // default scoring fn.
+		private readonly computeLeaderboardScoreFn: leaderboardScoringFnType = scoringStrategies.popUpDecay // default scoring fn.
 	) {}
 
 	/**
+	 * Computes the momentum score for each leaderboard entry using
+	 * pct_change_velocity, pct_change_acceleration, and appearance count,
+	 * then sorts the entries using the provided sorter and assigns sequential ranks.
+	 * Returns the sorted and ranked leaderboard.
+	 */
+	private computeScoresAndRankings(
+		entries: LeaderboardRestTickerSnapshot[],
+		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
+	): LeaderboardRestTickerSnapshot[] {
+		// Compute scores
+		for (const entry of entries) {
+			entry.leaderboard_momentum_score = this.computeLeaderboardScoreFn({
+				changePct: entry.ld_change_pct,
+				pctChangeVelocity: entry.ld_pct_change_velocity,
+				pctChangeAcceleration: entry.ld_pct_change_acceleration,
+				volumeVelocity: entry.ld_volume_velocity,
+				volumeAcceleration: entry.ld_volume_acceleration,
+				numConsecutiveAppearances: entry.num_consecutive_appearances,
+				volume: entry.ld_volume,
+			});
+		}
+
+		// Sort and rank
+		const sorted = sorter.sort(entries);
+		sorted.forEach((snapshot, idx) => (snapshot.leaderboard_rank = idx + 1));
+		return sorted;
+	}
+
+	/**
 	 * Processes a batch of ticker snapshots, updates the leaderboard,
-	 * scores each ticker based on perc_change_velocity, perc_change_acceleration, and appearance count,
+	 * scores each ticker based on volume & pct. change velocity & acceleration kinetics calculations and appearance count,
 	 * sorts and ranks the leaderboard, then persists and returns the results.
 	 */
-
 	async processNewSnapshots(
-		data: TaggedNormalizedMarketScanTickers,
+		data: LeaderboardSnapshotsMap,
 		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
 	): Promise<LeaderboardRestTickerSnapshot[]> {
 		const leaderboardTag = data.scan_strategy_tag;
 		await this.initializeLeaderboardIfMissing(leaderboardTag);
-		await this.storeNewSnapshots(data, leaderboardTag); // store the new snapshots in the leaderboard storage
+		await this.storeNewSnapshots(data, leaderboardTag); // store the new snapshots to the storage interface (file, in-memory, redis, etc)
 		const newBatchMap = await this.computeNewBatchKinetics(data, leaderboardTag); // process each snapshot in the batch
 		const mergedUpdatedBatchMap = await this.mergeWithExistingLeaderboard(leaderboardTag, newBatchMap); // merge with oldEntries leaderboard
-
-		// Compute scores now that appearances are updated
-		for (const newEntry of mergedUpdatedBatchMap.values()) {
-			newEntry.leaderboard_momentum_score = this.scoreFn({
-				perc_change_velocity: newEntry.perc_change_velocity,
-				perc_change_acceleration: newEntry.perc_change_acceleration,
-				num_consecutive_appearances: newEntry.num_consecutive_appearances ?? 1,
-			});
-		}
-
-		const rankedLeaderboard = this.sortAndRankLeaderboard(Array.from(mergedUpdatedBatchMap.values()), sorter);
-
+		const rankedLeaderboard = this.computeScoresAndRankings(Array.from(mergedUpdatedBatchMap.values()), sorter);
+		// Persist the updated leaderboard
 		await this.persistLeaderboard(leaderboardTag, rankedLeaderboard);
 		return rankedLeaderboard;
 	}
@@ -145,20 +163,18 @@ export class LeaderboardService {
 		await this.storage.initializeLeaderboardStore(leaderboardTag);
 	}
 
-	// TODO
-	// I feel like the velocity and acceleration calculations are too tightly coupled with the methods in the leaderboard service. Would it not be better to have them calculated in a dedicated scoring function
 	/**
 	 * Stores new ticker snapshots in the leaderboard storage.
 	 * - Each snapshot is stored with its ticker name and the associated leaderboard tag.
-	 * @param data - TaggedNormalizedMarketScanTickers containing the snapshots to store.
+	 * @param data - LeaderboardSnapshotsMap containing the snapshots to store.
 	 * @param leaderboardTag - The tag identifying the leaderboard context for storage.
 	 */
-	private async storeNewSnapshots(data: TaggedNormalizedMarketScanTickers, leaderboardTag: string): Promise<void> {
-		for (const snapshot of data.normalized_tickers) {
+	private async storeNewSnapshots(data: LeaderboardSnapshotsMap, leaderboardTag: string): Promise<void> {
+		for (const snapshot of data.normalized_leaderboard_tickers) {
 			try {
-				await this.storage.storeSnapshot(leaderboardTag, snapshot.n_ticker_name, snapshot);
+				await this.storage.storeSnapshot(leaderboardTag, snapshot.ld_ticker_name, snapshot);
 			} catch (err) {
-				console.error(`[LeaderboardService] Error storing snapshot for ${snapshot.n_ticker_name}:`, err);
+				console.error(`[LeaderboardService] Error storing snapshot for ${snapshot.ld_ticker_name}:`, err);
 			}
 		}
 	}
@@ -167,21 +183,21 @@ export class LeaderboardService {
 	 * Processes each ticker snapshot in the newTicker batch:
 	 * - Stores the snapshot
 	 * - Retrieves recent history for kinetics calculations
-	 * - Computes perc_change_velocity and perc_change_acceleration
+	 * - Computes pct_change_velocity and pct_change_acceleration
 	 * - Creates leaderboard oldEntry with initial consecutive appearance count
 	 * Returns a map of ticker symbols to their leaderboard entries.
 	 */
 	private async computeNewBatchKinetics(
-		data: TaggedNormalizedMarketScanTickers,
+		data: LeaderboardSnapshotsMap,
 		leaderboardTag: string
 	): Promise<Map<string, LeaderboardRestTickerSnapshot>> {
 		const tickerEntries: Map<string, LeaderboardRestTickerSnapshot> = new Map();
 
-		for (const snapshot of data.normalized_tickers) {
+		for (const snapshot of data.normalized_leaderboard_tickers) {
 			try {
 				const history = await this.storage.retrieveRecentSnapshots(
 					leaderboardTag,
-					snapshot.n_ticker_name,
+					snapshot.ld_ticker_name,
 					Math.max(3, APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT)
 				);
 
@@ -189,27 +205,34 @@ export class LeaderboardService {
 					continue;
 				}
 
-				const velocity = percChangeKineticsCalculators.computePercChangeVelocity(history);
-				const acceleration = percChangeKineticsCalculators.computePercChangeAcceleration(history);
-				// We'll update num_consecutive_appearances after merging
+				// Compute kinetics metrics
+				// Note: computePercChangeVelocity and computePercChangeAcceleration expect history to be ordered
+
+				const pctChVelocity = kineticsCalculators.computePercChangeVelocity(history);
+				const pctChAcceleration = kineticsCalculators.computePercChangeAcceleration(history);
+				const volVelocity = kineticsCalculators.computeFieldAcceleration(history, "ld_volume");
+				const volAcceleration = kineticsCalculators.computeFieldAcceleration(history, "ld_volume");
+				// We'll update num_consecutive_appearances after merging with existing leaderboard
 				const leaderboardEntry: LeaderboardRestTickerSnapshot = {
-					ld_ticker_name: snapshot.n_ticker_name,
-					timestamp: snapshot.timestamp,
-					perc_change_velocity: velocity,
-					perc_change_acceleration: acceleration,
-					leaderboard_momentum_score: 0, // Temp, will compute after appearances set
-					leaderboard_rank: snapshot.ordinal_sort_position, // Still 0-based as of here, I believe
+					ld_ticker_name: snapshot.ld_ticker_name,
+					ld_timestamp: snapshot.ld_timestamp,
+					ld_change_pct: snapshot.ld_change_pct,
+					ld_pct_change_velocity: pctChVelocity,
+					ld_pct_change_acceleration: pctChAcceleration,
+					ld_volume_velocity: volVelocity,
+					ld_volume_acceleration: volAcceleration,
+					leaderboard_rank: snapshot.ld_ordinal_sort_position, // Still 0-based as of here, I believe
+					leaderboard_momentum_score: 0, // Temp; will compute after num_consecutive_appearances set
 					num_consecutive_appearances: 1,
-					// TODO - WHY DID THIS DEFAULT TO UNDEFINED
-					// FIXME ->
-					change_pct: snapshot.change_pct,
+					ld_volume: 0,
+					ld_ordinal_sort_position: 0
 				};
 
 				// Assemble a key-value pair for the ticker oldEntry
 				// This will be used to merge with previous leaderboard entries later
-				tickerEntries.set(snapshot.n_ticker_name, leaderboardEntry);
+				tickerEntries.set(snapshot.ld_ticker_name, leaderboardEntry);
 			} catch (err) {
-				console.error(`[LeaderboardService] Error processing snapshot for ${snapshot.n_ticker_name}:`, err);
+				console.error(`[LeaderboardService] Error processing snapshot for ${snapshot.ld_ticker_name}:`, err);
 			}
 		}
 		return tickerEntries;
@@ -230,7 +253,7 @@ export class LeaderboardService {
 		let oldEntries: LeaderboardRestTickerSnapshot[] = [];
 
 		try {
-			const result = await this.storage.retreiveLeaderboard(leaderboardTag) ?? [];
+			const result = (await this.storage.retrieveLeaderboard(leaderboardTag)) ?? [];
 			oldEntries = result ?? [];
 		} catch (err) {
 			console.error(`[LeaderboardService] Error retrieving previous leaderboard for merging:`, err);
@@ -299,7 +322,7 @@ export class LeaderboardService {
 	/**
 	 * Retrieves the newTicker leaderboard for the given tag from storage.
 	 */
-	async retreiveLeaderboard(leaderboardTag: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
-		return this.storage.retreiveLeaderboard(leaderboardTag);
+	async retrieveLeaderboard(leaderboardTag: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
+		return this.storage.retrieveLeaderboard(leaderboardTag);
 	}
 }

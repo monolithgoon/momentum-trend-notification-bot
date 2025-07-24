@@ -36,7 +36,7 @@ interface AppConstantsInterface {
 	PRE_MARKET_MIN_VOLUME: number;
 	PRE_MARKET_MIN_CHANGE_PERC: number;
 
-	// --- Data Buffering/Storage ---
+	// --- Leaderboard Data Buffering/Storage/Analytics ---
 	TICKER_BUFFER_MAX_LENGTH: number;
 	REDIS_SNAPSHOT_LIMIT: number;
 	MIN_LEADERBOARD_TICKER_HISTORY_COUNT: number;

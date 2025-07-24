@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
 import { LeaderboardStorage } from "./leaderboardStorage.interface";
-import { NormalizedRestTickerSnapshot } from "@data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { existsSync } from "fs";
 
@@ -33,10 +32,10 @@ export class FileLeaderboardStorage implements LeaderboardStorage {
 		}
 	}
 
-	async storeSnapshot(leaderboardName: string, ticker: string, snapshot: NormalizedRestTickerSnapshot): Promise<void> {
+	async storeSnapshot(leaderboardName: string, ticker: string, snapshot: LeaderboardRestTickerSnapshot): Promise<void> {
 		const file = this.tickerFile(leaderboardName, ticker);
 
-		let snapshots: NormalizedRestTickerSnapshot[] = [];
+		let snapshots: LeaderboardRestTickerSnapshot[] = [];
     
 		try {
 			const raw = await fs.readFile(file, "utf8");
@@ -52,7 +51,7 @@ export class FileLeaderboardStorage implements LeaderboardStorage {
 	async retrieveAllSnapshotsForTicker(
 		leaderboardName: string,
 		ticker: string
-	): Promise<NormalizedRestTickerSnapshot[]> {
+	): Promise<LeaderboardRestTickerSnapshot[]> {
 		const file = this.tickerFile(leaderboardName, ticker);
 		try {
 			const raw = await fs.readFile(file, "utf8");
@@ -66,7 +65,7 @@ export class FileLeaderboardStorage implements LeaderboardStorage {
 		leaderboardName: string,
 		ticker: string,
 		limit: number
-	): Promise<NormalizedRestTickerSnapshot[]> {
+	): Promise<LeaderboardRestTickerSnapshot[]> {
 		const all = await this.retrieveAllSnapshotsForTicker(leaderboardName, ticker);
 		return all.slice(0, limit);
 	}
@@ -89,7 +88,7 @@ export class FileLeaderboardStorage implements LeaderboardStorage {
 		await fs.writeFile(filePath, JSON.stringify(leaderboard, null, 2));
 	}
 
-	async retreiveLeaderboard(leaderboardName: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
+	async retrieveLeaderboard(leaderboardName: string): Promise<LeaderboardRestTickerSnapshot[] | null> {
 		try {
 			const raw = await fs.readFile(this.leaderboardFile(leaderboardName), "utf8");
 			return JSON.parse(raw);

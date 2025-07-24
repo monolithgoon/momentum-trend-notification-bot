@@ -1,5 +1,5 @@
 import { APP_CONFIG } from "../config";
-import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 import { MarketQuoteScanner } from "@core/scanners/MarketQuoteScanner";
 import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
@@ -23,10 +23,10 @@ import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
 function addTagsToMarketScanResult(
 	tickers: NormalizedRestTickerSnapshot[],
 	scan_strategy_tag: string = "OK"
-): TaggedNormalizedMarketScanTickers {
+): LeaderboardSnapshotsMap {
 	return {
 		scan_strategy_tag,
-		normalized_tickers: tickers.map((ticker) => ({
+		normalized_leaderboard_tickers: tickers.map((ticker) => ({
 			...ticker,
 		})),
 	};
@@ -106,7 +106,7 @@ export default async function runLiveMarketScannerTask() {
 
 		// 5. Tag the scan results for leaderboard
 		const leaderboardTag: string = composeScanStrategyTag(scanStrategyKeys);
-		const taggedTickers: TaggedNormalizedMarketScanTickers = addTagsToMarketScanResult(
+		const taggedTickers: LeaderboardSnapshotsMap = addTagsToMarketScanResult(
 			sortedSnapshots,
 			leaderboardTag
 		);

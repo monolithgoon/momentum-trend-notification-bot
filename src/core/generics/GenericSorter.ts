@@ -110,7 +110,7 @@ export class GenericSorter<
  * Rationale: From Specific to Generic Sorting Abstractions
  *
  * Previously, sorting implementations like LeaderboardTickersSorter were tightly coupled to a specific data structure (e.g., LeaderboardRestTickerSnapshot)
- * and a limited set of sortable fields (defined as type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "perc_change_acceleration">).
+ * and a limited set of sortable fields (defined as type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "pct_change_acceleration">).
  * This approach required creating a new sorter class and a dedicated field union type for each new data shape, leading to code duplication
  * and limited flexibility.
  *
@@ -126,7 +126,7 @@ export class GenericSorter<
  * and field unions like LeaderboardSortableField, enabling reusable, maintainable, and type-safe sorting logic for any object-based data in the codebase.
  */
 
-// type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "perc_change_acceleration">;
+// type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "pct_change_acceleration">;
 
 // export class LeaderboardTickersSorter implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
 // 	constructor(

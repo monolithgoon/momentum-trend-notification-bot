@@ -7,5 +7,5 @@ You’re allowing an optional rank, which makes sense for things like leaderboar
  */
 export interface NormalizedRestTickerSnapshotTransformer<T>
 	extends DefaultTickerSnapshotTransformer<NormalizedRestTickerSnapshot, T> {
-	transform(snapshot: NormalizedRestTickerSnapshot, rank?: number): T;
+	transform(snapshot: NormalizedRestTickerSnapshot): T;
 }

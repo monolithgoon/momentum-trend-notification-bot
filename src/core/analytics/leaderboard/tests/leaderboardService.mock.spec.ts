@@ -2,8 +2,8 @@ import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/type
 import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardService } from "../LeaderboardService";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { LeaderboardKineticsCalculator } from "../percChangeKineticsCalculators";
-import { TaggedNormalizedMarketScanTickers } from "@core/data/snapshots/rest_api/types/tagged-market-scan-tickers.interface";
+import { LeaderboardKineticsCalculator } from "../kineticsCalculators";
+import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 
 // --- Mock Config ---
 const APP_CONFIG = {
@@ -42,13 +42,13 @@ const mockSorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, Leaderboard
 // --- Mock KineticsCalculator ---
 const mockKineticsCalculator: LeaderboardKineticsCalculator = {
   computePercChangeVelocity: (history) => (history[0]?.timestamp ?? 0) - (history[1]?.timestamp ?? 0), // fake perc_change_velocity
-  computePercChangeAcceleration: (history) => history.length > 2 ? 1 : 0 // fake perc_change_acceleration
+  computePercChangeAcceleration: (history) => history.length > 2 ? 1 : 0 // fake pct_change_acceleration
 };
 
 // --- Mock Data In ---
-const testData: TaggedNormalizedMarketScanTickers = {
+const testData: LeaderboardSnapshotsMap = {
   scan_strategy_tag: "test-strategy",
-  normalized_tickers: [
+  normalized_leaderboard_tickers: [
     { ticker: "AAA", timestamp: 100, ordinal_sort_position: 0, change_pct: 1.2 },
     { ticker: "BBB", timestamp: 200, ordinal_sort_position: 1, change_pct: -0.5 }
   ]
