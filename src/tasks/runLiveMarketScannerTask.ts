@@ -180,9 +180,10 @@ export default async function runLiveMarketScannerTask() {
 			changePctRange: [0.1, 0.2],
 			trend: "increasing",
 		});
-		// FIXME -> replace with the actual returned snapshots
 		const sortFieldTypes = ["change_pct", "volume", "price"];
 		const sortField = sortFieldTypes[0] as keyof NormalizedRestTickerSnapshot;
+		// FIXME -> replace with returnedSnapshots
+		// const sortedSnapshots = getSortedSnapshots(returnedSnapshots, sortField);
 		const sortedSnapshots = getSortedSnapshots(mockSnapshots, sortField);
 		console.log({ sortedSnapshots });
 
