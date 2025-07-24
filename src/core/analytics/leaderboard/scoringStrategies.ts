@@ -4,6 +4,8 @@
  *   const leaderboardScore = scoringStrategies.weightedLinear({ pctChangeVelocity, pctChangeAcceleration, ld_change_pct, ... });
  */
 
+import { KineticsCalculator } from "./kineticsCalculators";
+
 type scoringParams = {
 	changePct: number;
 	volume: number;
@@ -12,10 +14,10 @@ type scoringParams = {
 	volumeVelocity: number;
 	volumeAcceleration: number;
 	numConsecutiveAppearances: number; // Number of consecutive leaderboard appearances
-	meanVelocity?: number;
-	stdVelocity?: number;
-	meanAcceleration?: number;
-	stdAcceleration?: number;
+	meanPCVelocity?: number;
+	stdPCVelocity?: number;
+	meanPCAcceleration?: number;
+	stdPCAcceleration?: number;
 };
 
 export const scoringStrategies = {
@@ -96,16 +98,32 @@ export const scoringStrategies = {
 	 * Z-leaderboard_momentum_score Normalization
 	 * leaderboard_momentum_score = normalized pctChangeVelocity + normalized pctChangeAcceleration
 	 */
-	zScore: ({
-		pctChangeVelocity,
-		pctChangeAcceleration,
-		mean_velocity = 0,
-		std_velocity = 1,
-		mean_acceleration = 0,
-		std_acceleration = 1,
-	}: scoringParams) =>
-		(pctChangeVelocity - mean_velocity) / (std_velocity || 1) +
-		(pctChangeAcceleration - mean_acceleration) / (std_acceleration || 1),
+
+	// TODO ->
+	// zNormalization: (
+	// 	{ pctChangeVelocity, pctChangeAcceleration }: scoringParams,
+	// Used to calculate  z-scores for velocity and acceleration to find outliers relative to the population.
+	// const meanPCVelocity = kinetics.computeMeanVelocity("ld_pct_change_velocity");
+	// const stdPCVelocity = kinetics.computeStdVelocity("ld_pct_change_velocity");
+	// const meanVolAccel = kinetics.computeMeanAcceleration("ld_volume");
+	// const stdVolAccel = kinetics.computeStdAcceleration("ld_volume");
+
+	// zScore: (
+	// 	TICKER_HISTORY,
+	// 	{
+	// 		pctChangeVelocity,
+	// 		pctChangeAcceleration,
+	// 		meanPCVelocity = 0,
+	// 		stdPCVelocity = 1,
+	// 		meanPCAcceleration = 0,
+	// 		stdPCAcceleration = 1,
+	// 	}: scoringParams
+	// ) =>
+	// 	(pctChangeVelocity - new KineticsCalculator(TICKER_HISTORY).computeMeanVelocity("ld_pct_change_velocity")) /
+	// 		(stdPCVelocity || 1) +
+	// 	(pctChangeAcceleration -
+	// 		new KineticsCalculator(TICKER_HISTORY).computeMeanAcceleration("ld_pct_change_acceleration")) /
+	// 		(stdPCAcceleration || 1),
 
 	/**
 	 * Change Only

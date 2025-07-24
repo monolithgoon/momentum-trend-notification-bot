@@ -3,7 +3,7 @@ import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interfac
 import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 
 
-type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "pct_change_acceleration">;
+type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "ld_pct_change_velocity" | "ld_pct_change_acceleration" | "ld_volume_velocity" | "ld_volume_acceleration">;
 
 export class LeaderboardTickersSorter implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
   constructor(

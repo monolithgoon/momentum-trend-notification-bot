@@ -3,7 +3,7 @@ import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/Lea
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardStorage } from "./leaderboardStorage.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { kineticsCalculators } from "./kineticsCalculators";
+import { KineticsCalculator, kineticsCalculators } from "./kineticsCalculators";
 import { APP_CONFIG } from "@config/index";
 
 /**
@@ -195,37 +195,39 @@ export class LeaderboardService {
 
 		for (const snapshot of data.normalized_leaderboard_tickers) {
 			try {
-				const history = await this.storage.retrieveRecentSnapshots(
+				const snapshotHistory = await this.storage.retrieveRecentSnapshots(
 					leaderboardTag,
 					snapshot.ld_ticker_name,
 					Math.max(3, APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT)
 				);
 
-				if (history.length < APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT) {
+				if (snapshotHistory.length < APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT) {
 					continue;
 				}
 
 				// Compute kinetics metrics
 				// Note: computePercChangeVelocity and computePercChangeAcceleration expect history to be ordered
 
-				const pctChVelocity = kineticsCalculators.computePercChangeVelocity(history);
-				const pctChAcceleration = kineticsCalculators.computePercChangeAcceleration(history);
-				const volVelocity = kineticsCalculators.computeFieldAcceleration(history, "ld_volume");
-				const volAcceleration = kineticsCalculators.computeFieldAcceleration(history, "ld_volume");
+				// WIP
+				const kinetics = new KineticsCalculator(snapshotHistory);
+				const pcVel = kinetics.computeVelocity("ld_pct_change_velocity");
+				const pcAccel = kinetics.computeAcceleration("ld_pct_change_acceleration");
+				const volVel = kinetics.computeVelocity("ld_volume");
+				const volAccel = kinetics.computeVelocity("ld_volume");
 				// We'll update num_consecutive_appearances after merging with existing leaderboard
 				const leaderboardEntry: LeaderboardRestTickerSnapshot = {
 					ld_ticker_name: snapshot.ld_ticker_name,
 					ld_timestamp: snapshot.ld_timestamp,
 					ld_change_pct: snapshot.ld_change_pct,
-					ld_pct_change_velocity: pctChVelocity,
-					ld_pct_change_acceleration: pctChAcceleration,
-					ld_volume_velocity: volVelocity,
-					ld_volume_acceleration: volAcceleration,
+					ld_pct_change_velocity: pcVel,
+					ld_pct_change_acceleration: pcAccel,
+					ld_volume_velocity: volVel,
+					ld_volume_acceleration: volAccel,
 					leaderboard_rank: snapshot.ld_ordinal_sort_position, // Still 0-based as of here, I believe
 					leaderboard_momentum_score: 0, // Temp; will compute after num_consecutive_appearances set
 					num_consecutive_appearances: 1,
 					ld_volume: 0,
-					ld_ordinal_sort_position: 0
+					ld_ordinal_sort_position: 0,
 				};
 
 				// Assemble a key-value pair for the ticker oldEntry
