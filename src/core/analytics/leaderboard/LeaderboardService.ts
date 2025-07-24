@@ -3,7 +3,7 @@ import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/Lea
 import { LeaderboardRestTickerSnapshot } from "@data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardStorage } from "./leaderboardStorage.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { KineticsCalculator, kineticsCalculators } from "./kineticsCalculators";
+import { KineticsCalculator } from "./kineticsCalculators";
 import { APP_CONFIG } from "@config/index";
 
 /**
@@ -107,35 +107,6 @@ export class LeaderboardService {
 	) {}
 
 	/**
-	 * Computes the momentum score for each leaderboard entry using
-	 * pct_change_velocity, pct_change_acceleration, and appearance count,
-	 * then sorts the entries using the provided sorter and assigns sequential ranks.
-	 * Returns the sorted and ranked leaderboard.
-	 */
-	private computeScoresAndRankings(
-		entries: LeaderboardRestTickerSnapshot[],
-		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
-	): LeaderboardRestTickerSnapshot[] {
-		// Compute scores
-		for (const entry of entries) {
-			entry.leaderboard_momentum_score = this.computeLeaderboardScoreFn({
-				changePct: entry.ld_change_pct,
-				pctChangeVelocity: entry.ld_pct_change_velocity,
-				pctChangeAcceleration: entry.ld_pct_change_acceleration,
-				volumeVelocity: entry.ld_volume_velocity,
-				volumeAcceleration: entry.ld_volume_acceleration,
-				numConsecutiveAppearances: entry.num_consecutive_appearances,
-				volume: entry.ld_volume,
-			});
-		}
-
-		// Sort and rank
-		const sorted = sorter.sort(entries);
-		sorted.forEach((snapshot, idx) => (snapshot.leaderboard_rank = idx + 1));
-		return sorted;
-	}
-
-	/**
 	 * Processes a batch of ticker snapshots, updates the leaderboard,
 	 * scores each ticker based on volume & pct. change velocity & acceleration kinetics calculations and appearance count,
 	 * sorts and ranks the leaderboard, then persists and returns the results.
@@ -145,11 +116,14 @@ export class LeaderboardService {
 		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
 	): Promise<LeaderboardRestTickerSnapshot[]> {
 		const leaderboardTag = data.scan_strategy_tag;
+
 		await this.initializeLeaderboardIfMissing(leaderboardTag);
 		await this.storeNewSnapshots(data, leaderboardTag); // store the new snapshots to the storage interface (file, in-memory, redis, etc)
+		
 		const newBatchMap = await this.computeNewBatchKinetics(data, leaderboardTag); // process each snapshot in the batch
 		const mergedUpdatedBatchMap = await this.mergeWithExistingLeaderboard(leaderboardTag, newBatchMap); // merge with oldEntries leaderboard
 		const rankedLeaderboard = this.computeScoresAndRankings(Array.from(mergedUpdatedBatchMap.values()), sorter);
+		
 		// Persist the updated leaderboard
 		await this.persistLeaderboard(leaderboardTag, rankedLeaderboard);
 		return rankedLeaderboard;
@@ -172,9 +146,9 @@ export class LeaderboardService {
 	private async storeNewSnapshots(data: LeaderboardSnapshotsMap, leaderboardTag: string): Promise<void> {
 		for (const snapshot of data.normalized_leaderboard_tickers) {
 			try {
-				await this.storage.storeSnapshot(leaderboardTag, snapshot.ld_ticker_name, snapshot);
+				await this.storage.storeSnapshot(leaderboardTag, snapshot.ticker_name__ld_tick, snapshot);
 			} catch (err) {
-				console.error(`[LeaderboardService] Error storing snapshot for ${snapshot.ld_ticker_name}:`, err);
+				console.error(`[LeaderboardService] Error storing snapshot for ${snapshot.ticker_name__ld_tick}:`, err);
 			}
 		}
 	}
@@ -197,7 +171,7 @@ export class LeaderboardService {
 			try {
 				const snapshotHistory = await this.storage.retrieveRecentSnapshots(
 					leaderboardTag,
-					snapshot.ld_ticker_name,
+					snapshot.ticker_name__ld_tick,
 					Math.max(3, APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT)
 				);
 
@@ -210,31 +184,32 @@ export class LeaderboardService {
 
 				// WIP
 				const kinetics = new KineticsCalculator(snapshotHistory);
-				const pcVel = kinetics.computeVelocity("ld_pct_change_velocity");
-				const pcAccel = kinetics.computeAcceleration("ld_pct_change_acceleration");
-				const volVel = kinetics.computeVelocity("ld_volume");
-				const volAccel = kinetics.computeVelocity("ld_volume");
+				const pcVel = kinetics.computeVelocity("pct_change_velocity__ld_tick");
+				const pcAccel = kinetics.computeAcceleration("pct_change_acceleration__ld_tick");
+				const volVel = kinetics.computeVelocity("volume__ld_tick");
+				const volAccel = kinetics.computeVelocity("volume__ld_tick");
+				
 				// We'll update num_consecutive_appearances after merging with existing leaderboard
 				const leaderboardEntry: LeaderboardRestTickerSnapshot = {
-					ld_ticker_name: snapshot.ld_ticker_name,
-					ld_timestamp: snapshot.ld_timestamp,
-					ld_change_pct: snapshot.ld_change_pct,
-					ld_pct_change_velocity: pcVel,
-					ld_pct_change_acceleration: pcAccel,
-					ld_volume_velocity: volVel,
-					ld_volume_acceleration: volAccel,
-					leaderboard_rank: snapshot.ld_ordinal_sort_position, // Still 0-based as of here, I believe
+					ticker_name__ld_tick: snapshot.ticker_name__ld_tick,
+					timestamp__ld_tick: snapshot.timestamp__ld_tick,
+					change_pct__ld_tick: snapshot.change_pct__ld_tick,
+					pct_change_velocity__ld_tick: pcVel,
+					pct_change_acceleration__ld_tick: pcAccel,
+					volume_velocity__ld_tick: volVel,
+					volume_acceleration__ld_tick: volAccel,
+					leaderboard_rank: snapshot.ordinal_sort_position__ld_tick, // Still 0-based as of here, I believe
 					leaderboard_momentum_score: 0, // Temp; will compute after num_consecutive_appearances set
 					num_consecutive_appearances: 1,
-					ld_volume: 0,
-					ld_ordinal_sort_position: 0,
+					volume__ld_tick: 0,
+					ordinal_sort_position__ld_tick: 0,
 				};
 
 				// Assemble a key-value pair for the ticker oldEntry
 				// This will be used to merge with previous leaderboard entries later
-				tickerEntries.set(snapshot.ld_ticker_name, leaderboardEntry);
+				tickerEntries.set(snapshot.ticker_name__ld_tick, leaderboardEntry);
 			} catch (err) {
-				console.error(`[LeaderboardService] Error processing snapshot for ${snapshot.ld_ticker_name}:`, err);
+				console.error(`[LeaderboardService] Error processing snapshot for ${snapshot.ticker_name__ld_tick}:`, err);
 			}
 		}
 		return tickerEntries;
@@ -272,20 +247,20 @@ export class LeaderboardService {
 
 		// Evaluate previous existing entries
 		for (const oldEntry of oldEntries) {
-			const newTicker = newBatchMap.get(oldEntry.ld_ticker_name);
+			const newTicker = newBatchMap.get(oldEntry.ticker_name__ld_tick);
 			if (newTicker) {
 				// Ticker was present last time and still present
 				newTicker.num_consecutive_appearances = (oldEntry.num_consecutive_appearances ?? 0) + 1;
 			} else {
 				// Ticker was present last time but is NOT in the current batch; retain it
 				oldEntry.num_consecutive_appearances = (oldEntry.num_consecutive_appearances ?? 0) + 1;
-				newBatchMap.set(oldEntry.ld_ticker_name, oldEntry);
+				newBatchMap.set(oldEntry.ticker_name__ld_tick, oldEntry);
 			}
 		}
 
 		// For new entries not present before, set appearances to 1
 		for (const [tickerName, newTickerEntry] of newBatchMap) {
-			const wasPresentChk = oldEntries.some((prev) => prev.ld_ticker_name === tickerName);
+			const wasPresentChk = oldEntries.some((prev) => prev.ticker_name__ld_tick === tickerName);
 			if (!wasPresentChk) {
 				newTickerEntry.num_consecutive_appearances = 1;
 			}
@@ -293,18 +268,36 @@ export class LeaderboardService {
 
 		return newBatchMap;
 	}
+
 	/**
-	 * Sorts leaderboard entries by leaderboard_momentum_score using the provided sorter,
-	 * assigns sequential ranks, and returns the sorted array.
+	 * Computes the momentum score for each leaderboard entry using
+	 * pct_change_velocity, pct_change_acceleration, and appearance count,
+	 * then sorts the entries using the provided sorter and assigns sequential ranks.
+	 * Returns the sorted and ranked leaderboard.
 	 */
-	private sortAndRankLeaderboard(
+	private computeScoresAndRankings(
 		entries: LeaderboardRestTickerSnapshot[],
 		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
 	): LeaderboardRestTickerSnapshot[] {
+		// Compute scores
+		for (const entry of entries) {
+			entry.leaderboard_momentum_score = this.computeLeaderboardScoreFn({
+				changePct: entry.change_pct__ld_tick,
+				volume: entry.volume__ld_tick,
+				pctChangeVelocity: entry.pct_change_velocity__ld_tick,
+				pctChangeAcceleration: entry.pct_change_acceleration__ld_tick,
+				volumeVelocity: entry.volume_velocity__ld_tick,
+				volumeAcceleration: entry.volume_acceleration__ld_tick,
+				numConsecutiveAppearances: entry.num_consecutive_appearances,
+			});
+		}
+
+		// Sort and rank
 		const sorted = sorter.sort(entries);
 		sorted.forEach((snapshot, idx) => (snapshot.leaderboard_rank = idx + 1));
 		return sorted;
 	}
+
 
 	/**
 	 * Persists the updated leaderboard for the given tag to storage.

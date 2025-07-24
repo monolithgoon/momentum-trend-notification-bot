@@ -85,7 +85,7 @@ async function scanMarketTickers(currentMarketSession: string, scanStrategyKeys:
 	});
 	const screenerConfigs = buildScreenerConfigs();
 	const returnedSnapshots: NormalizedRestTickerSnapshot[] = await scanner.executeScan(screenerConfigs);
-	const returnedTickers: string[] = returnedSnapshots.map((snapshot) => snapshot.n_ticker_name);
+	const returnedTickers: string[] = returnedSnapshots.map((snapshot) => snapshot.ticker_name__nz_tick);
 	return returnedTickers;
 }
 

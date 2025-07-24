@@ -72,7 +72,7 @@ export default async function runLiveMarketScannerTask() {
 		];
 
 		const returnedSnapshots: NormalizedRestTickerSnapshot[] = await scanner.executeScan(screenerConfigs);
-		const returnedTickers: string[] = returnedSnapshots.map(snapshot => snapshot.n_ticker_name);
+		const returnedTickers: string[] = returnedSnapshots.map(snapshot => snapshot.ticker_name__nz_tick);
 
 		// WIP
 		// if (!returnedTickers?.length) {

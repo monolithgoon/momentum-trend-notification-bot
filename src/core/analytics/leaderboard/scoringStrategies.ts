@@ -1,7 +1,7 @@
 /**
  * Provides multiple scoring strategies for leaderboard ranking.
  * Import the desired strategy and use as:
- *   const leaderboardScore = scoringStrategies.weightedLinear({ pctChangeVelocity, pctChangeAcceleration, ld_change_pct, ... });
+ *   const leaderboardScore = scoringStrategies.weightedLinear({ pctChangeVelocity, pctChangeAcceleration, change_pct__ld_tick, ... });
  */
 
 import { KineticsCalculator } from "./kineticsCalculators";
@@ -103,10 +103,10 @@ export const scoringStrategies = {
 	// zNormalization: (
 	// 	{ pctChangeVelocity, pctChangeAcceleration }: scoringParams,
 	// Used to calculate  z-scores for velocity and acceleration to find outliers relative to the population.
-	// const meanPCVelocity = kinetics.computeMeanVelocity("ld_pct_change_velocity");
-	// const stdPCVelocity = kinetics.computeStdVelocity("ld_pct_change_velocity");
-	// const meanVolAccel = kinetics.computeMeanAcceleration("ld_volume");
-	// const stdVolAccel = kinetics.computeStdAcceleration("ld_volume");
+	// const meanPCVelocity = kinetics.computeMeanVelocity("pct_change_velocity__ld_tick");
+	// const stdPCVelocity = kinetics.computeStdVelocity("pct_change_velocity__ld_tick");
+	// const meanVolAccel = kinetics.computeMeanAcceleration("volume__ld_tick");
+	// const stdVolAccel = kinetics.computeStdAcceleration("volume__ld_tick");
 
 	// zScore: (
 	// 	TICKER_HISTORY,
@@ -119,15 +119,15 @@ export const scoringStrategies = {
 	// 		stdPCAcceleration = 1,
 	// 	}: scoringParams
 	// ) =>
-	// 	(pctChangeVelocity - new KineticsCalculator(TICKER_HISTORY).computeMeanVelocity("ld_pct_change_velocity")) /
+	// 	(pctChangeVelocity - new KineticsCalculator(TICKER_HISTORY).computeMeanVelocity("pct_change_velocity__ld_tick")) /
 	// 		(stdPCVelocity || 1) +
 	// 	(pctChangeAcceleration -
-	// 		new KineticsCalculator(TICKER_HISTORY).computeMeanAcceleration("ld_pct_change_acceleration")) /
+	// 		new KineticsCalculator(TICKER_HISTORY).computeMeanAcceleration("pct_change_acceleration__ld_tick")) /
 	// 		(stdPCAcceleration || 1),
 
 	/**
 	 * Change Only
-	 * leaderboard_momentum_score = ld_change_pct (default 0 if missing)
+	 * leaderboard_momentum_score = change_pct__ld_tick (default 0 if missing)
 	 */
 	percentageChangeOnly: ({ changePct = 0 }: scoringParams) => changePct,
 
