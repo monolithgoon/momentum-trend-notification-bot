@@ -1,4 +1,4 @@
-import { NormalizedRestTickerSnapshot } from "../data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "../snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { ScanFilter } from "./types/ScanFilter.interface";
 
 // Configs

@@ -1,5 +1,5 @@
-import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 
 // export class InMemoryLeaderboardStorage_0 implements LeaderboardStorage {

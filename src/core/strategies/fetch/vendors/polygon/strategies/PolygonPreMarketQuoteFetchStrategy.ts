@@ -2,7 +2,7 @@ import axios from "axios";
 import { APP_CONFIG } from "@config/index";
 import { PolygonRestApiQuoteFetchStrategy } from "@core/strategies/fetch/vendors/polygon/types/PolygonRestApiQuoteFetchStrategy.interface";
 import { nsToUnixSec, safeAPICall } from "@core/utils/index";
-import { PolygonRestTickerSnapshot } from "@core/data/snapshots/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { PolygonRestTickerSnapshot } from "@core/snapshots/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 
 export class PolygonPreMarketQuoteFetchStrategy implements PolygonRestApiQuoteFetchStrategy {
 	private readonly nowUtc = Math.floor(Date.now() / 1000);

@@ -1,4 +1,4 @@
-import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 
 type velocityFieldType = Extract<
 	keyof LeaderboardRestTickerSnapshot,

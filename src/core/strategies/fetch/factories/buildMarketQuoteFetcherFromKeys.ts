@@ -1,9 +1,8 @@
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
 import { SessionMarketQuoteFetcher } from "@core/strategies/fetch/types/SessionMarketQuoteFetcher";
 import { PolygonMarketQuoteFetcher } from "@core/strategies/fetch/vendors/polygon/fetchers/PolygonMarketQuoteFetcher";
-import { PolygonTickerTransformer } from "@core/data/snapshots/rest_api/transformers/vendors/polygon/polygonTickerTransformer";
-import { vendorStrategyRegistryMap } from "@core/strategies/fetch/registries/vendorStrategyRegistryMap";
-import { isValidVendorAndStrategyRegistryMapKeys } from "@core/strategies/fetch/factories/vendorStrategyRegistryMapGuard";
+import { PolygonTickerTransformer } from "@core/snapshots/rest_api/transformers/vendors/polygon/PolygonTickerTransformer";
+import { isValidVendorAndStrategyRegistryMapKeys, vendorStrategyRegistryMap } from "@core/strategies/fetch/registries/vendorStrategyRegistryMap";
 
 export function buildMarketQuoteFetcherFromKeys(
 	vendor: MarketDataVendors,

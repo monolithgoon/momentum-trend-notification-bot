@@ -1,7 +1,7 @@
 import { LeaderboardService } from "../LeaderboardService";
-import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
-import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
+import { LeaderboardRestTickerSnapshot } from "@core/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { LeaderboardSnapshotsMap } from "@core/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 
 // Mock APP_CONFIG
 const APP_CONFIG = {

@@ -1,0 +1,94 @@
+%% Combined: getMarketQuoteFetcherForStrategies + vendorStrategyRegistryMap with colored styling
+
+graph TD
+
+  %% Main factory function
+  getMarketQuoteFetcherForStrategies["🏭 <b>getMarketQuoteFetcherForStrategies()</b>
+  <br/>🟢 public
+  <br/>Input: 🧭 vendor, 🧩 strategy keys[]
+  <br/>Output: 🛠️ SessionMarketQuoteFetcher
+  <br/><i>Builds the correct quote fetcher based on vendor and strategies</i>
+  "]:::method
+
+  %% Registry helper functions
+  isValidStrategyKey["🔐 isValidStrategyKey()
+  <br/>🟢 public
+  <br/><i>Type guard to validate strategy keys</i>
+  "]:::method
+
+  getStrategy["🔍 getStrategy()
+  <br/>🟢 public
+  <br/><i>Returns typed strategy instance from registry</i>
+  "]:::method
+
+  %% Polygon-specific fetcher
+  PolygonMarketQuoteFetcher["🏗️ PolygonMarketQuoteFetcher
+  <br/>🏛️ Class
+  <br/><i>Concrete implementation for Polygon quotes</i>
+  "]:::service
+
+  PolygonTickerTransformer["🔄 PolygonTickerTransformer
+  <br/>🏛️ Class
+  <br/><i>Normalizes Polygon response format</i>
+  "]:::service
+
+  %% Strategy Registry Map
+  vendorStrategyRegistryMap["📦 <b>vendorStrategyRegistryMap</b>
+  <br/>📦 Object
+  <br/><i>Map of vendor to strategy registry</i>
+  "]:::util
+
+  MarketDataVendors["🧭 MarketDataVendors
+  <br/>🏷️ Enum
+  <br/><i>Defines supported vendors</i>
+  "]:::type
+
+  polygonRegistry["📦 polygonRegistry
+  <br/>📦 Object
+  <br/><i>Record of Polygon strategy instances</i>
+  "]:::util
+
+  PolygonRestApiQuoteFetchStrategy["📊 PolygonRestApiQuoteFetchStrategy
+  <br/>🏷️ Interface
+  <br/><i>Defines Polygon strategy behavior</i>
+  "]:::type
+
+  %% Strategy keys and classes
+  PreMarket["🧲 'Pre-market top movers'
+  <br/>🔧 PolygonPreMarketQuoteFetchStrategy
+  "]:::highlight
+
+  RecentIpo["🚀 'Recent IPO Top Moving'
+  <br/>🔧 PolygonRecentIpoTopStrategy
+  "]:::highlight
+
+  CryptoPlacement["🪙 'Crypto Stocks with private placement'
+  <br/>🔧 PolygonCryptoPrivatePlacementStrategy
+  "]:::highlight
+
+  ReverseSplitNews["📈 'Recent reverse splits with +ve news'
+  <br/>🔧 PolygonReverseSplitPositiveNewsStrategy
+  "]:::highlight
+
+  %% Flow connections
+  getMarketQuoteFetcherForStrategies --> isValidStrategyKey
+  getMarketQuoteFetcherForStrategies --> getStrategy
+  getMarketQuoteFetcherForStrategies --> vendorStrategyRegistryMap
+  getMarketQuoteFetcherForStrategies -->|if vendor = POLYGON| PolygonMarketQuoteFetcher
+  PolygonMarketQuoteFetcher --> PolygonTickerTransformer
+
+  vendorStrategyRegistryMap -->|POLYGON| polygonRegistry
+  polygonRegistry --> MarketDataVendors
+  polygonRegistry --> PolygonRestApiQuoteFetchStrategy
+
+  polygonRegistry --> PreMarket
+  polygonRegistry --> RecentIpo
+  polygonRegistry --> CryptoPlacement
+  polygonRegistry --> ReverseSplitNews
+
+  %% Styles
+  classDef method fill:#fff,stroke:#666,stroke-width:1px;
+  classDef util fill:#e3e7f9,stroke:#222,stroke-width:1.5px;
+  classDef type fill:#dcdcdc,stroke:#222,stroke-width:1.5px;  %% grey for enums/interfaces
+  classDef service fill:#f9f,stroke:#222,stroke-width:2px;
+  classDef highlight fill:#ffff93,stroke:#222,stroke-width:2px;  %% bright yellow

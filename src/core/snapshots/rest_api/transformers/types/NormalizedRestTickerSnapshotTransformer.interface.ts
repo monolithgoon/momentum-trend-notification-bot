@@ -1,4 +1,4 @@
-import { DefaultTickerSnapshotTransformer } from "@core/data/snapshots/DefaultTickerSnapshotTransformer.interface";
+import { DefaultTickerSnapshotTransformer } from "@core/snapshots/DefaultTickerSnapshotTransformer.interface";
 import { NormalizedRestTickerSnapshot } from "../../types/NormalizedRestTickerSnapshot.interface";
 
 /**

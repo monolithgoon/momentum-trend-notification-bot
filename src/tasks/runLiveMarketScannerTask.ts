@@ -9,25 +9,25 @@ import { scanScreenerConfigTypes } from "@core/scanners/types/scanScreenerConfig
 import { NotifierService } from "src/services/notifier/NotifierService";
 import { TelegramNotifier } from "src/services/notifier/TelegramService";
 
-import { generateMockSnapshots } from "@core/data/snapshots/rest_api/generateMockSnapshots";
-import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { SortedNormalizedTicker } from "@core/data/snapshots/rest_api/types/SortedNormalizedTicker.interface";
+import { generateMockSnapshots } from "@core/snapshots/rest_api/generateMockSnapshots";
+import { NormalizedRestTickerSnapshot } from "@core/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { SortedNormalizedTicker } from "@core/snapshots/rest_api/types/SortedNormalizedTicker.interface";
 
 import { GenericSorter } from "@core/generics/GenericSorter";
 import { SortOrder } from "@core/enums/sortOrder.enum";
 
+// import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
 import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage";
 import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
 import { LeaderboardTickersSorter } from "@analytics/leaderboard/LeaderboardTickersSorter";
-import { LeaderboardSnapshotsMap } from "@core/data/snapshots/rest_api/types/LeaderboardSnapshotsMap";
+import { LeaderboardSnapshotsMap } from "@core/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 
 import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
-import handleWebSocketTickerUpdate from "@core/data/snapshots/websocket/handleWebSocketTickerUpdate";
+import handleWebSocketTickerUpdate from "@core/snapshots/websocket/handleWebSocketTickerUpdate";
 import { MarketSessions } from "@core/enums/marketSessions.enum";
-import { LeaderboardTickerTransformer } from "@core/data/snapshots/rest_api/transformers/vendors/polygon/polygonTickerTransformer";
-import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
-// import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
+import { LeaderboardTickerTransformer } from "@core/snapshots/rest_api/transformers/LeaderboardTickerTransformer";
+import { LeaderboardRestTickerSnapshot } from "@core/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 
 /**
  * Adds a tag to the market scan result.
@@ -182,7 +182,7 @@ export default async function runLiveMarketScannerTask() {
 		});
 		const sortFieldTypes = ["change_pct", "volume", "price"];
 		const sortField = sortFieldTypes[0] as keyof NormalizedRestTickerSnapshot;
-		// FIXME -> replace with returnedSnapshots
+		// TODO -> Uncomment when real data is available
 		// const sortedSnapshots = getSortedSnapshots(returnedSnapshots, sortField);
 		const sortedSnapshots = getSortedSnapshots(mockSnapshots, sortField);
 		console.log({ sortedSnapshots });

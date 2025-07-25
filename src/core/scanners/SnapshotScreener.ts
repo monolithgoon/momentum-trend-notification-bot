@@ -15,7 +15,7 @@
  * @returns A deduplicated list of tickers that matched at least one filter.
  */
 
-import { NormalizedRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { ScanFilter } from "./types/ScanFilter.interface";
 
 export class SnapshotScreener {

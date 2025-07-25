@@ -4,7 +4,7 @@ import axios from "axios";
 import { APP_CONFIG } from "../../../../../config";
 import { safeAPICall } from "../../../../utils";
 import { MarketSessionDataProvider } from "./MarketSessionDataProvider.interface";
-import { EodhdTickerSnapshot } from "../../../../data/snapshots/rest_api/vendors/eodhd/eodhdRestSnapshot.interface";
+import { EodhdTickerSnapshot } from "../../../../snapshots/rest_api/vendors/eodhd/eodhdRestSnapshot.interface";
 
 /**
  * EODHD vendor implementation for fetching pre-market active tickers.

@@ -2,7 +2,7 @@ export interface NormalizedRestTickerSnapshot {
 	ordinal_sort_position: number;
 	timestamp: number;
 	ticker_name__nz_tick: string;
-	chang_pct: number;
+	change_pct__nz_tick: number;
 	price?: number;
 	volume?: number;
 	current_day_stats?: {

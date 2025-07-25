@@ -1,6 +1,6 @@
 import { SortOrder } from "@core/enums/sortOrder.enum";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { LeaderboardRestTickerSnapshot } from "@core/data/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 
 
 type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "pct_change_velocity__ld_tick" | "pct_change_acceleration__ld_tick" | "volume_velocity__ld_tick" | "volume_acceleration__ld_tick">;

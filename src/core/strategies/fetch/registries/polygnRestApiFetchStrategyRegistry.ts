@@ -1,5 +1,3 @@
-// src/strategies/fetch-strategy/polygon/polygnRestApiFetchStrategyRegistry.ts
-
 import { PolygonRestApiQuoteFetchStrategy } from '../vendors/polygon/types/PolygonRestApiQuoteFetchStrategy.interface';
 import { PolygonPreMarketQuoteFetchStrategy } from "../vendors/polygon/strategies/PolygonPreMarketQuoteFetchStrategy"
 // import { PolygonRecentIpoTopStrategy } from './PolygonRecentIpoTopStrategy';
