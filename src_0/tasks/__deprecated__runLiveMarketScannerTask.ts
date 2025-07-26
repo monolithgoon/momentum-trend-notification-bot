@@ -5,7 +5,7 @@ import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
 import { NotifierService } from "src/services/notifier/NotifierService";
 import { TelegramNotifier } from "src/services/notifier/TelegramService";
-import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
+import { generateMockSnapshots } from "@core/snapshots/rest_api/generateMockSnapshots";
 import { SortOrder } from "@core/enums/sortOrder.enum";
 import { NormalizedRestTickerSnapshot } from "@core/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
 import { SortedNormalizedTicker } from "@core/snapshots/rest_api/types/SortedNormalizedTicker.interface";
@@ -16,7 +16,7 @@ import { LeaderboardTickersSorter } from "@analytics/leaderboard/LeaderboardTick
 import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
 import handleWebSocketTickerUpdate from "@core/snapshots/websocket/handleWebSocketTickerUpdate";
 import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@core/scanners/scanFilters";
-import { ScanScreenerConfigTypes } from "@core/scanners/types/scanScreenerConfigs.type";
+import { scanScreenerConfigTypes } from "@core/scanners/types/scanScreenerConfigs.type";
 import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage";
 import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
 
@@ -63,7 +63,7 @@ export default async function runLiveMarketScannerTask() {
 			strategyKeys: scanStrategyKeys,
 		});
 
-		const screenerConfigs: ScanScreenerConfigTypes[] = [
+		const screenerConfigs: scanScreenerConfigTypes[] = [
 			{
 				scanFilter: new VolumeChangeScanFilter(),
 				config: { volumeThreshold: 1_000_000, changePercentageThreshold: 3 },

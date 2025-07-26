@@ -1,4 +1,6 @@
-import { APP_CONFIG } from "@config/index";
+// src/indicators.ts
+
+import { APP_CONFIG } from "../../config";
 
 export function calculateEMA(values: number[], period: number): number {
   if (values.length < period) return 0;
@@ -13,7 +15,7 @@ export function calculateEMA(values: number[], period: number): number {
 }
 
 export function calculateATR(highs: number[], lows: number[], closes: number[], period: number): number {
-  const trs: number[] = [];
+  const trs = [];
   for (let i = 1; i < highs.length; i++) {
     const high = highs[i];
     const low = lows[i];

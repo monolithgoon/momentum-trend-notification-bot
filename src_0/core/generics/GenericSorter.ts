@@ -86,7 +86,7 @@ export class GenericSorter<
 /**
  * Rationale: From Specific to Generic Sorting Abstractions
  *
- * Originally, sorting was tightly coupled to specific data types and fields. for example, the 'ScanSortableField'
+ * Originally, sorting was tightly coupled to specific data types and fields. For example, the 'ScanSortableField'
  * type limited sorting to specific properties ("change_pct", "volume", "price") of the NormalizedRestTickerSnapshot object.
  * This meant each new data structure or context (like a leaderboard, or a different ticker format) required
  * its own dedicated sorter class and field type, leading to code duplication, limited reuse, and more maintenance.

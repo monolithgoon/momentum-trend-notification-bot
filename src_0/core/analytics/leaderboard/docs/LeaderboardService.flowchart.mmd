@@ -1,0 +1,48 @@
+flowchart TD
+    A([🚀 Start LeaderboardService]):::entry -->|void| B{{🏷️ Extract leaderboard tag<br/>from scan_strategy_tag}}:::step
+    B -->|string| C{{📦 Initialize leaderboard store<br/>if missing}}:::storage
+    C -->|NormalizedRestTickerSnapshot Arr.| D[🔁 Iterate over normalized snapshots<br/>for each ticker]:::loop
+
+    D -->|NormalizedRestTickerSnapshot| E0{{✅ Validate snapshot #40;Sanity checks#41;}}:::branch
+    E0 -- Invalid --> E5([🛑 Skip invalid snapshot]):::exit
+    E0 -- Valid --> NormalizedRestTickerSnapshot --> E1[💾 Store new snapshot<br/><i>storeSnapshot</i>]:::storage
+    E1 -->|NormalizedRestTickerSnapshot| E2[📚 Fetch recent history<br/><i>retrieveRecentSnapshots</i>]:::async
+    E2 -->| NormalizedRestTickerSnapshot#91;&#93 | E3{{📊 <b>Enough history for ticker?</b>}}:::branch
+    E3 --> No -->|false| E4([🚫 Skip ticker<br/>not enough data]):::exit
+
+    E3 --> Yes -->|true| F1[🧠 Compute kinetics<br/>velocity, acceleration]:::compute
+    F1 -->|TickerKinetics| F2[🆕 Create leaderboard entry<br/>init appearance count to 1]:::step
+    F2 -->|LeaderboardRestTickerSnapshot| F3[🗂️ Add to batch map<br/>in-memory leaderboard map]:::step
+
+    F3 -->|Map&lt;ticker, snapshot&gt;| M1[📥 Retrieve previous leaderboard<br/><i>retreiveLeaderboard</i>]:::async
+    M1 -->|LeaderboardRestTickerSnapshot Arr.| M2A{{🆕 Is leaderboard empty?}}:::branch
+    M2A --> Yes -->|true| M3[⚙️ Set appearance count = 1<br/>for new tickers]:::step
+    M2A --> No -->|false| M2{{🔀 Merging with previous entries?}}:::branch
+
+    M2 --> No -->|false| M3
+    M2 --> Yes -->|true| M4[♻️ Update appearance counts<br/>increment for persistent/retained]:::step
+    M4 -->|updated entries| M5[📌 Retain missing tickers<br/>from previous leaderboard]:::step
+    M5 -->|merged map| M6[✅ Finalize appearance counts<br/>set to 1 if unseen]:::step
+
+    M3 -->|Map&lt;ticker, snapshot&gt;| S1
+    M6 -->|Map&lt;ticker, snapshot&gt;| S1
+
+    S1[📈 Compute momentum score<br/>velocity × appearance + acceleration]:::compute -->|score| S2[💥 Add POP bonus if new<br/>score += popBonus]:::step
+    S2 -->|score| S3[📉 Apply decay score *= decayFactor ^ n-1]:::step
+
+    S3 -->|scored list| R1[🧮 Sort by scores - DESC order]:::compute
+    R1 -->|sorted list| R2[🏅 Assign ranks<br/>rank = index + 1]:::compute
+    R2 -->|RankedLeaderboardSnapshot Arr.| R3([📤 Return ranked leaderboard]):::exit
+    R3 -->|RankedLeaderboardSnapshot Arr.| H[💾 Persist leaderboard]:::storage
+    H -->|void| Z([✅ Done]):::exit
+
+    %% Styles
+    classDef step fill:#e6ffcc,stroke:#008000,stroke-width:2px;
+    classDef entry fill:#fffbe6,stroke:#ffb300,stroke-width:2px;
+    classDef exit fill:#f5f5f5,stroke:#222,stroke-width:2px;
+    classDef error fill:#fff0f0,stroke:#d00,stroke-width:2px;
+    classDef compute fill:#e0f7fa,stroke:#006064,stroke-width:2px;
+    classDef storage fill:#ffe6e6,stroke:#cc0000,stroke-width:2px;
+    classDef loop fill:#f0f0f0,stroke:#888,stroke-dasharray: 5, 5;
+    classDef async fill:#fffbe6,stroke:#ff9900,stroke-width:2px;
+    classDef branch fill:#ffffff,stroke:#999999,stroke-dasharray: 3, 3;

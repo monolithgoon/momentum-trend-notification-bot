@@ -1,43 +1,33 @@
-// Config
-import { APP_CONFIG } from "@config/index";
-
-// Core Utilities & Enums
+import { APP_CONFIG } from "../config";
 import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
+
+import { MarketQuoteScanner } from "@core/scanners/MarketQuoteScanner";
 import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
-import { MarketSessions } from "@core/enums/marketSessions.enum";
+import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@core/scanners/scanFilters";
+import { scanScreenerConfigTypes } from "@core/scanners/types/scanScreenerConfigs.type";
+
+import { NotifierService } from "src/services/notifier/NotifierService";
+import { TelegramNotifier } from "src/services/notifier/TelegramService";
+
+import { generateMockSnapshots } from "@core/snapshots/rest_api/generateMockSnapshots";
+import { NormalizedRestTickerSnapshot } from "@core/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
+import { SortedNormalizedTicker } from "@core/snapshots/rest_api/types/SortedNormalizedTicker.interface";
+
+import { GenericSorter } from "@core/generics/GenericSorter";
 import { SortOrder } from "@core/enums/sortOrder.enum";
 
-// Core Models & Types
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
-import { SortedNormalizedTicker } from "@core/models/SortedNormalizedTicker.interface";
-import { LeaderboardRestTickerSnapshot } from "@core/models/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardSnapshotsMap } from "@core/models/LeaderboardSnapshotsMap";
-import { ScanScreenerConfigTypes } from "@services/scan/types/scanScreenerConfigs.type";
+// import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
+import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage";
+import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
+import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
+import { LeaderboardTickersSorter } from "@analytics/leaderboard/LeaderboardTickersSorter";
+import { LeaderboardSnapshotsMap } from "@core/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 
-// Core Generics & Transformers
-import { GenericSorter } from "@core/generics/GenericSorter";
-import { LeaderboardTickerTransformer } from "@core/models/transformers/LeaderboardTickerTransformer";
-
-// Scan Services
-import { MarketQuoteScanner } from "@services/scan/MarketQuoteScanner";
-import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@services/scan/scanFilters";
-
-// Notifier Services
-import { NotifierService } from "@services/notifier/NotifierService";
-import { TelegramNotifier } from "@services/notifier/TelegramService";
-
-// Leaderboard Services
-import { FileLeaderboardStorage } from "@services/leaderboard/FileLeaderboardStorage";
-import { LeaderboardTickersSorter } from "@services/leaderboard/LeaderboardTickersSorter";
-import { LeaderboardService } from "@services/leaderboard/LeaderboardService";
-import { scoringStrategies } from "@services/leaderboard/scoringStrategies";
-
-// WebSocket Services
-import handleWebSocketTickerUpdate from "@services/websocket/handleWebSocketTickerUpdate";
-import { EODHDWebSocketClient } from "@services/websocket/eodhd/eodhdWebSocketClient";
-
-// Mock Data Generators
-import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
+import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
+import handleWebSocketTickerUpdate from "@core/snapshots/websocket/handleWebSocketTickerUpdate";
+import { MarketSessions } from "@core/enums/marketSessions.enum";
+import { LeaderboardTickerTransformer } from "@core/snapshots/rest_api/transformers/LeaderboardTickerTransformer";
+import { LeaderboardRestTickerSnapshot } from "@core/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
 
 /**
  * Adds a tag to the market scan result.
@@ -74,7 +64,7 @@ function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): SortedNormali
 /**
  * Builds screener configs for the scan.
  */
-function buildScreenerConfigs(): ScanScreenerConfigTypes[] {
+function buildScreenerConfigs(): scanScreenerConfigTypes[] {
 	return [
 		{
 			scanFilter: new VolumeChangeScanFilter(),
@@ -133,31 +123,19 @@ function getSortedSnapshots(
  * Processes the leaderboard with tagged tickers.
  */
 
-type LeaderboardSortFieldType = Extract<
+type leaderboardSortFieldType = Extract<
 	keyof LeaderboardRestTickerSnapshot,
-	| "leaderboard_momentum_score"
+	| "leaderboar_momentum_score"
 	| "pct_change_velocity__ld_tick"
 	| "pct_change_acceleration__ld_tick"
 	| "volume_velocity__ld_tick"
 	| "volume_acceleration__ld_tick"
 >;
 
-const LEADERBOARD_SORT_FIELDS = [
-	"leaderboard_momentum_score",
-	"pct_change_velocity__ld_tick",
-	"pct_change_acceleration__ld_tick",
-	"volume_velocity__ld_tick",
-	"volume_acceleration__ld_tick",
-] as const;
-
-type ValidateKeys<T, K extends readonly string[]> = K[number] extends keyof T ? true : "❌ Invalid field in array";
-
-type AssertLeaderboardSortFieldKeysValid = ValidateKeys<LeaderboardRestTickerSnapshot, typeof LEADERBOARD_SORT_FIELDS>;
-
 async function processLeaderboard(
 	snapshotsMap: LeaderboardSnapshotsMap,
 	leaderboardTag: string,
-	sortField: LeaderboardSortFieldType
+	sortField: leaderboardSortFieldType
 ): Promise<FileLeaderboardStorage> {
 	const storage = new FileLeaderboardStorage();
 	await storage.initializeLeaderboardStore(leaderboardTag);
