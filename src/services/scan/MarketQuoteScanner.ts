@@ -1,5 +1,5 @@
-import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
-import { MarketSessions } from "@core/enums/marketSessions.enum";
+import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
+import { MarketSessions } from "@core/enums/MarketSessions.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
 import { ScanScreenerConfigTypes } from "./types/scanScreenerConfigs.type";
 import { SnapshotScreener } from "./SnapshotScreener";

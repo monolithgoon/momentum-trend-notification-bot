@@ -1,0 +1,82 @@
+%%{ init: { "theme": "default" } }%%
+graph TD
+
+  %% 📘 Normalized domain
+  NormalizedRestTickerSnapshot["<b>NormalizedRestTickerSnapshot</b>
+  ordinal_sort_position
+  timestamp
+  ticker_name__nz_tick
+  change_pct__nz_tick
+  price?
+  volume?
+  currnt_day_stats_high?
+  current_day_stats_low?"]:::normalized
+
+SortedNormalizedTicker["<b>SortedNormalizedTicker</b>
+  ordinal_sort_position
+  (extends NormalizedRestTickerSnapshot)"]:::normalized
+
+  EodhdWebSocketSnapshot["<b>EodhdWebSocketSnapshot</b>
+  s
+  ap
+  as
+  bp
+  bs
+  t"]:::eodhd
+
+  %% 📗 Leaderboard domain
+  LeaderboardRestTickerSnapshot["<b>LeaderboardRestTickerSnapshot</b>
+  ticker_name__ld_tick
+  change_pct__ld_tick
+  timestamp__ld_tick
+  volume__ld_tick
+  pct_change_velocity__ld_tick
+  pct_change_acceleration__ld_tick
+  volume_velocity__ld_tick
+  volume_acceleration__ld_tick
+  ordinal_sort_position__ld_tick
+  leaderboard_momentum_score
+  leaderboard_rank
+  num_consecutive_appearances"]:::leaderboard
+
+  LeaderboardTickerTransformer["<b>LeaderboardTickerTransformer</b>
+  transform(input: NormalizedRestTickerSnapshot): LeaderboardRestTickerSnapshot"]:::leaderboard
+
+  %% 🟠 Polygon domain
+  PolygonRestTickerSnapshot["<b>PolygonRestTickerSnapshot</b>
+  polygon_ticker_name
+  priceChangeTodayAbs
+  priceChangeTodayPerc
+  lastTradeTimestampNs
+  tradingVolumeToday
+  rawTickerSnapshot
+  currDay
+  prevDay
+  minute
+  lastQuote
+  lastTrade"]:::polygon
+
+  PolygonTickerTransformer["<b>PolygonTickerTransformer</b>
+  transform(input: PolygonRestTickerSnapshot): NormalizedRestTickerSnapshot"]:::polygon
+
+  %% 🟣 Raw / Transformer
+  RawRestApiTickerTransformer["<b>RawRestApiTickerTransformer</b>"]:::raw
+  DefaultTickerSnapshotTransformer["<b>DefaultTickerSnapshotTransformer</b>
+  transform(TIn, position: number): TOut"]:::raw
+
+  %% 🔀 Updated Relationship Annotations
+  PolygonRestTickerSnapshot -- "transforms to" --> NormalizedRestTickerSnapshot
+  EodhdWebSocketSnapshot -- "transforms to" --> NormalizedRestTickerSnapshot
+  SortedNormalizedTicker -- "derives from" --> NormalizedRestTickerSnapshot
+  NormalizedRestTickerSnapshot -- "composed in" --> LeaderboardRestTickerSnapshot
+  LeaderboardRestTickerSnapshot -- "transforms to" --> SortedNormalizedTicker
+  DefaultTickerSnapshotTransformer -- "implemented →" --> PolygonTickerTransformer
+  DefaultTickerSnapshotTransformer -- "implemented by →" --> LeaderboardTickerTransformer
+  RawRestApiTickerTransformer -- "data input" --> PolygonRestTickerSnapshot
+
+  %% Styles
+  classDef normalized fill:light-grey,stroke:#004085,stroke-width:4
+  classDef leaderboard fill:#c9ffff,stroke:#155724;
+  classDef polygon fill:#ffeeba,stroke:#856404;
+  classDef raw fill:#fff,stroke:#5c2a91, stroke-width:3;
+  classDef eodhd fill:#fff,stroke:#5c2a91;

@@ -1,4 +1,4 @@
-import { SortOrder } from "@core/enums/sortOrder.enum";
+import { SortOrder } from "@core/enums/SortOrder.enum";
 
 // REMOVE - DEPRECATED
 // export class RankedTickersSorter {

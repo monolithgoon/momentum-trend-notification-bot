@@ -1,6 +1,6 @@
 // vendorStrategyRegistry.ts
 
-import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
+import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
 import { polygnRestApiFetchStrategyRegistry } from "./polygnRestApiFetchStrategyRegistry";
 
 // 1. Map of all vendor registries

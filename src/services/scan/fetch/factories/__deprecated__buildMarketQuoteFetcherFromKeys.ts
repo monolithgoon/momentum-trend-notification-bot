@@ -1,4 +1,4 @@
-import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
+import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
 import { SessionMarketQuoteFetcher } from "@core/strategies/fetch/types/SessionMarketQuoteFetcher";
 import { PolygonMarketQuoteFetcher } from "@core/strategies/fetch/vendors/polygon/fetchers/PolygonMarketQuoteFetcher";
 import { PolygonTickerTransformer } from "@core/snapshots/rest_api/transformers/vendors/polygon/PolygonTickerTransformer";

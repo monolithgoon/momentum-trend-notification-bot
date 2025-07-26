@@ -1,5 +1,5 @@
 import { APP_CONFIG } from "../../config";
-import { MarketSessions } from "../enums/marketSessions.enum";
+import { MarketSessions } from "../enums/MarketSessions.enum";
 
 export async function safeAPICall<T>(
 	fn: () => Promise<T>,

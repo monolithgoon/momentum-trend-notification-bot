@@ -1,4 +1,4 @@
-import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
+import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
 import { polygnRestApiFetchStrategyRegistry } from "./polygnRestApiFetchStrategyRegistry";
 import { strategyRegistryType } from "../types/strategyRegistry.type";
 import { PolygonRestApiQuoteFetchStrategy } from "../vendors/polygon/types/PolygonRestApiQuoteFetchStrategy.interface";

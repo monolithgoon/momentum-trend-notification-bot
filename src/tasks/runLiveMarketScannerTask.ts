@@ -3,9 +3,9 @@ import { APP_CONFIG } from "@config/index";
 
 // Core Utilities & Enums
 import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
-import { MarketDataVendors } from "@core/enums/marketDataVendors.enum";
-import { MarketSessions } from "@core/enums/marketSessions.enum";
-import { SortOrder } from "@core/enums/sortOrder.enum";
+import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
+import { MarketSessions } from "@core/enums/MarketSessions.enum";
+import { SortOrder } from "@core/enums/SortOrder.enum";
 
 // Core Models & Types
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
@@ -38,7 +38,7 @@ import { EODHDWebSocketClient } from "@services/websocket/eodhd/eodhdWebSocketCl
 
 // Mock Data Generators
 import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
-import { LeaderboardSortFieldType, NORMALIZED_SORT_FIELDS, NormalizedSortableFieldType } from "@core/types/type-assertions";
+import { LeaderboardSortFieldType, NORMALIZED_SORT_FIELDS, NormalizedSortableFieldType } from "@core/types/sort-field-type-assertions";
 
 /**
  * Adds a tag to the market scan result.

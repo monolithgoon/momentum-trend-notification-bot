@@ -1,4 +1,4 @@
-import { MarketSessions } from "@core/enums/marketSessions.enum";
+import { MarketSessions } from "@core/enums/MarketSessions.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
 import { PolygonRestTickerSnapshot } from "@core/models/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { RawRestApiTickerTransformer } from "@core/models/transformers/types/RawRestApiTickerTransformer.interface";
