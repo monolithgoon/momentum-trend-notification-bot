@@ -1,43 +1,13 @@
 import { SortOrder } from "@core/enums/sortOrder.enum";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/LeaderboardRestTickerSnapshot.interface";
-
-type LeaderboardSortableField = keyof Pick<
-	LeaderboardRestTickerSnapshot,
-	| "leaderboard_momentum_score"
-	| "pct_change_velocity__ld_tick"
-	| "pct_change_acceleration__ld_tick"
-	| "volume_velocity__ld_tick"
-	| "volume_acceleration__ld_tick"
->;
-
-type LeaderboardSortFieldType = Extract<
-  keyof LeaderboardRestTickerSnapshot,
-  | "leaderboard_momentum_score"
-  | "pct_change_velocity__ld_tick"
-  | "pct_change_acceleration__ld_tick"
-  | "volume_velocity__ld_tick"
-  | "volume_acceleration__ld_tick"
->;
-
-const LEADERBOARD_SORT_FIELDS = [
-  "leaderboard_momentum_score",
-  "pct_change_velocity__ld_tick",
-  "pct_change_acceleration__ld_tick",
-  "volume_velocity__ld_tick",
-  "volume_acceleration__ld_tick",
-] as const;
-
-type ValidateKeys<T, K extends readonly string[]> = K[number] extends keyof T ? true : "❌ Invalid field in array";
-
-type AssertLeaderboardSortFieldKeysValid = ValidateKeys<LeaderboardRestTickerSnapshot, typeof LEADERBOARD_SORT_FIELDS>;
-
+import { LeaderboardSortFieldType } from "@core/types/type-assertions";
 
 export class LeaderboardTickersSorter
 	implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
 {
 	constructor(
-		private readonly sortField: LeaderboardSortableField,
+		private readonly sortField: LeaderboardSortFieldType,
 		private readonly sortOrder: SortOrder = SortOrder.DESC
 	) {}
 

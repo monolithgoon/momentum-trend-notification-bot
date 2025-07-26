@@ -38,6 +38,7 @@ import { EODHDWebSocketClient } from "@services/websocket/eodhd/eodhdWebSocketCl
 
 // Mock Data Generators
 import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
+import { LeaderboardSortFieldType, NORMALIZED_SORT_FIELDS, NormalizedSortableFieldType } from "@core/types/type-assertions";
 
 /**
  * Adds a tag to the market scan result.
@@ -133,27 +134,6 @@ function getSortedSnapshots(
  * Processes the leaderboard with tagged tickers.
  */
 
-type LeaderboardSortFieldType = Extract<
-	keyof LeaderboardRestTickerSnapshot,
-	| "leaderboard_momentum_score"
-	| "pct_change_velocity__ld_tick"
-	| "pct_change_acceleration__ld_tick"
-	| "volume_velocity__ld_tick"
-	| "volume_acceleration__ld_tick"
->;
-
-const LEADERBOARD_SORT_FIELDS = [
-	"leaderboard_momentum_score",
-	"pct_change_velocity__ld_tick",
-	"pct_change_acceleration__ld_tick",
-	"volume_velocity__ld_tick",
-	"volume_acceleration__ld_tick",
-] as const;
-
-type ValidateKeys<T, K extends readonly string[]> = K[number] extends keyof T ? true : "❌ Invalid field in array";
-
-type AssertLeaderboardSortFieldKeysValid = ValidateKeys<LeaderboardRestTickerSnapshot, typeof LEADERBOARD_SORT_FIELDS>;
-
 async function processLeaderboard(
 	snapshotsMap: LeaderboardSnapshotsMap,
 	leaderboardTag: string,
@@ -215,8 +195,8 @@ export default async function runLiveMarketScannerTask() {
 		});
 
 		// 4. Sort snapshots
-		const sortFieldTypes = ["change_pct", "volume", "price"];
-		const sortField = sortFieldTypes[0] as keyof NormalizedRestTickerSnapshot;
+		const sortField: NormalizedSortableFieldType = NORMALIZED_SORT_FIELDS[0];
+
 		// TODO -> Uncomment when real data is available
 		// const sortedSnapshots = getSortedSnapshots(returnedSnapshots, sortField);
 		const sortedSnapshots = getSortedSnapshots(mockSnapshots, sortField);
