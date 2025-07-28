@@ -3,8 +3,8 @@ import { APP_CONFIG } from "@config/index";
 
 // Core Utilities & Enums
 import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
-import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
-import { MarketSessions } from "@core/enums/MarketSessions.enum";
+import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
+import { MarketSession } from "@core/enums/MarketSession.enum";
 import { SortOrder } from "@core/enums/SortOrder.enum";
 
 // Core Models & Types
@@ -93,8 +93,8 @@ async function ochestrateMarketScan(
 	scanStrategyKeys: string[]
 ): Promise<NormalizedRestTickerSnapshot[]> {
 	const scanner = new MarketQuoteScanner({
-		vendor: MarketDataVendors.POLYGON,
-		marketSession: currentMarketSession as MarketSessions,
+		vendor: MarketDataVendor.POLYGON,
+		marketSession: currentMarketSession as MarketSession,
 		strategyKeys: scanStrategyKeys,
 	});
 	const screenerConfigs = buildScreenerConfigs();
@@ -105,7 +105,7 @@ async function ochestrateMarketScan(
  * Notifies about the scan result.
  */
 async function notifyScanResult(currentMarketSession: string, returnedTickerNames: string[]): Promise<void> {
-	const sessionLabel = formatSessionLabel(currentMarketSession as MarketSessions);
+	const sessionLabel = formatSessionLabel(currentMarketSession as MarketSession);
 	const notifierService = new NotifierService(new TelegramNotifier());
 	const activeTickersStr = returnedTickerNames.join(", ");
 	await notifierService.notify(

@@ -1,5 +1,5 @@
 // src/constants.ts
-import { MarketDataVendors } from "../core/enums/MarketDataVendors.enum";
+import { MarketDataVendor } from "../core/enums/MarketDataVendor.enum";
 import { validateWebSocketUrl } from "../core/utils";
 
 // --- App Constants Interface ---
@@ -11,6 +11,7 @@ interface AppConstantsInterface {
 
 	// --- Market Session Times ---
 	MARKET_OPEN_UTC: number;
+	MARKET_CLOSE_UTC: number;
 
 	// --- Daemon/Process Control ---
 	APP_DAEMON_SAFE_RUN_INTERVAL_MS: number;
@@ -57,11 +58,12 @@ interface AppConstantsInterface {
 
 export const APP_CONSTANTS: AppConstantsInterface = {
 	// --- Market Data Vendors ---
-	DEFAULT_MARKET_DATA_VENDOR: MarketDataVendors.POLYGON, // Default vendor for market data
+	DEFAULT_MARKET_DATA_VENDOR: MarketDataVendor.POLYGON, // Default vendor for market data
 	MARKET_DATA_VENDORS: ["POLYGON", "EODHD"], // Supported
 
 	// --- Market Session Times ---
 	MARKET_OPEN_UTC: 13 * 3600 + 30 * 60, // 13:30 UTC in seconds
+	MARKET_CLOSE_UTC: 20 * 3600, // 20:00 UTC in seconds
 
 	// --- Daemon/Process Control ---
 	APP_DAEMON_SAFE_RUN_INTERVAL_MS: 1 * 60 * 1000,

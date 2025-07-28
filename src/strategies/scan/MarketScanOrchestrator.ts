@@ -1,6 +1,6 @@
 import logger from "@infrastructure/logger";
-import { MarketSessions } from "@core/enums/MarketSessions.enum";
-import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
+import { MarketSession } from "@core/enums/MarketSession.enum";
+import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
 import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
 import { GenericDatasetFilter } from "../filter/GenericDatasetFilter.interface";
@@ -10,7 +10,7 @@ import { MarketQuoteScanner_2 } from "./MarketQuoteScanner_2";
 import { dedupeByField } from "@core/generics/dedupeByField";
 
 export interface OrchestratorOptions {
-	session: MarketSessions;
+	session: MarketSession;
 	correlationId: string;
 }
 
@@ -36,7 +36,7 @@ export class MarketScanOrchestrator {
 
 		// 3. Initialize scanner
 		const scanner = new MarketQuoteScanner_2({
-			vendor: MarketDataVendors.POLYGON,
+			vendor: MarketDataVendor.POLYGON,
 			marketSession: this.opts.session,
 			strategyKeys: scanStrategyKeys,
 		});

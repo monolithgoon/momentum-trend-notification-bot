@@ -1,4 +1,4 @@
-export enum MarketDataVendors {
+export enum MarketDataVendor {
 	POLYGON = "polygon",
 	// EODHD = "eodhd",
 	// IEX = "iex",

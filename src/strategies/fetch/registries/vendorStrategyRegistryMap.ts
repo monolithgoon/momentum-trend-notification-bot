@@ -1,15 +1,15 @@
-import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
+import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { polygnRestApiFetchStrategyRegistry } from "./polygnRestApiFetchStrategyRegistry";
 import { strategyRegistryType } from "../types/strategyRegistry.type";
 import { PolygonRestApiQuoteFetchStrategy } from "../vendors/polygon/types/PolygonRestApiQuoteFetchStrategy.interface";
 
 export type VendorStrategyRegistryMapTypes = {
-	[MarketDataVendors.POLYGON]: strategyRegistryType<PolygonRestApiQuoteFetchStrategy>;
-	// [MarketDataVendors.EODHD]: strategyRegistryType<EodhdFetchStrategy>;
+	[MarketDataVendor.POLYGON]: strategyRegistryType<PolygonRestApiQuoteFetchStrategy>;
+	// [MarketDataVendor.EODHD]: strategyRegistryType<EodhdFetchStrategy>;
 };
 export const vendorStrategyRegistryMap: VendorStrategyRegistryMapTypes = {
-	[MarketDataVendors.POLYGON]: polygnRestApiFetchStrategyRegistry,
-	// [MarketDataVendors.EODHD]: eodhdRestApiFetchStrategyRegistry,
+	[MarketDataVendor.POLYGON]: polygnRestApiFetchStrategyRegistry,
+	// [MarketDataVendor.EODHD]: eodhdRestApiFetchStrategyRegistry,
 };
 
 /**

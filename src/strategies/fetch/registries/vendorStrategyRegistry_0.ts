@@ -1,12 +1,12 @@
 // vendorStrategyRegistry.ts
 
-import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
+import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { polygnRestApiFetchStrategyRegistry } from "./polygnRestApiFetchStrategyRegistry";
 
 // 1. Map of all vendor registries
 export const vendorStrategyRegistryMap = {
-	[MarketDataVendors.POLYGON]: polygnRestApiFetchStrategyRegistry,
-	// [MarketDataVendors.EODHD]: strategyRegistryType<EodhdFetchStrategy>;
+	[MarketDataVendor.POLYGON]: polygnRestApiFetchStrategyRegistry,
+	// [MarketDataVendor.EODHD]: strategyRegistryType<EodhdFetchStrategy>;
 } as const;
 
 // 2. Basic types

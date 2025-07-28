@@ -1,4 +1,4 @@
-import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
+import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { PolygonTickerTransformer } from "@core/models/transformers/vendors/polygon/PolygonTickerTransformer";
 import { PolygonMarketQuoteFetcher } from "../vendors/polygon/fetchers/PolygonMarketQuoteFetcher";
 import { SessionMarketQuoteFetcher } from "../types/SessionMarketQuoteFetcher.interface";
@@ -30,7 +30,7 @@ export function getMarketQuoteFetcherForStrategies<V extends Vendor>(
 	const strategies = strategyKeys.map((key) => getStrategy(vendor, key as StrategyKey<V>));
 
 	switch (vendor) {
-		case MarketDataVendors.POLYGON:
+		case MarketDataVendor.POLYGON:
 			return new PolygonMarketQuoteFetcher(
 				new PolygonTickerTransformer(),
 				strategies as StrategyInstance<V, StrategyKey<V>>[]

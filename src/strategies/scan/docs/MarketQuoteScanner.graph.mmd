@@ -14,12 +14,12 @@ graph TD
   <br/><i>Configures vendor, session, keys</i>
   "]:::typenode
 
-  MarketDataVendors["🏷️ <b>MarketDataVendors</b>
+  MarketDataVendor["🏷️ <b>MarketDataVendor</b>
   <br/>🏷️ <b>Enum</b>
   <br/><i>Vendor for quote fetching</i>
   "]:::typenode
 
-  MarketSessions["🏷️ <b>MarketSessions</b>
+  MarketSession["🏷️ <b>MarketSession</b>
   <br/>🏷️ <b>Enum</b>
   <br/><i>Market session (PRE, REGULAR, POST)</i>
   "]:::typenode
@@ -83,8 +83,8 @@ graph TD
   MarketQuoteScanner --> logResults
 
   executeScan --> MarketQuoteScannerConfig
-  executeScan --> MarketDataVendors
-  executeScan --> MarketSessions
+  executeScan --> MarketDataVendor
+  executeScan --> MarketSession
   executeScan --> scanScreenerConfigTypes
   executeScan --> NormalizedRestTickerSnapshot
   executeScan --> logResults

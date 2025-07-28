@@ -1,4 +1,4 @@
-import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
+import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { polygnRestApiFetchStrategyRegistry } from "./polygnRestApiFetchStrategyRegistry";
 
 // ========================
@@ -7,8 +7,8 @@ import { polygnRestApiFetchStrategyRegistry } from "./polygnRestApiFetchStrategy
 
 // Expandable: Add more vendor registries here
 export const vendorStrategyRegistryMap = {
-  [MarketDataVendors.POLYGON]: polygnRestApiFetchStrategyRegistry,
-  // [MarketDataVendors.EODHD]: eodhdRestApiFetchStrategyRegistry,
+  [MarketDataVendor.POLYGON]: polygnRestApiFetchStrategyRegistry,
+  // [MarketDataVendor.EODHD]: eodhdRestApiFetchStrategyRegistry,
 } as const;
 
 // ========================

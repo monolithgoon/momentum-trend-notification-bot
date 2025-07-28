@@ -1,11 +1,11 @@
-import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
-import { MarketSessions } from "@core/enums/MarketSessions.enum";
+import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
+import { MarketSession } from "@core/enums/MarketSession.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
 import { getMarketQuoteFetcherForStrategies } from "../fetch/factories/getMarketQuoteFetcherForStrategies";
 
 export interface MarketQuoteScannerConfig {
-  vendor: MarketDataVendors;
-  marketSession: MarketSessions;
+  vendor: MarketDataVendor;
+  marketSession: MarketSession;
   strategyKeys: string[];
 }
 

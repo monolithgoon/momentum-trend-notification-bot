@@ -1,0 +1,10 @@
+import { MarketSession } from "@core/enums/MarketSession.enum";
+import { PolygonRestTickerSnapshot } from "@core/models/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { PolygonRestApiQuoteFetcher } from "src/strategies/scan_2/ScanPresetFetchAdapter";
+
+export class PolygonRecentIposFetcher implements PolygonRestApiQuoteFetcher {
+
+  async fetch(marketSession: MarketSession): Promise<PolygonRestTickerSnapshot[]> {
+    return [];
+  }
+} 

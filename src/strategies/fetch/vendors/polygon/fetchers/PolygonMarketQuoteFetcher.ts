@@ -1,4 +1,4 @@
-import { MarketSessions } from "@core/enums/MarketSessions.enum";
+import { MarketSession } from "@core/enums/MarketSession.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
 import { PolygonRestTickerSnapshot } from "@core/models/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { RawRestApiTickerTransformer } from "@core/models/transformers/types/RawRestApiTickerTransformer.interface";
@@ -11,9 +11,9 @@ export class PolygonMarketQuoteFetcher implements SessionMarketQuoteFetcher {
 		private readonly strategies: PolygonRestApiQuoteFetchStrategy[]
 	) {}
 
-	async fetchData(marketSession: MarketSessions): Promise<NormalizedRestTickerSnapshot[]> {
+	async fetchData(marketSession: MarketSession): Promise<NormalizedRestTickerSnapshot[]> {
 		switch (marketSession) {
-			case MarketSessions.PRE_MARKET:
+			case MarketSession.PRE_MARKET:
 				const allTickerSnapshots: PolygonRestTickerSnapshot[] = [];
 
 				for (const strategy of this.strategies) {

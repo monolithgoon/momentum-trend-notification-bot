@@ -2,7 +2,7 @@ import { APP_CONFIG } from "../config";
 import { LeaderboardSnapshotsMap } from "@core/snapshots/rest_api/types/LeaderboardSnapshotsMap";
 import { MarketQuoteScanner } from "@core/scanners/MarketQuoteScanner";
 import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
-import { MarketDataVendors } from "@core/enums/MarketDataVendors.enum";
+import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { NotifierService } from "src/services/notifier/NotifierService";
 import { TelegramNotifier } from "src/services/notifier/TelegramService";
 import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
@@ -58,7 +58,7 @@ export default async function runLiveMarketScannerTask() {
 
 		// 1. Scan
 		const scanner = new MarketQuoteScanner({
-			vendor: MarketDataVendors.POLYGON,
+			vendor: MarketDataVendor.POLYGON,
 			marketSession: currentMarketSession,
 			strategyKeys: scanStrategyKeys,
 		});

@@ -38,7 +38,7 @@ graph TD
   <br/><i>Map of vendor to strategy registry</i>
   "]:::util
 
-  MarketDataVendors["🧭 MarketDataVendors
+  MarketDataVendor["🧭 MarketDataVendor
   <br/>🏷️ Enum
   <br/><i>Defines supported vendors</i>
   "]:::type
@@ -78,7 +78,7 @@ graph TD
   PolygonMarketQuoteFetcher --> PolygonTickerTransformer
 
   vendorStrategyRegistryMap -->|POLYGON| polygonRegistry
-  polygonRegistry --> MarketDataVendors
+  polygonRegistry --> MarketDataVendor
   polygonRegistry --> PolygonRestApiQuoteFetchStrategy
 
   polygonRegistry --> PreMarket

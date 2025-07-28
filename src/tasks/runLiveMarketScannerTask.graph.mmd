@@ -13,22 +13,22 @@ graph TD
   %% Dependencies
   MarketQuoteScanner["📈 <b>MarketQuoteScanner</b>
   <br/>🏛️ <b>Class</b>
-  <br/><b>Input:</b> { vendor: MarketDataVendors, marketSession: MarketSessions, strategyKeys: string[] }
+  <br/><b>Input:</b> { vendor: MarketDataVendor, marketSession: MarketSession, strategyKeys: string[] }
   <br/><b>Output:</b> Instance of MarketQuoteScanner
   <br/><i>Scans and filters market quotes</i>
   "]:::classnode
 
-  MarketDataVendors["🏷️ <b>MarketDataVendors</b>
+  MarketDataVendor["🏷️ <b>MarketDataVendor</b>
   <br/>🏷️ <b>Enum</b>
   <br/><b>Input:</b> None
-  <br/><b>Output:</b> MarketDataVendors
+  <br/><b>Output:</b> MarketDataVendor
   <br/><i>Enum of data vendors</i>
   "]:::typenode
 
-  MarketSessions["🏷️ <b>MarketSessions</b>
+  MarketSession["🏷️ <b>MarketSession</b>
   <br/>🏷️ <b>Enum</b>
   <br/><b>Input:</b> None
-  <br/><b>Output:</b> MarketSessions
+  <br/><b>Output:</b> MarketSession
   <br/><i>Enum of market sessions</i>
   "]:::typenode
 
@@ -189,7 +189,7 @@ graph TD
 
   formatSessionLabel["🏷️ <b>formatSessionLabel()</b>
   <br/>🧩 <b>Function</b>
-  <br/><b>Input:</b> currentMarketSession: MarketSessions
+  <br/><b>Input:</b> currentMarketSession: MarketSession
   <br/><b>Output:</b> string
   <br/><i>Formats session name</i>
   "]:::util
@@ -218,8 +218,8 @@ graph TD
   subgraph "🔍 <b>Scan & Filter</b>"
     scanMarketTickers
     MarketQuoteScanner
-    MarketDataVendors
-    MarketSessions
+    MarketDataVendor
+    MarketSession
     scanScreenerConfigTypes
     NormalizedRestTickerSnapshot
   end
@@ -267,8 +267,8 @@ graph TD
 
   %% scanMarketTickers
   scanMarketTickers --> MarketQuoteScanner
-  scanMarketTickers --> MarketDataVendors
-  scanMarketTickers --> MarketSessions
+  scanMarketTickers --> MarketDataVendor
+  scanMarketTickers --> MarketSession
   scanMarketTickers --> scanScreenerConfigTypes
   scanMarketTickers --> NormalizedRestTickerSnapshot
   scanMarketTickers --> buildScreenerConfigs
