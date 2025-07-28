@@ -1,7 +1,7 @@
 // /src/vendors/eodhdVendor.ts
 
 import axios from "axios";
-import { APP_CONFIG } from "../../../../../config";
+import { APP_CONFIG } from "../../../../config";
 import { safeAPICall } from "../../../../utils";
 import { MarketSessionDataProvider } from "./MarketSessionDataProvider.interface";
 import { EodhdTickerSnapshot } from "../../../../snapshots/rest_api/vendors/eodhd/eodhdRestSnapshot.interface";

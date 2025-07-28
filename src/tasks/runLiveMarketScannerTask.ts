@@ -12,15 +12,15 @@ import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerS
 import { SortedNormalizedTicker } from "@core/models/SortedNormalizedTicker.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardSnapshotsMap } from "@core/models/LeaderboardSnapshotsMap";
-import { ScanScreenerConfigTypes } from "@services/scan/types/scanScreenerConfigs.type";
+import { ScanFilterConfigTypes } from "src/strategies/scan/types/ScanFilterConfigs.types";
 
 // Core Generics & Transformers
 import { GenericSorter } from "@core/generics/GenericSorter";
 import { LeaderboardTickerTransformer } from "@core/models/transformers/LeaderboardTickerTransformer";
 
 // Scan Services
-import { MarketQuoteScanner } from "@services/scan/MarketQuoteScanner";
-import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@services/scan/scanFilters";
+import { MarketQuoteScanner } from "src/strategies/scan/MarketQuoteScanner";
+import { PriceChangeScanFilter, VolumeChangeScanFilter } from "src/strategies/filter/normalizedTickerScanFilters";
 
 // Notifier Services
 import { NotifierService } from "@services/notifier/NotifierService";
@@ -75,7 +75,7 @@ function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): SortedNormali
 /**
  * Builds screener configs for the scan.
  */
-function buildScreenerConfigs(): ScanScreenerConfigTypes[] {
+function buildScreenerConfigs(): ScanFilterConfigTypes[] {
 	return [
 		{
 			scanFilter: new VolumeChangeScanFilter(),

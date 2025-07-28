@@ -15,7 +15,7 @@ export class LeaderboardTickerTransformer implements NormalizedRestTickerSnapsho
 			pct_change_acceleration__ld_tick: 0,
 			volume_velocity__ld_tick: 0,
 			volume_acceleration__ld_tick: 0,
-			ordinal_sort_position__ld_tick: snapshot.ordinal_sort_position,
+			ordinal_sort_position: snapshot.ordinal_sort_position,
 			leaderboard_momentum_score: 0, // Placeholder, will be computed later
 			leaderboard_rank: 0,
 			num_consecutive_appearances: 1, // Default to 1, will be updated during merge

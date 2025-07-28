@@ -1,45 +1,56 @@
-// src/infrastructure/logger.ts
-type LogLevelType = "info" | "warn" | "error" | "debug";
+type LogLevel = "info" | "warn" | "error";
 
-class Logger {
+interface LogMeta {
+  [key: string]: any;
+}
+
+/**
+ * Creates a child logger instance with an extended or overridden context.
+ *
+ * This method is different from the other logging methods (`info`, `warn`, `error`)
+ * because it does not log a message. Instead, it returns a new `TinyLogger` instance
+ * with the specified context, allowing you to create hierarchical or contextual loggers
+ * for different parts of your application.
+ *
+ * @param context - The context string to associate with the new logger instance.
+ * @returns A new `TinyLogger` instance with the provided context.
+ */
+
+class TinyLogger {
   constructor(private readonly context?: string) {}
 
-  private formatLog(level: LogLevelType, message: string, data?: any) {
-    const ts = new Date().toISOString();
-    const ctx = this.context ? `[${this.context}]` : "";
-    const base = `${ts} ${level.toUpperCase()} ${ctx} ${message}`;
-    return data ? `${base} ${JSON.stringify(data)}` : base;
+  private log(level: LogLevel, meta: LogMeta, message: string) {
+    const logEntry = {
+      level,
+      timestamp: new Date().toISOString(),
+      context: this.context,
+      message,
+      ...meta,
+    };
+
+    const serialized = JSON.stringify(logEntry);
+    console[level === "error" ? "error" : "log"](serialized);
   }
 
-  info(message: string, data?: any) {
-    console.log(this.formatLog("info", message, data));
+  info(meta: LogMeta, message: string) {
+    this.log("info", meta, message);
   }
 
-  warn(message: string, data?: any) {
-    console.warn(this.formatLog("warn", message, data));
+  warn(meta: LogMeta, message: string) {
+    this.log("warn", meta, message);
   }
 
-  error(message: string, data?: any) {
-    console.error(this.formatLog("error", message, data));
+  error(meta: LogMeta, message: string | Error) {
+    const errorMeta = typeof message === "string" ? { errorMessage: message } : { error: message.message, stack: message.stack };
+    this.log("error", { ...meta, ...errorMeta }, "Error occurred");
   }
 
-  debug(message: string, data?: any) {
-    if (process.env.NODE_ENV !== "production") {
-      console.debug(this.formatLog("debug", message, data));
-    }
-  }
-
-  child(context: string): Logger {
-    return new Logger(context);
+  // 
+  child(context: string): TinyLogger {
+    return new TinyLogger(context);
   }
 }
 
-const logger = new Logger();
+const logger = new TinyLogger();
+
 export default logger;
-
-/**
- * GenericTickerSorter does not seem to do anything. Replace with GenericSorter
-
-WTF role does SortedNormalizedTicker play?? 
-I think my original intent was that NormalizedRestTickerSnapshot should not have its own ordinal_sort_position field by itself, and that any normalized ticker that needs that field needs to instad be a SortedNormalizedTicker
- */

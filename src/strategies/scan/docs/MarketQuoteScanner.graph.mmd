@@ -1,5 +1,5 @@
 %% MarketQuoteScanner Dependency Flow Graph 
-%% (class nodes: very bold, dashed black outlines, pink fill; types/enums: grey; clean subgraphs: SnapshotScreener, buildMarketQuoteFetcherFromKeys, bold headers, private methods bright yellow)
+%% (class nodes: very bold, dashed black outlines, pink fill; types/enums: grey; clean subgraphs: NormalizedSnapshotScreener, buildMarketQuoteFetcherFromKeys, bold headers, private methods bright yellow)
 
 graph TD
   %% Main class
@@ -51,10 +51,10 @@ graph TD
   <br/><i>Fetches, screens, logs, returns tickers</i>
   "]:::method
 
-  %% SnapshotScreener subgraph
-  subgraph "🔎 <b>SnapshotScreener</b> <br/> <b>Class</b> | 🟢 <b>public</b><br/><i>Screens and filters tickers by scan filters</i>"
-    SS_Ctor["<b>constructor()</b><br/>🟢 <b>public</b><br/><b>Input:</b> {scanFilter, config}[]<br/><b>Output:</b> SnapshotScreener instance<br/><i>Initializes filters</i>"]:::method
-    SS_Class["<b>SnapshotScreener</b><br/>🏛️ <b>Class</b>"]:::classnode
+  %% NormalizedSnapshotScreener subgraph
+  subgraph "🔎 <b>NormalizedSnapshotScreener</b> <br/> <b>Class</b> | 🟢 <b>public</b><br/><i>Screens and filters tickers by scan filters</i>"
+    SS_Ctor["<b>constructor()</b><br/>🟢 <b>public</b><br/><b>Input:</b> {scanFilter, config}[]<br/><b>Output:</b> NormalizedSnapshotScreener instance<br/><i>Initializes filters</i>"]:::method
+    SS_Class["<b>NormalizedSnapshotScreener</b><br/>🏛️ <b>Class</b>"]:::classnode
     SS_runScreener["<b>runScreener()</b><br/>🟢 <b>public</b><br/><b>Input:</b> 📊 NormalizedRestTickerSnapshot[]<br/><b>Output:</b> 📊 NormalizedRestTickerSnapshot[]<br/><i>Runs all filters, deduplicates by ticker name</i>"]:::method
     SS_Class --> SS_Ctor
     SS_Ctor --> SS_runScreener

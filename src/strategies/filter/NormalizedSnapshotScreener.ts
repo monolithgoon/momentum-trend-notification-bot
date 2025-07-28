@@ -1,6 +1,6 @@
 
 /**
- * SnapshotScreener applies one or more scan filters to a set of market data snapshots.
+ * NormalizedSnapshotScreener applies one or more scan filters to a set of market data snapshots.
  *
  * Responsibilities:
  * - Accepts pre-fetched market data (e.g. from a specific session or vendor).
@@ -16,10 +16,10 @@
  */
 
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
-import { ScanFilter } from "./types/ScanFilter.interface";
+import { NormalizedTickerScanFilter } from "../scan/types/NormalizedTickerScanFilter.interface";
 
-export class SnapshotScreener {
-	constructor(private scanFilters: { scanFilter: ScanFilter<any>; config: any }[]) {}
+export class NormalizedSnapshotScreener {
+	constructor(private scanFilters: { scanFilter: NormalizedTickerScanFilter<any>; config: any }[]) {}
 
 	runScreener(marketData: NormalizedRestTickerSnapshot[]): NormalizedRestTickerSnapshot[] {
 		const results = this.scanFilters.flatMap(({ scanFilter, config }) => scanFilter.runFilter(marketData, config));

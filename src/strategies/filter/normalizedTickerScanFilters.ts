@@ -1,29 +1,42 @@
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
-import { ScanFilter } from "./types/ScanFilter.interface";
 
-// Configs
-export interface VolumePricePctChangeConfig {
-	volumeThreshold: number;
-	changePercentageThreshold: number;
+interface NormalizedTickerScanFilter<TConfig = unknown> {
+	name: string;
+	description?: string;
+	runFilter(data: NormalizedRestTickerSnapshot[], config: TConfig): NormalizedRestTickerSnapshot[];
 }
 
-export class VolumeChangeScanFilter implements ScanFilter<VolumePricePctChangeConfig> {
-	name = "volumeAndChange";
-	description = "Filters tickers based on volume and percentage change";
+// --- Config Interfaces ---
 
-	runFilter(data: NormalizedRestTickerSnapshot[], config: VolumePricePctChangeConfig): NormalizedRestTickerSnapshot[] {
-		return data.filter(
-			(ticker) =>
-				(ticker.volume ?? 0) >= config.volumeThreshold && ticker.change_pct__nz_tick >= config.changePercentageThreshold
-		);
-	}
+export interface VolumePctChangeConfig {
+	volumeThreshold: number;
+	changePercentageThreshold: number;
 }
 
 export interface PriceSpikeConfig {
 	minPriceJump: number;
 }
 
-export class PriceSpikeStrategy implements ScanFilter<PriceSpikeConfig> {
+export interface PricePercChangConfig {
+	pricePercChangeThreshold: number;
+}
+
+// --- Scan Filter Implementations ---
+
+export class VolumeChangeScanFilter implements NormalizedTickerScanFilter<VolumePctChangeConfig> {
+	name = "volumeAndChange";
+	description = "Filters tickers based on volume and percentage change";
+
+	runFilter(data: NormalizedRestTickerSnapshot[], config: VolumePctChangeConfig): NormalizedRestTickerSnapshot[] {
+		return data.filter(
+			(ticker) =>
+				(ticker.volume ?? 0) >= config.volumeThreshold &&
+				ticker.change_pct__nz_tick >= config.changePercentageThreshold
+		);
+	}
+}
+
+export class PriceSpikeStrategy implements NormalizedTickerScanFilter<PriceSpikeConfig> {
 	name = "priceSpike";
 	description = "Filters tickers based on significant price jumps";
 
@@ -36,11 +49,7 @@ export class PriceSpikeStrategy implements ScanFilter<PriceSpikeConfig> {
 	}
 }
 
-export interface PricePercChangConfig {
-	pricePercChangeThreshold: number;
-}
-
-export class PriceChangeScanFilter implements ScanFilter<PricePercChangConfig> {
+export class PriceChangeScanFilter implements NormalizedTickerScanFilter<PricePercChangConfig> {
 	name = "priceChange";
 	description = "Filters tickers based on percentage price change";
 

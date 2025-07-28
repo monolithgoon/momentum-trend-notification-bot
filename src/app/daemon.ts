@@ -3,6 +3,7 @@
 import { APP_CONFIG } from "@config/index";
 import { pauseForInternet } from "@net/pauseForInternet";
 import runLiveMarketScannerTask from "@tasks/runLiveMarketScannerTask";
+import { runLiveMarketScannerTask_3 } from "@tasks/runLiveMarketScannerTask_3";
 
 // export function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {
 // 	let isRunning = false;
@@ -33,6 +34,7 @@ import runLiveMarketScannerTask from "@tasks/runLiveMarketScannerTask";
  * Updated startAppDaemon with failure cap.
  * Shuts down after too many consecutive failures.
  */
+
 export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.APP_DAEMON_SAFE_RUN_INTERVAL_MS) {
 	let isRunning = false;
 	let firstRun = true;
@@ -54,7 +56,8 @@ export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.APP_DAE
 
 			isRunning = true; // Mark as running
 
-			await runLiveMarketScannerTask();
+			// await runLiveMarketScannerTask();
+			await runLiveMarketScannerTask_3();
 
 			consecutiveFailures = 0; // ✅ Reset failure count on success
 		} catch (err) {

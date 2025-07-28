@@ -1,4 +1,6 @@
-export interface LeaderboardRestTickerSnapshot {
+import { BaseInternalTickerSnapshot } from "./SortedNormalizedTicker.interface";
+
+export interface LeaderboardRestTickerSnapshot extends BaseInternalTickerSnapshot {
 	ticker_name__ld_tick: string;
 	change_pct__ld_tick: number | 0;
 	timestamp__ld_tick: number;
@@ -9,7 +11,6 @@ export interface LeaderboardRestTickerSnapshot {
 	volume_velocity__ld_tick: number;
 	volume_acceleration__ld_tick: number;
 	// Rank & sort fields
-	ordinal_sort_position__ld_tick: number;
 	leaderboard_momentum_score: number;
 	leaderboard_rank: number;
 	// Other

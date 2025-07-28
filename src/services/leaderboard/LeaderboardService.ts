@@ -197,11 +197,11 @@ export class LeaderboardService {
 					pct_change_acceleration__ld_tick: pcAccel,
 					volume_velocity__ld_tick: volVel,
 					volume_acceleration__ld_tick: volAccel,
-					leaderboard_rank: snapshot.ordinal_sort_position__ld_tick, // Still 0-based as of here, I believe
+					leaderboard_rank: snapshot.ordinal_sort_position, // Temp; will be sorted by momentum score
 					leaderboard_momentum_score: 0, // Temp; will compute after num_consecutive_appearances set
 					num_consecutive_appearances: 1,
 					volume__ld_tick: 0,
-					ordinal_sort_position__ld_tick: 0,
+					ordinal_sort_position: snapshot.ordinal_sort_position,
 				};
 
 				// Assemble a key-value pair for the ticker oldEntry

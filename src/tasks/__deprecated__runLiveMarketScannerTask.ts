@@ -16,7 +16,7 @@ import { LeaderboardTickersSorter } from "@analytics/leaderboard/LeaderboardTick
 import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
 import handleWebSocketTickerUpdate from "@core/snapshots/websocket/handleWebSocketTickerUpdate";
 import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@core/scanners/scanFilters";
-import { ScanScreenerConfigTypes } from "@core/scanners/types/scanScreenerConfigs.type";
+import { ScanFilterConfigTypes } from "@core/scanners/types/scanScreenerConfigs.type";
 import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage";
 import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
 
@@ -63,7 +63,7 @@ export default async function runLiveMarketScannerTask() {
 			strategyKeys: scanStrategyKeys,
 		});
 
-		const screenerConfigs: ScanScreenerConfigTypes[] = [
+		const screenerConfigs: ScanFilterConfigTypes[] = [
 			{
 				scanFilter: new VolumeChangeScanFilter(),
 				config: { volumeThreshold: 1_000_000, changePercentageThreshold: 3 },
