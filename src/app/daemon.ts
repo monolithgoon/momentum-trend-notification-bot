@@ -2,7 +2,7 @@
 
 import { APP_CONFIG } from "@config/index";
 import { pauseForInternet } from "@net/pauseForInternet";
-import runLiveMarketScannerTask from "@tasks/runLiveMarketScannerTask";
+import runLiveMarketScannerTask from "@tasks/__deprecated__runLiveMarketScannerTask_1";
 import { runLiveMarketScannerTask_3 } from "@tasks/runLiveMarketScannerTask_3";
 
 // export function startAppDaemon(intervalMs: number = 5 * 60 * 1000) {

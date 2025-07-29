@@ -1,6 +1,6 @@
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { PolygonRestTickerSnapshot } from "@core/models/vendors/polygon/PolygonRestTickerSnapshot.interface";
-import { PolygonRestApiQuoteFetcher } from "src/strategies/scan_2/ScanPresetFetchAdapter";
+import { PolygonRestApiQuoteFetcher } from "../types/PolygonRestApiQuoteFetcher.interface";
 
 export class PolygonRecentIposFetcher implements PolygonRestApiQuoteFetcher {
 

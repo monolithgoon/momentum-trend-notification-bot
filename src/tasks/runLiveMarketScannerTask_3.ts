@@ -4,8 +4,8 @@ import timer from "@core/utils/timer";
 import logger from "@infrastructure/logger";
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
 import { MarketScanOrchestrator_3 } from "src/strategies/scan_2/MarketScanOrchestrator_3";
-import { AdvancedThresholdConfig } from "src/strategies/filter/filterByThresholds";
-import { ScanPresetKey } from "src/strategies/scan_2/ScanPresetKey.enum";
+import { AdvancedThresholdConfig } from "src/strategies/filter_2/filterByThresholds";
+import { MarketScanStrategyPresetKey } from "src/strategies/scan_2/MarketScanStrategyPresetKey.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 
 /**
@@ -14,20 +14,16 @@ import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 export async function runLiveMarketScannerTask_3(): Promise<void> {
 	// 1. Setup context
 	const correlationId = generateCorrelationId("scan");
-	const session = getCurrentMarketSession();
+	const marketSession = getCurrentMarketSession();
 	const stop = timer("scan.duration_ms", { correlationId });
-	logger.info({ correlationId, session }, "🟢 Starting market scan");
+	logger.info({ correlationId, marketSession }, "🟢 Starting market scan");
+	console.log({ marketSession });
 
 	try {
 		// 2. Initialize orchestrator
-		const orchestrator = new MarketScanOrchestrator_3({ session, correlationId });
+		const orchestrator = new MarketScanOrchestrator_3({ marketSession, correlationId });
 
 		// 3. Define scan filter config
-		// export type FieldThresholdConfig<T> = Partial<Record<keyof T, number>>;
-		// const config: FieldThresholdConfig<NormalizedRestTickerSnapshot> = {
-		// 	volume: 1_000_000,
-		// 	change_pct__nz_tick: 2.5,
-		// };
 		const fieldLimiters: AdvancedThresholdConfig<NormalizedRestTickerSnapshot> = {
 			volume: { operation: ">", value: 1000000 },
 			change_pct__nz_tick: { operation: ">=", value: 2.5 },
@@ -38,7 +34,7 @@ export async function runLiveMarketScannerTask_3(): Promise<void> {
 			numericFieldLimiters: fieldLimiters,
 			dedupField: "ticker_name__nz_tick",
 			marketSession: getCurrentMarketSession(), // ✅ fixed
-			sessionScanPresetKeys: [ScanPresetKey.PREMARKET_TOP_MOVERS, ScanPresetKey.RECENT_IPO],
+			sessionScanPresetKeys: [MarketScanStrategyPresetKey.TOP_MARKET_MOVERS, MarketScanStrategyPresetKey.RECENT_IPO],
 			marketDataVendor: MarketDataVendor.POLYGON,
 		});
 

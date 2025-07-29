@@ -1,40 +1,46 @@
 import logger from "@infrastructure/logger";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
-import { ScanPresetKey } from "./ScanPresetKey.enum";
-import { ScanPresetRegistry } from "./ScanPresetFetchAdapter";
+import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
+import { MarketScanAdapterRegistry } from "./MarketScanAdapterRegistry";
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
-import { AdvancedThresholdConfig, filterByThresholds } from "../filter/filterByThresholds";
+import { AdvancedThresholdConfig, filterByThresholds } from "../filter_2/filterByThresholds";
 import { dedupeByField } from "@core/generics/dedupeByField";
 import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
-import { MarketQuoteScanner_2 } from "../scan/MarketQuoteScanner_2";
 
-interface OrchestratorOptions {
-	session: MarketSession;
-	correlationId: string;
-}
-
-// src/core/generics/DedupableKey.ts
-// Filters only the keys of T where the value is string or number and non-nullable
+// Keys in T where the value is a non-nullable string — used for de-duplication
 export type DedupableKey<T> = {
 	[K in keyof T]-?: NonNullable<T[K]> extends string ? K : never;
 }[keyof T];
 
-interface RunOptions {
+interface OrchestratorContext {
+	marketSession: MarketSession;
+	correlationId: string;
+}
+
+interface ScanRunOptions {
 	numericFieldLimiters: AdvancedThresholdConfig<NormalizedRestTickerSnapshot>;
 	dedupField?: DedupableKey<NormalizedRestTickerSnapshot>;
 	marketSession: MarketSession;
-	sessionScanPresetKeys: ScanPresetKey[];
+	sessionScanPresetKeys: MarketScanStrategyPresetKey[];
 	marketDataVendor: MarketDataVendor;
 }
 
+/**
+ * Orchestrates a full market scan:
+ * - Fetches raw ticker snapshots using preset strategies
+ * - Normalizes, filters, and deduplicates results
+ * - Logs snapshot and filtering metadata
+ */
 export class MarketScanOrchestrator_3 {
 	private readonly log = logger.child("MarketScanOrchestrator");
-	private returnedSnapshots: NormalizedRestTickerSnapshot[] = [];
 
-	constructor(private readonly ochOptions: OrchestratorOptions) {}
+	constructor(private readonly context: OrchestratorContext) {}
 
-	public async executeScan(options: RunOptions): Promise<NormalizedRestTickerSnapshot[]> {
+	/**
+	 * Executes the scan using preset strategies and filters.
+	 */
+	public async executeScan(options: ScanRunOptions): Promise<NormalizedRestTickerSnapshot[]> {
 		const {
 			numericFieldLimiters,
 			dedupField = "ticker_name__nz_tick",
@@ -43,51 +49,65 @@ export class MarketScanOrchestrator_3 {
 			marketDataVendor,
 		} = options;
 
-		const { correlationId } = this.ochOptions;
+		const { correlationId } = this.context;
 
-		// → Fetch snapshot data using sessionScanPresetKeys, session, and vendor
-		const allSnapshots = await this.fetchMarketData(marketDataVendor, sessionScanPresetKeys, marketSession);
+		// Step 1: Fetch raw normalized snapshots from registry-backed adapters
+		let rawSnapshots = await this.fetchMarketSnapshots(marketDataVendor, sessionScanPresetKeys, marketSession);
 
-		if (!allSnapshots.length) {
+		if (!rawSnapshots.length) {
 			this.log.warn({ correlationId }, "⚠️ No tickers returned from market data scan");
-			return [];
+			// WIP
+			// return [];
 		}
 
-		const filtered = filterByThresholds(allSnapshots, numericFieldLimiters);
+		// 1b. Generate mock data (for demo/testing)
+		const mockSnapshots = generateMockSnapshots(["AAPL", "TSLA"], 3, {
+			changePctRange: [0.1, 0.2],
+			trend: "increasing",
+		});
+
+		console.log({ mockSnapshots });
+
+		// Step 2: Apply field-based numeric filters (volume, price, etc.)
+		const filtered = filterByThresholds(rawSnapshots.length ? rawSnapshots : mockSnapshots, numericFieldLimiters);
+
+		// Step 3: Deduplicate based on specified key (e.g. ticker symbol)
 		const deduped = dedupeByField(filtered, dedupField);
 
 		this.log.info(
-			{ correlationId, total: allSnapshots.length, filtered: filtered.length, deduped: deduped.length },
-			"✅ Scan complete"
+			{ correlationId, total: rawSnapshots.length, filtered: filtered.length, deduped: deduped.length },
+			"✅ Market scan complete"
 		);
 
 		return deduped;
 	}
 
-	// → fetch snapshot data using sessionScanPresetKeys, session, and vendor
-	private async fetchMarketData(
-		marketDataVendor: MarketDataVendor,
-		sessionScanPresetKeys: ScanPresetKey[],
+	/**
+	 * Fetches raw normalized snapshots by running all preset scan strategies for a vendor.
+	 */
+	private async fetchMarketSnapshots(
+		vendor: MarketDataVendor,
+		strategyKeys: MarketScanStrategyPresetKey[],
 		marketSession: MarketSession
 	): Promise<NormalizedRestTickerSnapshot[]> {
-		const snapshots: NormalizedRestTickerSnapshot[] = [];
-		const presetKey = new ScanPresetRegistry(marketDataVendor);
+		const adapterRegistry = new MarketScanAdapterRegistry(vendor);
+		const results: NormalizedRestTickerSnapshot[] = [];
 
-		for (const key of sessionScanPresetKeys) {
-			const adapter = presetKey.getQuoteFetcherAdapter(key);
-			const result = await adapter.plug(marketSession);
-			snapshots.push(...result);
+		for (const strategyKey of strategyKeys) {
+			const adapter = adapterRegistry.getAdapter(strategyKey);
+			const snapshots = await adapter.fetchAndTransform(marketSession);
+			results.push(...snapshots);
 		}
 
 		this.log.info(
 			{
-				correlationId: this.ochOptions.correlationId,
-				fetched: snapshots.length,
-				tickers: snapshots.map((s) => s.ticker_name__nz_tick),
+				correlationId: this.context.correlationId,
+				fetched: results.length,
+				tickers: results.map((s) => s.ticker_name__nz_tick),
 			},
-			`📦 Raw snapshots fetched via **${marketDataVendor}** and transformed (normalized)`
+			`📦 Snapshots fetched via [${vendor}] and normalized`
 		);
 
-		return snapshots;
+		return results;
 	}
 }

@@ -1,12 +1,12 @@
-// src/interfaces/strategies/fetchStrategy.interface.ts
+import { MarketSession } from "@core/enums/MarketSession.enum";
 
 /**
- * Base interface for all fetch strategies, regardless of vendor.
+ * Base interface for all market data fetchers, regardless of vendor.
  * T represents the raw snapshot format (e.g., PolygonRestTickerSnapshot).
  */
 export interface RestApiQuoteFetcher<T> {
 	/**
-	 * Executes the strategy and returns raw vendor-specific snapshots.
+	 * Rurns raw vendor-specific snapshots.
 	 */
-	fetch(): Promise<T[]>;
+	fetch(session: MarketSession): Promise<T[]>;
 }
