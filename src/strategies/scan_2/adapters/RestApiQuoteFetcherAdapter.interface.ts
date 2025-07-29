@@ -1,7 +1,7 @@
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
 
-// REMVOE - DEPRECATED
+// REMOVE - DEPRECATED
 export interface RestApiQuoteFetcherAdapter_0<TInput, TOutput> {
 	transform(payload: TInput[]): TOutput[];
 	plug(session: MarketSession): Promise<TOutput[]>;

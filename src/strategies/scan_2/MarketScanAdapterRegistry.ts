@@ -24,6 +24,19 @@ export class MarketScanAdapterRegistry {
 	}
 
 	/**
+	 * Returns a quote fetcher adapter for a given market scan strategy preset.
+	 * Returns the adapter that corresponds to the given market scan strategy preset.
+	 * @throws If no adapter is defined for the given preset.
+	 */
+	public getAdapter(presetKey: MarketScanStrategyPresetKey): RestApiQuoteFetcherAdapter {
+		const adapter = this.adapterMap[presetKey];
+		if (!adapter) {
+			throw new Error(`Fetcher adapter not found for this market scan preset key: ${presetKey}`);
+		}
+		return adapter;
+	}
+
+	/**
 	 * Maps ("registers") each scan strategy preset key (eg. "TOP_MARKET_MOVERS") to a vendor-specific adapter implementation
 	 * Currently supports Polygon.
 	 */
@@ -32,12 +45,10 @@ export class MarketScanAdapterRegistry {
 			case MarketDataVendor.POLYGON:
 				return {
 					[MarketScanStrategyPresetKey.TOP_MARKET_MOVERS]: new PolygonFetcherAdapter(
-						MarketSession.PRE_MARKET,
 						new PolygonMarketMoversFetcher(),
 						new PolygonTickerTransformer()
 					),
 					[MarketScanStrategyPresetKey.RECENT_IPO]: new PolygonFetcherAdapter(
-						MarketSession.RTH,
 						new PolygonRecentIposFetcher(),
 						new PolygonTickerTransformer()
 					),
@@ -45,18 +56,5 @@ export class MarketScanAdapterRegistry {
 			default:
 				throw new Error(`Unsupported market data vendor: ${vendor}`);
 		}
-	}
-
-	/**
-	 * Returns a quote fetcher adapter for a given market scan strategy preset.
-	 * Returns the adapter that corresponds to the given market scan strategy preset.
-	 * @throws If no adapter is defined for the given preset.
-	 */
-	public getAdapter(presetKey: MarketScanStrategyPresetKey): RestApiQuoteFetcherAdapter {
-		const adapter = this.adapterMap[presetKey];
-		if (!adapter) {
-			throw new Error(`Fetcher not found for this market scan preset key: ${presetKey}`);
-		}
-		return adapter;
 	}
 }

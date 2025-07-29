@@ -90,11 +90,11 @@ export class MarketScanOrchestrator_3 {
 		strategyKeys: MarketScanStrategyPresetKey[],
 		marketSession: MarketSession
 	): Promise<NormalizedRestTickerSnapshot[]> {
-		const adapterRegistry = new MarketScanAdapterRegistry(vendor);
+		const vendorAdapterRegistry = new MarketScanAdapterRegistry(vendor);
 		const results: NormalizedRestTickerSnapshot[] = [];
 
 		for (const strategyKey of strategyKeys) {
-			const adapter = adapterRegistry.getAdapter(strategyKey);
+			const adapter = vendorAdapterRegistry.getAdapter(strategyKey);
 			const snapshots = await adapter.fetchAndTransform(marketSession);
 			results.push(...snapshots);
 		}

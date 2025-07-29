@@ -33,7 +33,7 @@ export async function runLiveMarketScannerTask_3(): Promise<void> {
 		const results = await orchestrator.executeScan({
 			numericFieldLimiters: fieldLimiters,
 			dedupField: "ticker_name__nz_tick",
-			marketSession: getCurrentMarketSession(), // ✅ fixed
+			marketSession: getCurrentMarketSession(),
 			sessionScanPresetKeys: [MarketScanStrategyPresetKey.TOP_MARKET_MOVERS, MarketScanStrategyPresetKey.RECENT_IPO],
 			marketDataVendor: MarketDataVendor.POLYGON,
 		});
