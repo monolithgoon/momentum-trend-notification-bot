@@ -2,7 +2,7 @@ import axios from "axios";
 import { APP_CONFIG } from "@config/index";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { nsToUnixSec, safeAPICall } from "@core/utils/index";
-import { PolygonRestTickerSnapshot } from "@core/models/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { PolygonRestApiQuoteFetcher } from "src/strategies/fetch_2/vendors/polygon/types/PolygonRestApiQuoteFetcher.interface";
 
 // src/core/utils/timestampTradeSessionChk.ts

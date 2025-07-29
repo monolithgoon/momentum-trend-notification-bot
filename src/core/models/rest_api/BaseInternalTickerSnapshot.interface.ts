@@ -1,10 +1,3 @@
-import { NormalizedRestTickerSnapshot } from "./NormalizedRestTickerSnapshot.interface";
-
-// ????? why do I have this interface?
-export interface SortedNormalizedTicker extends NormalizedRestTickerSnapshot {
-	ordinal_sort_position: number;
-}
-
 /**
  * Marker Interface:
  * An interface with no members, used to tag or label a type with semantic meaning rather than enforce structure.
@@ -14,6 +7,9 @@ export interface SortedNormalizedTicker extends NormalizedRestTickerSnapshot {
  * - Enables future-proofing: shared fields can be added later, and all implementing types will inherit them automatically.
  * - Useful for type constraints and code organization without imposing structure.
  */
+
 export interface BaseInternalTickerSnapshot {
-	ordinal_sort_position: number; // 1-based position
+	// REMOVE -> unnecessary fields
+	// ingestion_ordinal_index: number;
+	// computed_ordinal_index: number;
 }

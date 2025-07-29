@@ -27,7 +27,7 @@ graph TD
   <br/><i>Concrete implementation for Polygon quotes</i>
   "]:::service
 
-  PolygonTickerTransformer["🔄 PolygonTickerTransformer
+  PolygonSnapshotTransformer["🔄 PolygonSnapshotTransformer
   <br/>🏛️ Class
   <br/><i>Normalizes Polygon response format</i>
   "]:::service
@@ -75,7 +75,7 @@ graph TD
   getMarketQuoteFetcherForStrategies --> getStrategy
   getMarketQuoteFetcherForStrategies --> vendorStrategyRegistryMap
   getMarketQuoteFetcherForStrategies -->|if vendor = POLYGON| PolygonMarketQuoteFetcher
-  PolygonMarketQuoteFetcher --> PolygonTickerTransformer
+  PolygonMarketQuoteFetcher --> PolygonSnapshotTransformer
 
   vendorStrategyRegistryMap -->|POLYGON| polygonRegistry
   polygonRegistry --> MarketDataVendor

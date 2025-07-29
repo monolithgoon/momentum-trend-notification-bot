@@ -1,11 +1,14 @@
 import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketSession } from "@core/enums/MarketSession.enum";
-import { PolygonTickerTransformer } from "@core/models/transformers/vendors/polygon/PolygonTickerTransformer";
+import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/PolygonSnapshotTransformer";
 import { PolygonMarketMoversFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonMarketMoversFetcher";
 import { PolygonRecentIposFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonRecentIposFetcher";
 import { PolygonFetcherAdapter } from "./adapters/PolygonFetcherAdapter";
 import { RestApiQuoteFetcherAdapter } from "./adapters/RestApiQuoteFetcherAdapter.interface";
+import { PolygonMostActiveFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonMostActiveFetcher";
+import { PolygonTopGainersFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonTopGainersFetcher";
+import { PolygonTopLosersFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonTopLosersFetcher";
 
 /**
  * Resolves the appropriate quote fetcher adapter based on:
@@ -14,7 +17,7 @@ import { RestApiQuoteFetcherAdapter } from "./adapters/RestApiQuoteFetcherAdapte
  *
  * Example:
  * const registry = new MarketScanAdapterRegistry(MarketDataVendor.POLYGON);
- * const adapter = registry.getAdapter(MarketScanStrategyPresetKey.TOP_MARKET_MOVERS);
+ * const adapter = registry.getAdapter(MarketScanStrategyPresetKey.MARKET_TOP_MOVERS);
  */
 export class MarketScanAdapterRegistry {
 	private adapterMap: Record<MarketScanStrategyPresetKey, RestApiQuoteFetcherAdapter>;
@@ -37,20 +40,43 @@ export class MarketScanAdapterRegistry {
 	}
 
 	/**
-	 * Maps ("registers") each scan strategy preset key (eg. "TOP_MARKET_MOVERS") to a vendor-specific adapter implementation
+	 * Maps ("registers") each scan strategy preset key (eg. "MARKET_TOP_MOVERS") to a vendor-specific adapter implementation
 	 * Currently supports Polygon.
+	 * REQUIRED: every strategy in MarketScanStrategyPresetKey.enum must be implementd
+	 * REQUIRED: keys must be unique
 	 */
 	private buildAdapterMap(vendor: MarketDataVendor): Record<MarketScanStrategyPresetKey, RestApiQuoteFetcherAdapter> {
 		switch (vendor) {
 			case MarketDataVendor.POLYGON:
 				return {
-					[MarketScanStrategyPresetKey.TOP_MARKET_MOVERS]: new PolygonFetcherAdapter(
+					// REMOVE -> Top market movers
+					[MarketScanStrategyPresetKey.MARKET_TOP_MOVERS]: new PolygonFetcherAdapter(
 						new PolygonMarketMoversFetcher(),
-						new PolygonTickerTransformer()
+						new PolygonSnapshotTransformer()
 					),
-					[MarketScanStrategyPresetKey.RECENT_IPO]: new PolygonFetcherAdapter(
+
+					// Most active tickers
+					[MarketScanStrategyPresetKey.MARKET_MOST_ACTIVE]: new PolygonFetcherAdapter(
+						new PolygonMostActiveFetcher(),
+						new PolygonSnapshotTransformer()
+					),
+
+					// Top Market gainers
+					[MarketScanStrategyPresetKey.MARKET_TOP_GAINERS]: new PolygonFetcherAdapter(
+						new PolygonTopGainersFetcher(),
+						new PolygonSnapshotTransformer()
+					),
+
+					// Top market losers
+					[MarketScanStrategyPresetKey.MARKET_TOP_LOSERS]: new PolygonFetcherAdapter(
+						new PolygonTopLosersFetcher(),
+						new PolygonSnapshotTransformer()
+					),
+
+					// Recent IPOs
+					[MarketScanStrategyPresetKey.MARKET_TOP_RECENT_IPO]: new PolygonFetcherAdapter(
 						new PolygonRecentIposFetcher(),
-						new PolygonTickerTransformer()
+						new PolygonSnapshotTransformer()
 					),
 				};
 			default:

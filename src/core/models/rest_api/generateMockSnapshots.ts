@@ -57,7 +57,7 @@ export function generateMockSnapshots(
 				change_pct__nz_tick: change_pct,
 				price: 100 + random() * 10,
 				volume: 1000 + Math.floor(random() * 500),
-				ordinal_sort_position: i
+				ingestion_ordinal_index: i
 			});
 		}
 	}

@@ -2,16 +2,13 @@ import logger from "@infrastructure/logger";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
+import { DedupableKey } from "@core/models/snapshotFieldTypeAssertions";
 import { MarketScanAdapterRegistry } from "./MarketScanAdapterRegistry";
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { AdvancedThresholdConfig, filterByThresholds } from "../filter_2/filterByThresholds";
 import { dedupeByField } from "@core/generics/dedupeByField";
 import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
-
-// Keys in T where the value is a non-nullable string — used for de-duplication
-export type DedupableKey<T> = {
-	[K in keyof T]-?: NonNullable<T[K]> extends string ? K : never;
-}[keyof T];
+import { NormalizedSnapshotSorter } from "../sort/NormalizedSnapshotSorter";
 
 interface OrchestratorContext {
 	marketSession: MarketSession;
@@ -24,6 +21,7 @@ interface ScanRunOptions {
 	marketSession: MarketSession;
 	sessionScanPresetKeys: MarketScanStrategyPresetKey[];
 	marketDataVendor: MarketDataVendor;
+	fieldSorter: NormalizedSnapshotSorter;
 }
 
 /**
@@ -47,6 +45,7 @@ export class MarketScanOrchestrator_3 {
 			marketSession,
 			sessionScanPresetKeys,
 			marketDataVendor,
+			fieldSorter,
 		} = options;
 
 		const { correlationId } = this.context;
@@ -74,12 +73,15 @@ export class MarketScanOrchestrator_3 {
 		// Step 3: Deduplicate based on specified key (e.g. ticker symbol)
 		const deduped = dedupeByField(filtered, dedupField);
 
+		// Step 4: Sort
+		const sorted = fieldSorter.sort(deduped);
+
 		this.log.info(
 			{ correlationId, total: rawSnapshots.length, filtered: filtered.length, deduped: deduped.length },
 			"✅ Market scan complete"
 		);
 
-		return deduped;
+		return sorted;
 	}
 
 	/**

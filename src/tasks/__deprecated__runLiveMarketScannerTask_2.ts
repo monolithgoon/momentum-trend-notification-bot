@@ -3,7 +3,7 @@ import { generateCorrelationId } from "@core/utils/correlation";
 import timer from "@core/utils/timer";
 import logger from "@infrastructure/logger";
 import { ComposableDatasetFieldThresholdFilter } from "src/strategies/filter/ComposableDatasetFieldThresholdFilter";
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { MarketScanOrchestrator_2 } from "src/strategies/scan/MarketScanOrchestrator_2";
 import { CompositeFilterScreener } from "src/strategies/filter/CompositeFilterScreener";
 import { GenericDatasetFilter } from "src/strategies/filter/GenericDatasetFilter.interface";

@@ -95,10 +95,10 @@ graph TD
   <br/><i>Ticker snapshot result</i>
   "]:::typenode
 
-  SortedNormalizedTicker["🏅 <b>SortedNormalizedTicker</b>
+  SortedNormalizedTickerSnapshot["🏅 <b>SortedNormalizedTickerSnapshot</b>
   <br/>🏷️ <b>Type</b>
   <br/><b>Input:</b> NormalizedRestTickerSnapshot
-  <br/><b>Output:</b> SortedNormalizedTicker
+  <br/><b>Output:</b> SortedNormalizedTickerSnapshot
   <br/><i>Ranked snapshot result</i>
   "]:::typenode
 
@@ -134,7 +134,7 @@ graph TD
   addRankFields["🏅 <b>addRankFields()</b>
   <br/>🧩 <b>Function</b>
   <br/><b>Input:</b> snapshots: NormalizedRestTickerSnapshot[]
-  <br/><b>Output:</b> SortedNormalizedTicker[]
+  <br/><b>Output:</b> SortedNormalizedTickerSnapshot[]
   <br/><i>Adds ordinal rank to snapshots</i>
   "]:::util
 
@@ -162,7 +162,7 @@ graph TD
   getSortedMockSnapshots["🧪 <b>getSortedMockSnapshots()</b>
   <br/>🧩 <b>Function</b>
   <br/><b>Input:</b> None
-  <br/><b>Output:</b> SortedNormalizedTicker[]
+  <br/><b>Output:</b> SortedNormalizedTickerSnapshot[]
   <br/><i>Creates sorted mock data</i>
   "]:::util
 
@@ -235,7 +235,7 @@ graph TD
     getSortedMockSnapshots
     generateMockSnapshots
     addRankFields
-    SortedNormalizedTicker
+    SortedNormalizedTickerSnapshot
     GenericSorter
     SortOrder
   end
@@ -281,7 +281,7 @@ graph TD
   %% getSortedMockSnapshots
   getSortedMockSnapshots --> generateMockSnapshots
   getSortedMockSnapshots --> addRankFields
-  getSortedMockSnapshots --> SortedNormalizedTicker
+  getSortedMockSnapshots --> SortedNormalizedTickerSnapshot
   getSortedMockSnapshots --> GenericSorter
   getSortedMockSnapshots --> SortOrder
 

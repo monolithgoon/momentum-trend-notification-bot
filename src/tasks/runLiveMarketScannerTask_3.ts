@@ -2,11 +2,14 @@ import { getCurrentMarketSession } from "@core/utils";
 import { generateCorrelationId } from "@core/utils/correlation";
 import timer from "@core/utils/timer";
 import logger from "@infrastructure/logger";
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { MarketScanOrchestrator_3 } from "src/strategies/scan_2/MarketScanOrchestrator_3";
 import { AdvancedThresholdConfig } from "src/strategies/filter_2/filterByThresholds";
 import { MarketScanStrategyPresetKey } from "src/strategies/scan_2/MarketScanStrategyPresetKey.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
+import { SortOrder } from "@core/enums/SortOrder.enum";
+import { NormalizedSnapshotSorter } from "src/strategies/sort/NormalizedSnapshotSorter";
+import { AssertNormalizedSortFieldsValid } from "@core/models/snapshotFieldTypeAssertions";
 
 /**
  * Runs a live market scan using predefined filters and logs the results.
@@ -34,11 +37,15 @@ export async function runLiveMarketScannerTask_3(): Promise<void> {
 			numericFieldLimiters: fieldLimiters,
 			dedupField: "ticker_name__nz_tick",
 			marketSession: getCurrentMarketSession(),
-			sessionScanPresetKeys: [MarketScanStrategyPresetKey.TOP_MARKET_MOVERS, MarketScanStrategyPresetKey.RECENT_IPO],
+			sessionScanPresetKeys: [
+				MarketScanStrategyPresetKey.MARKET_TOP_GAINERS,
+				MarketScanStrategyPresetKey.MARKET_TOP_RECENT_IPO,
+			],
 			marketDataVendor: MarketDataVendor.POLYGON,
+			fieldSorter: new NormalizedSnapshotSorter("change_pct__nz_tick", SortOrder.DESC),
 		});
 
-		// 5. Log results
+		// 5. Log sorted results
 		logger.info(
 			{
 				correlationId,

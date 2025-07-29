@@ -1,5 +1,5 @@
-import { SnapshotTransformer } from "@core/models/transformers/types/SnapshotTransformer.interface";
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
+import { SnapshotTransformer } from "@core/models/rest_api/transformers/types/SnapshotTransformer.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 
 /**
  Specialized transformer for normalized REST API snapshot inputs 

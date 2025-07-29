@@ -3,10 +3,10 @@ import { MarketSession } from "@core/enums/MarketSession.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
 import { MarketScanAdapterRegistry } from "./MarketScanAdapterRegistry";
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { AdvancedThresholdConfig, filterByThresholds } from "../filter_2/filterByThresholds";
 import { dedupeByField } from "@core/generics/dedupeByField";
-import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
+import { generateMockSnapshots } from "@core/rest_api/rest_api/generateMockSnapshots";
 import { MarketQuoteScanner_2 } from "../scan/MarketQuoteScanner_2";
 
 interface OrchestratorOptions {

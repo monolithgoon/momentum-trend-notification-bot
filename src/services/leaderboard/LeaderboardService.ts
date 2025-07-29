@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "@config/index";
-import { LeaderboardSnapshotsMap } from "@core/models/LeaderboardSnapshotsMap";
-import { LeaderboardRestTickerSnapshot } from "@core/models/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 import { KineticsCalculator } from "./KineticsCalculator";

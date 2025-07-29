@@ -8,15 +8,15 @@ import { MarketSession } from "@core/enums/MarketSession.enum";
 import { SortOrder } from "@core/enums/SortOrder.enum";
 
 // Core Models & Types
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
-import { SortedNormalizedTicker } from "@core/models/SortedNormalizedTicker.interface";
-import { LeaderboardRestTickerSnapshot } from "@core/models/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardSnapshotsMap } from "@core/models/LeaderboardSnapshotsMap";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap";
 import { ScanFilterConfigTypes } from "src/strategies/scan/types/ScanFilterConfigs.types";
 
 // Core Generics & Transformers
 import { GenericSorter } from "@core/generics/GenericSorter";
-import { LeaderboardTickerTransformer } from "@core/models/transformers/LeaderboardTickerTransformer";
+import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
 
 // Scan Services
 import { MarketQuoteScanner } from "src/strategies/scan/MarketQuoteScanner";
@@ -37,8 +37,8 @@ import handleWebSocketTickerUpdate from "@services/websocket/handleWebSocketTick
 import { EODHDWebSocketClient } from "@services/websocket/eodhd/eodhdWebSocketClient";
 
 // Mock Data Generators
-import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
-import { LeaderboardSortFieldType, NORMALIZED_SORT_FIELDS, NormalizedSortableFieldType } from "@core/types/sort-field-type-assertions";
+import { generateMockSnapshots } from "@core/rest_api/rest_api/generateMockSnapshots";
+import { LeaderboardSortFieldType, NORMALIZED_SORT_FIELDS, NormalizedSortableFieldType } from "@core/models/snapshotFieldTypeAssertions";
 
 /**
  * Adds a tag to the market scan result.
@@ -65,7 +65,7 @@ function composeScanStrategyTag(scanStrategyKeys: string[]): string {
 /**
  * Adds rank fields to the ticker snapshots.
  */
-function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): SortedNormalizedTicker[] {
+function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): SortedNormalizedTickerSnapshot[] {
 	return snapshots.map((snapshot, index) => ({
 		...snapshot,
 		ordinal_sort_position: index,
@@ -119,14 +119,14 @@ async function notifyScanResult(currentMarketSession: string, returnedTickerName
 function getSortedSnapshots(
 	snapshots: NormalizedRestTickerSnapshot[],
 	sortField: keyof NormalizedRestTickerSnapshot
-): SortedNormalizedTicker[] {
-	const rankedSnapshots: SortedNormalizedTicker[] = addRankFields(snapshots);
-	const rankedSorter = new GenericSorter<SortedNormalizedTicker, typeof sortField>(
+): SortedNormalizedTickerSnapshot[] {
+	const rankedSnapshots: SortedNormalizedTickerSnapshot[] = addRankFields(snapshots);
+	const rankedSorter = new GenericSorter<SortedNormalizedTickerSnapshot, typeof sortField>(
 		sortField,
 		SortOrder.DESC,
 		"ordinal_sort_position"
 	);
-	const sortedSnapshots: SortedNormalizedTicker[] = rankedSorter.sort(rankedSnapshots);
+	const sortedSnapshots: SortedNormalizedTickerSnapshot[] = rankedSorter.sort(rankedSnapshots);
 	return sortedSnapshots;
 }
 

@@ -1,6 +1,6 @@
 // ---- HANDLE WEBSOCKET TICKER UPDATES ----
 
-import { EodhdWebSocketTickerSnapshot } from "@core/models/vendors/eodhd/eodhdWebSocketSnapshot.interface";
+import { EodhdWebSocketTickerSnapshot } from "@core/models/rest_api/vendors/eodhd/eodhdWebSocketSnapshot.interface";
 import { isTrendingAboveKC } from "@core/analytics/indicators";
 import { WebSocketTickerBuffer } from "./webSocketTickerBuffer";
 import { NotifierService } from "src/services/notifier/NotifierService";

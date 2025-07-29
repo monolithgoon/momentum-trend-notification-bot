@@ -1,4 +1,4 @@
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 
 export interface NormalizedTickerScanFilter<TConfig = unknown> {
   name: string;

@@ -4,7 +4,7 @@ import { SortOrder } from "@core/enums/SortOrder.enum";
 // export class RankedTickersSorter {
 // 	constructor(private readonly sortField: ScanSortableField, private readonly sortOrder: SortOrder = SortOrder.DESC) {}
 
-// 	sort(snapshots: SortedNormalizedTicker[]): SortedNormalizedTicker[] {
+// 	sort(snapshots: SortedNormalizedTickerSnapshot[]): SortedNormalizedTickerSnapshot[] {
 // 		if (!this.sortField) return snapshots.slice();
 
 // 		const multiplier = this.sortOrder === SortOrder.ASC ? 1 : -1;

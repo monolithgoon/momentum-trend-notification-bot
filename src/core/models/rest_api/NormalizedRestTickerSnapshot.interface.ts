@@ -1,7 +1,7 @@
-import { BaseInternalTickerSnapshot } from "./SortedNormalizedTicker.interface";
+import { BaseInternalTickerSnapshot } from "./BaseInternalTickerSnapshot.interface";
 
 export interface NormalizedRestTickerSnapshot extends BaseInternalTickerSnapshot {
-	ordinal_sort_position: number;
+	ingestion_ordinal_index: number;
 	timestamp: number;
 	ticker_name__nz_tick: string;
 	change_pct__nz_tick: number;

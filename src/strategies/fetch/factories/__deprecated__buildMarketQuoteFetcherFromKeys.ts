@@ -1,7 +1,7 @@
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { SessionMarketQuoteFetcher } from "@core/strategies/fetch/types/SessionMarketQuoteFetcher";
 import { PolygonMarketQuoteFetcher } from "@core/strategies/fetch/vendors/polygon/fetchers/PolygonMarketQuoteFetcher";
-import { PolygonTickerTransformer } from "@core/snapshots/rest_api/transformers/vendors/polygon/PolygonTickerTransformer";
+import { PolygonSnapshotTransformer } from "@core/snapshots/rest_api/transformers/vendors/polygon/PolygonSnapshotTransformer";
 import { isValidVendorAndStrategyRegistryMapKeys, vendorStrategyRegistryMap } from "@core/strategies/fetch/registries/vendorStrategyRegistryMap";
 
 export function buildMarketQuoteFetcherFromKeys(
@@ -19,7 +19,7 @@ export function buildMarketQuoteFetcherFromKeys(
 	switch (vendor) {
 		case MarketDataVendor.POLYGON:
 			// extracted vendor-specific instantiation
-			return new PolygonMarketQuoteFetcher(new PolygonTickerTransformer(), strategies);
+			return new PolygonMarketQuoteFetcher(new PolygonSnapshotTransformer(), strategies);
 
 		// Future: return new EodhdMarketDataFetcher(...)
 

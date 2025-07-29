@@ -1,8 +1,8 @@
 import logger from "@infrastructure/logger";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
-import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { generateMockSnapshots } from "@core/rest_api/rest_api/generateMockSnapshots";
 import { GenericDatasetFilter } from "../filter/GenericDatasetFilter.interface";
 import { CompositeFilterScreener } from "../filter/CompositeFilterScreener";
 import { MarketQuoteScanner } from "./MarketQuoteScanner";

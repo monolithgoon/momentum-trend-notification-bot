@@ -3,9 +3,9 @@ import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum"
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 
-import { PolygonRestTickerSnapshot } from "@core/models/vendors/polygon/PolygonRestTickerSnapshot.interface";
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
-import { PolygonTickerTransformer } from "@core/models/transformers/vendors/polygon/PolygonTickerTransformer";
+import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/PolygonSnapshotTransformer";
 
 import { PolygonMarketMoversFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonMarketMoversFetcher";
 import { PolygonRecentIposFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonRecentIposFetcher";
@@ -55,13 +55,13 @@ export class MarketScanAdapterRegistry {
 					[MarketScanStrategyPresetKey.TOP_MARKET_MOVERS]: new PolygonFetcherAdapter(
 						MarketSession.PRE_MARKET,
 						new PolygonMarketMoversFetcher(),
-						new PolygonTickerTransformer()
+						new PolygonSnapshotTransformer()
 					),
 					// Adapter: fetch recent IPO data and normalize
 					[MarketScanStrategyPresetKey.RECENT_IPO]: new PolygonFetcherAdapter(
 						MarketSession.RTH, // Use PRE_MARKET if needed
 						new PolygonRecentIposFetcher(),
-						new PolygonTickerTransformer()
+						new PolygonSnapshotTransformer()
 					),
 				};
 			default:

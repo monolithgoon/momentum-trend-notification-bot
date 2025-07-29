@@ -5,10 +5,10 @@ import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { NotifierService } from "src/services/notifier/NotifierService";
 import { TelegramNotifier } from "src/services/notifier/TelegramService";
-import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
+import { generateMockSnapshots } from "@core/rest_api/rest_api/generateMockSnapshots";
 import { SortOrder } from "@core/enums/SortOrder.enum";
 import { NormalizedRestTickerSnapshot } from "@core/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { SortedNormalizedTicker } from "@core/snapshots/rest_api/types/SortedNormalizedTicker.interface";
+import { SortedNormalizedTickerSnapshot } from "@core/snapshots/rest_api/types/SortedNormalizedTickerSnapshot.interface";
 import { GenericSorter } from "@core/generics/GenericSorter";
 import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
@@ -36,7 +36,7 @@ function composeScanStrategyTag(scanStrategyKeys: string[]): string {
 	return Array.isArray(scanStrategyKeys) ? scanStrategyKeys.join("_") : String(scanStrategyKeys);
 }
 
-function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): SortedNormalizedTicker[] {
+function addRankFields(snapshots: NormalizedRestTickerSnapshot[]): SortedNormalizedTickerSnapshot[] {
 	return snapshots.map((snapshot, index) => ({
 		...snapshot,
 		ordinal_sort_position: index,
@@ -96,13 +96,13 @@ export default async function runLiveMarketScannerTask() {
 		});
 
 		// 4. Rank & Sort
-		const rankedSnapshots: SortedNormalizedTicker[] = addRankFields(mockSnapshots);
-		const ordinalSorter = new GenericSorter<SortedNormalizedTicker, "change_pct">(
+		const rankedSnapshots: SortedNormalizedTickerSnapshot[] = addRankFields(mockSnapshots);
+		const ordinalSorter = new GenericSorter<SortedNormalizedTickerSnapshot, "change_pct">(
 			"change_pct",
 			SortOrder.DESC,
 			"ordinal_sort_position"
 		);
-		const sortedSnapshots: SortedNormalizedTicker[] = ordinalSorter.sort(rankedSnapshots);
+		const sortedSnapshots: SortedNormalizedTickerSnapshot[] = ordinalSorter.sort(rankedSnapshots);
 
 		// 5. Tag the scan results for leaderboard
 		const leaderboardTag: string = composeScanStrategyTag(scanStrategyKeys);

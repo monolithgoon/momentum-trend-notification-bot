@@ -1,6 +1,6 @@
-import { BaseInternalTickerSnapshot } from "@core/models/SortedNormalizedTicker.interface";
+import { BaseInternalTickerSnapshot } from "@core/models/rest_api/BaseInternalTickerSnapshot.interface";
 import { GenericDatasetFilter } from "./GenericDatasetFilter.interface";
-import { NormalizedRestTickerSnapshot } from "@core/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 
 /**
  * CompositeFilterScreener applies multiple scan filters to a set of market data snapshots.

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { APP_CONFIG } from "@config/index";
 import { nsToUnixSec, safeAPICall } from "@core/utils/index";
-import { PolygonRestTickerSnapshot } from "@core/models/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { PolygonRestApiQuoteFetcher } from "../types/PolygonRestApiQuoteFetcher.interface";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 

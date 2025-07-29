@@ -12,7 +12,7 @@ graph TD
   currnt_day_stats_high?
   current_day_stats_low?"]:::normalized
 
-SortedNormalizedTicker["<b>SortedNormalizedTicker</b>
+SortedNormalizedTickerSnapshot["<b>SortedNormalizedTickerSnapshot</b>
   ordinal_sort_position
   (extends NormalizedRestTickerSnapshot)"]:::normalized
 
@@ -56,7 +56,7 @@ SortedNormalizedTicker["<b>SortedNormalizedTicker</b>
   lastQuote
   lastTrade"]:::polygon
 
-  PolygonTickerTransformer["<b>PolygonTickerTransformer</b>
+  PolygonSnapshotTransformer["<b>PolygonSnapshotTransformer</b>
   transform(input: PolygonRestTickerSnapshot): NormalizedRestTickerSnapshot"]:::polygon
 
   %% 🟣 Raw / Transformer
@@ -67,10 +67,10 @@ SortedNormalizedTicker["<b>SortedNormalizedTicker</b>
   %% 🔀 Updated Relationship Annotations
   PolygonRestTickerSnapshot -- "transforms to" --> NormalizedRestTickerSnapshot
   EodhdWebSocketSnapshot -- "transforms to" --> NormalizedRestTickerSnapshot
-  SortedNormalizedTicker -- "derives from" --> NormalizedRestTickerSnapshot
+  SortedNormalizedTickerSnapshot -- "derives from" --> NormalizedRestTickerSnapshot
   NormalizedRestTickerSnapshot -- "composed in" --> LeaderboardRestTickerSnapshot
-  LeaderboardRestTickerSnapshot -- "transforms to" --> SortedNormalizedTicker
-  DefaultTickerSnapshotTransformer -- "implemented →" --> PolygonTickerTransformer
+  LeaderboardRestTickerSnapshot -- "transforms to" --> SortedNormalizedTickerSnapshot
+  DefaultTickerSnapshotTransformer -- "implemented →" --> PolygonSnapshotTransformer
   DefaultTickerSnapshotTransformer -- "implemented by →" --> LeaderboardTickerTransformer
   RawRestApiTickerTransformer -- "data input" --> PolygonRestTickerSnapshot
 
