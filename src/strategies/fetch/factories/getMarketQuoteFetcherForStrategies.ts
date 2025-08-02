@@ -1,5 +1,5 @@
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
-import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/PolygonSnapshotTransformer";
+import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/__deprecated__PolygonSnapshotTransformer";
 import { PolygonMarketQuoteFetcher } from "../vendors/polygon/fetchers/PolygonMarketQuoteFetcher";
 import { SessionMarketQuoteFetcher } from "../types/SessionMarketQuoteFetcher.interface";
 import {

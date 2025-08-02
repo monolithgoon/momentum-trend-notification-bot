@@ -1,9 +1,18 @@
+import { APP_CONFIG } from "@config/index";
 import WebSocket from "ws";
-import { WebSocketClientInterface } from "./types/webSocketClient.interface";
+import { WebSocketClientInterface } from "./types/WebSocketClient.interface";
+
+/**
+ * WebSocketManager handles the connection to a WebSocket server, manages authentication,
+ * processes incoming messages, and implements reconnection logic.
+ *
+ * It uses the WebSocketClientInterface to interact with different WebSocket clients,
+ * allowing for flexible integration with various WebSocket APIs.
+ */
 
 export class WebSocketManager {
 	private ws: WebSocket | null = null;
-	private readonly reconnectDelay = 5000;
+	private readonly reconnectDelay = APP_CONFIG.WEBSOCKET_RECONNECT_DELAY_MS;
 
 	constructor(private wsClient: WebSocketClientInterface) {}
 

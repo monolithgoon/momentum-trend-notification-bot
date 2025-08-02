@@ -83,7 +83,7 @@ describe("LeaderboardService", () => {
       ],
     };
 
-    const result: LeaderboardRestTickerSnapshot[] = await service.processNewSnapshots(
+    const result: LeaderboardRestTickerSnapshot[] = await service.rankAndUpdateLeaderboard(
       testData,
       mockSorter,
       mockKineticsCalculator
@@ -116,7 +116,7 @@ describe("LeaderboardService", () => {
     };
 
     // No pre-population for CCC, so not enough history
-    const result = await service.processNewSnapshots(
+    const result = await service.rankAndUpdateLeaderboard(
       testData,
       mockSorter,
       mockKineticsCalculator

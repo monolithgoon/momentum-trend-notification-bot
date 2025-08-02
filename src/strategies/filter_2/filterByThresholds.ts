@@ -8,9 +8,6 @@ export type ThresholdRule = {
 	value: number;
 };
 
-// REMOVE - DEPRECATED
-// export type AdvancedThresholdConfig<T> = Partial<Record<keyof T, ThresholdRule>>;
-
 // src/core/generics/NumericKeys.ts
 export type NumericKeys<T> = {
 	[K in keyof T]: T[K] extends number ? K : never;

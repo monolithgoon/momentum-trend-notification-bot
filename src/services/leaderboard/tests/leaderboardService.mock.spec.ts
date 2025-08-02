@@ -67,7 +67,7 @@ async function testLeaderboardServiceLifecycle() {
   await storage.storeSnapshot("test-strategy", "BBB", { ticker: "BBB", timestamp: 197, ordinal_sort_position: 1, change_pct: -0.5 });
 
   // Process incoming data
-  const result: LeaderboardRestTickerSnapshot[] = await service.processNewSnapshots(
+  const result: LeaderboardRestTickerSnapshot[] = await service.rankAndUpdateLeaderboard(
     testData,
     mockSorter,
     mockKineticsCalculator

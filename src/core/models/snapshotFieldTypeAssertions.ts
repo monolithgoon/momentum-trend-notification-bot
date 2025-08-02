@@ -1,5 +1,5 @@
-import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "./rest_api/LeaderboardRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "./rest_api/NormalizedRestTickerSnapshot.interface";
 
 // Compile-time utility: Validates that all keys in K exist in T
 type ValidateKeys<T, K extends readonly string[]> = K[number] extends keyof T ? true : "❌ Invalid field in array";
@@ -10,23 +10,6 @@ type StrictValidateKeys<T, K extends readonly (keyof T)[]> = Exclude<keyof T, K[
 		? true
 		: "❌ Invalid field in array"
 	: "❌ Extra keys not present in type";
-
-	// Keys in T where the value is a non-nullable string — used for de-duplication
-	export type DedupableKey<T> = {
-		[K in keyof T]-?: NonNullable<T[K]> extends string ? K : never;
-	}[keyof T];
-
-
-/* ============================================================================
-		 LEADERBOARD RANK FIELD TYPES & VALIDATION
-	============================================================================ */
-
-export const LEADERBOARD_RANK_FIELDS = ["leaderboard_momentum_score", "leaderboard_rank"] as const;
-export type AssertLeaderboardRankFieldKeysValid = ValidateKeys<
-	LeaderboardRestTickerSnapshot,
-	typeof LEADERBOARD_RANK_FIELDS
->;
-export type LeaderboardRankFieldType = (typeof LEADERBOARD_RANK_FIELDS)[number];
 
 /* ============================================================================
    LEADERBOARD SORT FIELD TYPES & VALIDATION

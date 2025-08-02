@@ -2,9 +2,10 @@ import logger from "@infrastructure/logger";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
-import { DedupableKey } from "@core/models/snapshotFieldTypeAssertions";
+import { DedupableKey } from "./__deprecated__MarketScanOrchestrator_3 copy";
 import { MarketScanAdapterRegistry } from "./MarketScanAdapterRegistry";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
 import { AdvancedThresholdConfig, filterByThresholds } from "../filter_2/filterByThresholds";
 import { dedupeByField } from "@core/generics/dedupeByField";
 import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
@@ -16,10 +17,10 @@ interface OrchestratorContext {
 }
 
 interface ScanRunOptions {
-	numericFieldLimiters: AdvancedThresholdConfig<NormalizedRestTickerSnapshot>;
-	dedupField?: DedupableKey<NormalizedRestTickerSnapshot>;
+	numericFieldLimiters: AdvancedThresholdConfig<SortedNormalizedTickerSnapshot>;
+	dedupField?: DedupableKey<SortedNormalizedTickerSnapshot>;
 	marketSession: MarketSession;
-	sessionScanPresetKeys: MarketScanStrategyPresetKey[];
+	marketScanStrategyPresetKeys: MarketScanStrategyPresetKey[];
 	marketDataVendor: MarketDataVendor;
 	fieldSorter: NormalizedSnapshotSorter;
 }
@@ -38,12 +39,12 @@ export class MarketScanOrchestrator_3 {
 	/**
 	 * Executes the scan using preset strategies and filters.
 	 */
-	public async executeScan(options: ScanRunOptions): Promise<NormalizedRestTickerSnapshot[]> {
+	public async executeScan(options: ScanRunOptions): Promise<SortedNormalizedTickerSnapshot[]> {
 		const {
 			numericFieldLimiters,
 			dedupField = "ticker_name__nz_tick",
 			marketSession,
-			sessionScanPresetKeys,
+			marketScanStrategyPresetKeys,
 			marketDataVendor,
 			fieldSorter,
 		} = options;
@@ -51,9 +52,9 @@ export class MarketScanOrchestrator_3 {
 		const { correlationId } = this.context;
 
 		// Step 1: Fetch raw normalized snapshots from registry-backed adapters
-		let rawSnapshots = await this.fetchMarketSnapshots(marketDataVendor, sessionScanPresetKeys, marketSession);
+		const snapshots = await this.getSnapshots(marketDataVendor, marketScanStrategyPresetKeys, marketSession);
 
-		if (!rawSnapshots.length) {
+		if (!snapshots.length) {
 			this.log.warn({ correlationId }, "⚠️ No tickers returned from market data scan");
 			// WIP
 			// return [];
@@ -67,17 +68,23 @@ export class MarketScanOrchestrator_3 {
 
 		console.log({ mockSnapshots });
 
+		// FIXME ->
 		// Step 2: Apply field-based numeric filters (volume, price, etc.)
-		const filtered = filterByThresholds(rawSnapshots.length ? rawSnapshots : mockSnapshots, numericFieldLimiters);
+		// const filtered = filterByThresholds(snapshots.length ? snapshots : mockSnapshots, numericFieldLimiters);
+		const snapshotsWithSortIndex: SortedNormalizedTickerSnapshot[] = mockSnapshots.map((s, idx) => ({
+			...s,
+			sort_ordinal_index: idx,
+		}));
+		const filtered = filterByThresholds(snapshotsWithSortIndex, numericFieldLimiters);
 
 		// Step 3: Deduplicate based on specified key (e.g. ticker symbol)
 		const deduped = dedupeByField(filtered, dedupField);
 
 		// Step 4: Sort
-		const sorted = fieldSorter.sort(deduped);
+		const sorted: SortedNormalizedTickerSnapshot[] = fieldSorter.sort(deduped);
 
 		this.log.info(
-			{ correlationId, total: rawSnapshots.length, filtered: filtered.length, deduped: deduped.length },
+			{ correlationId, total: snapshots.length, filtered: filtered.length, deduped: deduped.length },
 			"✅ Market scan complete"
 		);
 
@@ -87,7 +94,7 @@ export class MarketScanOrchestrator_3 {
 	/**
 	 * Fetches raw normalized snapshots by running all preset scan strategies for a vendor.
 	 */
-	private async fetchMarketSnapshots(
+	private async getSnapshots(
 		vendor: MarketDataVendor,
 		strategyKeys: MarketScanStrategyPresetKey[],
 		marketSession: MarketSession

@@ -1,6 +1,7 @@
 // ---- DAEMON SERVICE SCHEDULER ----
 
 import { APP_CONFIG } from "@config/index";
+import logger from "@infrastructure/logger";
 import { pauseForInternet } from "@net/pauseForInternet";
 import runLiveMarketScannerTask from "@tasks/__deprecated__runLiveMarketScannerTask_1";
 import { runLiveMarketScannerTask_3 } from "@tasks/runLiveMarketScannerTask_3";
@@ -56,12 +57,11 @@ export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.APP_DAE
 
 			isRunning = true; // Mark as running
 
-			// await runLiveMarketScannerTask();
-			await runLiveMarketScannerTask_3();
+			await runLiveMarketScannerTask_3(); // ⬅️ emitss "market_scan:complet" event
 
 			consecutiveFailures = 0; // ✅ Reset failure count on success
 		} catch (err) {
-			consecutiveFailures++;  
+			consecutiveFailures++;
 			console.error(`❌ Daemon error (${consecutiveFailures} failures):`, err);
 
 			// Shut down after too many consecutive failures
@@ -75,6 +75,6 @@ export default function startAppDaemon_2(intervalMs: number = APP_CONFIG.APP_DAE
 	}
 
 	console.log(`📡 Scanner daemon started. Interval: ${intervalMs / 1000}s`);
-	safeRun();                      // Run immediately on start
+	safeRun(); // Run immediately on start
 	setInterval(safeRun, intervalMs); // Schedule recurring runs
 }

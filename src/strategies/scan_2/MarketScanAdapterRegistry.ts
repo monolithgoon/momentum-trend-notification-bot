@@ -1,6 +1,5 @@
-import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
+// import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
-import { MarketSession } from "@core/enums/MarketSession.enum";
 import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/PolygonSnapshotTransformer";
 import { PolygonMarketMoversFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonMarketMoversFetcher";
 import { PolygonRecentIposFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonRecentIposFetcher";
@@ -9,6 +8,7 @@ import { RestApiQuoteFetcherAdapter } from "./adapters/RestApiQuoteFetcherAdapte
 import { PolygonMostActiveFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonMostActiveFetcher";
 import { PolygonTopGainersFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonTopGainersFetcher";
 import { PolygonTopLosersFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonTopLosersFetcher";
+import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
 
 /**
  * Resolves the appropriate quote fetcher adapter based on:

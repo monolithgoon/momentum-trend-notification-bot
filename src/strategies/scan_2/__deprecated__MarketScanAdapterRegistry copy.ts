@@ -5,9 +5,9 @@ import { MarketSession } from "@core/enums/MarketSession.enum";
 
 import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
-import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/PolygonSnapshotTransformer";
+import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/__deprecated__PolygonSnapshotTransformer";
 
-import { PolygonMarketMoversFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonMarketMoversFetcher";
+import { PolygonMarketMoversFetcher } from "../fetch_2/vendors/polygon/fetchers/__deprecated__PolygonMarketMoversFetcher";
 import { PolygonRecentIposFetcher } from "../fetch_2/vendors/polygon/fetchers/PolygonRecentIposFetcher";
 import { PolygonFetcherAdapter } from "./adapters/PolygonFetcherAdapter";
 import { RestApiQuoteFetcherAdapter } from "./adapters/RestApiQuoteFetcherAdapter.interface";

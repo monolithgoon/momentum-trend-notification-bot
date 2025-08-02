@@ -3,6 +3,7 @@ import { verifyRedisConnection } from "@infrastructure/redis/redis.service";
 import { initializeAlertListeners } from "@app/bootstrap/__deprecated__alertListeners";
 import startAppDaemon_2 from "./app/daemon";
 import gracefulDaemonShutdown from "./app/daemonShutdownHandler";
+import { registerAllListeners } from "./listeners/registerListeners";
 
 // ---- main.ts (entry point) ----
 
@@ -14,8 +15,9 @@ import gracefulDaemonShutdown from "./app/daemonShutdownHandler";
 		// Step 1: Verify Redis (fail fast if down)
 		// await verifyRedisConnection();
 		
-		// REMOVE - DEPRECATD
 		// Step 2: Initialize listeners/subscriptions
+		registerAllListeners(); // ⬅️ bind global listeners once
+		// REMOVE - DEPRECATD
 		// await initializeAlertListeners();
 
 		// Step 3: Defer daemon startup — don't block on flaky network

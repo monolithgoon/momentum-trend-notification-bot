@@ -1,0 +1,91 @@
+flowchart TD
+
+  %% === TRANSFORMERS CLUSTER ===
+  subgraph TRANSFORMERS
+    direction TB
+    style TRANSFORMERS fill:#,stroke:#2980b9,stroke-width:1px,color:#000;
+    I4["í·© Interface: SnapshotTransformer"]
+    I1["í·© Interface: RawRestApiTickerTransformer"]
+    I3["í·© Interface: NormalizedRestTickerSnapshotTransformer"]
+    C1["í¿›ï¸ Class: PolygonSnapshotTransformer"]
+    C2["í¿›ï¸ Class: LeaderboardTickerTransformer"]
+  end
+
+  %% === NORMALIZED CLUSTER ===
+  subgraph NORMALIZED
+    direction TB
+    style NORMALIZED fill:none,stroke:#1c6cb3,stroke-width:1px,color:#000;
+    A1["í³¦ Base: BaseInternalTickerSnapshot"]
+    A2["í·© Interface: NormalizedRestTickerSnapshot"]
+    A3["í·© Interface: SortedNormalizedTickerSnapshot"]
+  end
+
+  %% === LEADERBOARD CLUSTER ===
+  subgraph LEADERBOARD
+    direction TB
+    style LEADERBOARD fill:#f2e0ff,stroke:#8e44ad,stroke-width:1px,color:#000;
+    A4["í·© Interface: LeaderboardRestTickerSnapshot"]
+    M1["í·­ Map: LeaderboardSnapshotsMap"]
+  end
+
+  %% === POLYGON CLUSTER ===
+  subgraph POLYGON
+    direction TB
+    style POLYGON fill:none,stroke:#0e7a6f,stroke-width:0px,color:#000;
+    R1["í·© Interface: PolygonRestTickerSnapshot"]
+  end
+
+  %% === Rank / Positioning Edges
+  I4 --> I1
+  I4 --> I3
+  I1 --> C1
+  I3 --> C2
+  C1 --> A2
+  C2 --> A4
+
+  %% === Snapshot Inheritance
+  A2 -->|extends| A1
+  A3 -->|extends| A2
+  A4 -->|extends| A1
+
+  %% === Implementation + Transformation Edges
+  C1 -->|implements| I1
+  C1 -->|produces| A2
+  C1 -->|from| R1
+
+  C2 -->|implements| I4
+  C2 -->|produces| A4
+  C2 -->|from| A2
+
+  A4 -->|used in| M1
+
+  %% === Style Definitions ===
+  classDef normalized-transformer-interface fill:lightgreen,stroke:green,color:#000,stroke: 5;
+  classDef normalized-interface fill:apple,stroke:green,color:#000,stroke-dasharray: 5 5;
+  classDef normalized-class fill:lightgreen,stroke:green,color:#000,stroke-width:4px;
+
+  classDef polygon-class fill:none,stroke:olive,color:#000,stroke-width:3px;
+  classDef polygon-interface fill:none,stroke:olive,color:#000,stroke-dasharray: 7 7;
+
+  classDef leaderboard-interface fill:#f2e0ff,stroke:#8e44ad,color:#000,stroke-dasharray: 5 5;
+  classDef leaderboard-class fill:#f2e0ff,stroke:#6c2c94,color:#000,stroke-width:5px;
+  classDef map fill:none,stroke:#6c2c94,color:#000,fill:#f2e0ff,stroke-width:1px;
+
+  classDef base-interface fill:none,stroke:green,color:#000,stroke-dasharray: 10;
+  classDef base-class fill:none,stroke:green,color:#000,stroke-width:5px;
+
+  classDef transformer-interface fill:#eef3fc,stroke:#3a75c4,color:#000,stroke-dasharray: 5 5;
+
+  %% === Apply Styles ===
+  class A1 base-interface
+  class A2,A3 normalized-interface
+  class A4 leaderboard-interface
+  class R1 polygon-interface
+
+  class I4 base-interface
+  class I3 normalized-transformer-interface
+  class I1 transformer-interface
+  class C1 polygon-class
+  class C2 leaderboard-class
+  class M1 map
+

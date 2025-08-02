@@ -6,7 +6,7 @@ type Ticker = EodhdWebSocketTickerSnapshot;
 export class WebSocketTickerBuffer {
 	private buffers: Record<string, Ticker[]> = {};
 
-	constructor(private readonly maxLength: number = APP_CONFIG.TICKER_BUFFER_MAX_LENGTH) {}
+	constructor(private readonly maxLength: number = APP_CONFIG.WEBSOCKET_TICKER_BUFFER_MAX_LENGTH) {}
 
 	addTick(tick: Ticker): void {
 		const symbol = tick.s;

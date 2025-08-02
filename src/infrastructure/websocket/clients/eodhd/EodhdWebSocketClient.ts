@@ -1,7 +1,7 @@
 // import { APP_CONFIG } from "@config/index";
 import { APP_CONFIG } from "@config/index"
 import { EodhdWebSocketMessage, EodhdWebSocketTickerSnapshot } from "@core/models/rest_api/vendors/eodhd/eodhdWebSocketSnapshot.interface";
-import { AuthMessage, SubscriptionMessage, WebSocketClientInterface } from "@infrastructure/websocket/types/webSocketClient.interface";
+import { AuthMessage, SubscriptionMessage, WebSocketClientInterface } from "@infrastructure/websocket/types/WebSocketClient.interface";
 
 /**
  * This class is a WebSocket dataFetcher for EODHD, implementing the WebSocketClientInterface.
@@ -11,7 +11,8 @@ import { AuthMessage, SubscriptionMessage, WebSocketClientInterface } from "@inf
  *
  * The dataFetcher can handle both single ticker snapshots and arrays of tickers, processing them accordingly.
  */
-export class EODHDWebSocketClient implements WebSocketClientInterface {
+
+export class EodhdWebSocketClient implements WebSocketClientInterface {
 	socketClientName = "EODHD";
 	socketUrl = APP_CONFIG.EODHD_WEBSOCKET_URL;
 

@@ -81,10 +81,10 @@ graph TD
   <br/><i>Leaderboard scoring functions</i>
   "]:::util
 
-  EODHDWebSocketClient["🌐 <b>EODHDWebSocketClient</b>
+  EodhdWebSocketClient["🌐 <b>EodhdWebSocketClient</b>
   <br/>🏛️ <b>Class</b>
   <br/><b>Input:</b> apiKey: string, tickers: string, callback: Function
-  <br/><b>Output:</b> Instance of EODHDWebSocketClient
+  <br/><b>Output:</b> Instance of EodhdWebSocketClient
   <br/><i>Streams live ticker data</i>
   "]:::classnode
 
@@ -176,7 +176,7 @@ graph TD
   setupWebSocketClient["🌐 <b>setupWebSocketClient()</b>
   <br/>🧩 <b>Function</b>
   <br/><b>Input:</b> activeTickersStr: string
-  <br/><b>Output:</b> EODHDWebSocketClient
+  <br/><b>Output:</b> EodhdWebSocketClient
   <br/><i>Creates WebSocket client</i>
   "]:::util
 
@@ -252,7 +252,7 @@ graph TD
 
   subgraph "🌐 <b>WebSocket Setup</b>"
     setupWebSocketClient
-    EODHDWebSocketClient
+    EodhdWebSocketClient
   end
 
   %% Main flow links
@@ -299,7 +299,7 @@ graph TD
   composeScanStrategyTag --> addTagsToMarketScanResult
 
   %% WebSocket setup
-  setupWebSocketClient --> EODHDWebSocketClient
+  setupWebSocketClient --> EodhdWebSocketClient
 
   %% Styles
   classDef mainnode stroke:#000,stroke-width:5px,fill:#a7f6ff;

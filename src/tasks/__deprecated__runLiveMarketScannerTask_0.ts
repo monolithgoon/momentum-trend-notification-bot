@@ -13,7 +13,7 @@ import { GenericSorter } from "@core/generics/GenericSorter";
 import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
 import { LeaderboardTickersSorter } from "@analytics/leaderboard/LeaderboardTickersSorter";
-import { EODHDWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
+import { EodhdWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
 import handleWebSocketTickerUpdate from "@core/snapshots/websocket/handleWebSocketTickerUpdate";
 import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@core/scanners/scanFilters";
 import { ScanFilterConfigTypes } from "@core/scanners/types/scanScreenerConfigs.type";
@@ -22,15 +22,16 @@ import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
 
 function addTagsToMarketScanResult(
 	tickers: NormalizedRestTickerSnapshot[],
-	scan_strategy_tag: string = "OK"
+	scanStrategyTag: string,
 ): LeaderboardSnapshotsMap {
 	return {
-		scan_strategy_tag,
+		scan_strategy_tag: scanStrategyTag,
 		normalized_leaderboard_tickers: tickers.map((ticker) => ({
 			...ticker,
 		})),
 	};
 }
+
 
 function composeScanStrategyTag(scanStrategyKeys: string[]): string {
 	return Array.isArray(scanStrategyKeys) ? scanStrategyKeys.join("_") : String(scanStrategyKeys);
@@ -120,11 +121,11 @@ export default async function runLiveMarketScannerTask() {
 		const sorter = new LeaderboardTickersSorter("leaderboard_momentum_score" as const, SortOrder.DESC); 
 		const leaderboardService = new LeaderboardService(storage, scoringFn);
 
-		await leaderboardService.processNewSnapshots(taggedTickers, sorter);
+		await leaderboardService.rankAndUpdateLeaderboard(taggedTickers, sorter);
 		console.log({ leaderboard: storage });
 
 		// 7. WebSocket
-		const wsClient = new EODHDWebSocketClient(
+		const wsClient = new EodhdWebSocketClient(
 			APP_CONFIG.EODHD_API_KEY,
 			activeTickersStr,
 			handleWebSocketTickerUpdate

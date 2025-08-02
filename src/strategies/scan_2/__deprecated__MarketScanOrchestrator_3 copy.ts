@@ -24,7 +24,7 @@ interface RunOptions {
 	numericFieldLimiters: AdvancedThresholdConfig<NormalizedRestTickerSnapshot>;
 	dedupField?: DedupableKey<NormalizedRestTickerSnapshot>;
 	marketSession: MarketSession;
-	sessionScanPresetKeys: MarketScanStrategyPresetKey[];
+	marketScanStrategyPresetKeys: MarketScanStrategyPresetKey[];
 	marketDataVendor: MarketDataVendor;
 }
 
@@ -38,14 +38,14 @@ export class MarketScanOrchestrator_3 {
 			numericFieldLimiters,
 			dedupField = "ticker_name__nz_tick",
 			marketSession,
-			sessionScanPresetKeys,
+			marketScanStrategyPresetKeys,
 			marketDataVendor,
 		} = options;
 
 		const { correlationId } = this.ochOptions;
 
-		// → Fetch snapshot data using sessionScanPresetKeys, session, and vendor
-		const returnedSnapshots = await this.fetchMarketData(marketDataVendor, sessionScanPresetKeys, marketSession);
+		// → Fetch snapshot data using marketScanStrategyPresetKeys, session, and vendor
+		const returnedSnapshots = await this.fetchMarketData(marketDataVendor, marketScanStrategyPresetKeys, marketSession);
 
 		if (!returnedSnapshots.length) {
 			this.log.warn({ correlationId }, "⚠️ No tickers returned from market data scan");
@@ -63,16 +63,16 @@ export class MarketScanOrchestrator_3 {
 		return deduped;
 	}
 
-	// → fetch snapshot data using sessionScanPresetKeys, session, and vendor
+	// → fetch snapshot data using marketScanStrategyPresetKeys, session, and vendor
 	private async fetchMarketData(
 		marketDataVendor: MarketDataVendor,
-		sessionScanPresetKeys: MarketScanStrategyPresetKey[],
+		marketScanStrategyPresetKeys: MarketScanStrategyPresetKey[],
 		marketSession: MarketSession
 	): Promise<NormalizedRestTickerSnapshot[]> {
 		const snapshots: NormalizedRestTickerSnapshot[] = [];
 		const ar = new MarketScanAdapterRegistry(marketDataVendor);
 
-		for (const key of sessionScanPresetKeys) {
+		for (const key of marketScanStrategyPresetKeys) {
 			const adapter = ar.getAdapter(key);
 			const result = await adapter.fetchAndTransform(marketSession);
 			snapshots.push(...result);

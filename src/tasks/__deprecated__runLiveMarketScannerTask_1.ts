@@ -11,7 +11,7 @@ import { SortOrder } from "@core/enums/SortOrder.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap";
+import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
 import { ScanFilterConfigTypes } from "src/strategies/scan/types/ScanFilterConfigs.types";
 
 // Core Generics & Transformers
@@ -33,8 +33,8 @@ import { LeaderboardService } from "@services/leaderboard/LeaderboardService";
 import { scoringStrategies } from "@services/leaderboard/scoringStrategies";
 
 // WebSocket Services
-import handleWebSocketTickerUpdate from "@services/websocket/handleWebSocketTickerUpdate";
-import { EODHDWebSocketClient } from "@services/websocket/eodhd/eodhdWebSocketClient";
+import handleWebSocketTickerUpdate from "@infrastructure/websocket/handleWebSocketTickerUpdate";
+import { EodhdWebSocketClient } from "@infrastructure/websocket/clients/eodhd/EodhdWebSocketClient";
 
 // Mock Data Generators
 import { generateMockSnapshots } from "@core/rest_api/rest_api/generateMockSnapshots";
@@ -143,7 +143,7 @@ async function processLeaderboard(
 	await storage.initializeLeaderboardStore(leaderboardTag);
 	const sorter = new LeaderboardTickersSorter(sortField, SortOrder.DESC);
 	const leaderboardService = new LeaderboardService(storage, scoringStrategies.popUpDecayMomentum);
-	await leaderboardService.processNewSnapshots(snapshotsMap, sorter);
+	await leaderboardService.rankAndUpdateLeaderboard(snapshotsMap, sorter);
 	return storage;
 }
 
@@ -151,7 +151,7 @@ async function processLeaderboard(
  * Initializes the EODHD WebSocket client.
  */
 function setupWebSocketClient(activeTickersStr: string) {
-	const wsClient = new EODHDWebSocketClient(APP_CONFIG.EODHD_API_KEY, activeTickersStr, handleWebSocketTickerUpdate);
+	const wsClient = new EodhdWebSocketClient(APP_CONFIG.EODHD_API_KEY, activeTickersStr, handleWebSocketTickerUpdate);
 	// wsClient.connect();
 	return wsClient;
 }

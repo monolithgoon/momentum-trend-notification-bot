@@ -50,7 +50,7 @@ graph TD
   "]:::type
 
   %% Entrypoint
-  processNewSnapshots["▶️ processNewSnapshots()
+  rankAndUpdateLeaderboard["▶️ rankAndUpdateLeaderboard()
   <br/>🟢 public ⚡ async
   <br/>Input: 📄 LeaderboardSnapshotsMap, 🔢 GenericTickerSorter
   <br/>Output: 📊 Promise&lt;LeaderboardRestTickerSnapshot[]&gt;
@@ -115,18 +115,18 @@ graph TD
   "]:::method
 
   %% Flow
-  LeaderboardService --> processNewSnapshots
-  processNewSnapshots --> initializeLeaderboardIfMissing
-  processNewSnapshots --> storeNewSnapshots
-  processNewSnapshots --> computeBatchKinetics
-  processNewSnapshots --> mergeWithPreviousLeaderboard
-  processNewSnapshots --> sortAndRankLeaderboard
-  processNewSnapshots --> persistLeaderboard
-  processNewSnapshots -->|returns| sortAndRankLeaderboard
+  LeaderboardService --> rankAndUpdateLeaderboard
+  rankAndUpdateLeaderboard --> initializeLeaderboardIfMissing
+  rankAndUpdateLeaderboard --> storeNewSnapshots
+  rankAndUpdateLeaderboard --> computeBatchKinetics
+  rankAndUpdateLeaderboard --> mergeWithPreviousLeaderboard
+  rankAndUpdateLeaderboard --> sortAndRankLeaderboard
+  rankAndUpdateLeaderboard --> persistLeaderboard
+  rankAndUpdateLeaderboard -->|returns| sortAndRankLeaderboard
 
   %% Scoring and sorting
-  processNewSnapshots -.-> scoringFn
-  processNewSnapshots -.-> sorter
+  rankAndUpdateLeaderboard -.-> scoringFn
+  rankAndUpdateLeaderboard -.-> sorter
 
   %% Storage interactions
   initializeLeaderboardIfMissing --> LeaderboardStorage
@@ -144,7 +144,7 @@ graph TD
   sortAndRankLeaderboard --> sorter
 
   %% Input/Output types
-  processNewSnapshots -.-> LeaderboardSnapshotsMap
+  rankAndUpdateLeaderboard -.-> LeaderboardSnapshotsMap
   sortAndRankLeaderboard -.-> LeaderboardRestTickerSnapshot
 
   %% API

@@ -1,5 +1,5 @@
 import { APP_CONFIG } from "@config/index";
-import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap";
+import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
@@ -36,7 +36,7 @@ import { LeaderboardScoringFnType, scoringStrategies } from "./scoringStrategies
  *       - Compute pct_change_velocity and pct_change_acceleration using most recent snapshots (based on change_pct and timestamp).
  *    e. Create Leaderboard Entry:
  *       - Create an entry containing:
- *           - ticker, timestamp, pct_change_velocity, pct_change_acceleration, original ordinal_sort_position
+ *           - ticker, timestamp, pct_change_velocity, pct_change_acceleration
  *           - num_consecutive_appearances: how many consecutive batches the ticker has been on the leaderboard
  *           - leaderboard_momentum_score: calculated using pct_change_velocity, pct_change_acceleration, and num_consecutive_appearances (see scoring strategy below)
  *       - Add to in-memory leaderboard map.
@@ -89,11 +89,11 @@ import { LeaderboardScoringFnType, scoringStrategies } from "./scoringStrategies
  *
  * ### Usage
  * Construct with a storage implementation and an optional scoring function.
- * Use `processNewSnapshots` to process a batch of ticker data and update the leaderboard.
+ * Use `rankAndUpdateLeaderboard` to process a batch of ticker data and update the leaderboard.
  *
  * @example
  * const service = new LeaderboardService(storage, scoringStrategies.popUpDecay);
- * const ranked = await service.processNewSnapshots(data, sorter);
+ * const ranked = await service.rankAndUpdateLeaderboard(data, sorter);
  *
  * @see LeaderboardStorage
  * @see LeaderboardScoringFnType
@@ -103,7 +103,7 @@ import { LeaderboardScoringFnType, scoringStrategies } from "./scoringStrategies
 export class LeaderboardService {
 	constructor(
 		private readonly storage: LeaderboardStorage,
-		private readonly computeLeaderboardScoreFn: LeaderboardScoringFnType = scoringStrategies.popUpDecay // default scoring fn.
+		private readonly computeLeaderboardScoreFn: LeaderboardScoringFnType,
 	) {}
 
 	/**
@@ -111,7 +111,7 @@ export class LeaderboardService {
 	 * scores each ticker based on volume & pct. change velocity & acceleration kinetics calculations and appearance count,
 	 * sorts and ranks the leaderboard, then persists and returns the results.
 	 */
-	async processNewSnapshots(
+	async rankAndUpdateLeaderboard(
 		data: LeaderboardSnapshotsMap,
 		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
 	): Promise<LeaderboardRestTickerSnapshot[]> {
@@ -197,11 +197,11 @@ export class LeaderboardService {
 					pct_change_acceleration__ld_tick: pcAccel,
 					volume_velocity__ld_tick: volVel,
 					volume_acceleration__ld_tick: volAccel,
-					leaderboard_rank: snapshot.ordinal_sort_position, // Temp; will be sorted by momentum score
+					// TODO -> should this be -1 or 0
+					leaderboard_rank: -1, // Temp; will be sorted by momentum score
 					leaderboard_momentum_score: 0, // Temp; will compute after num_consecutive_appearances set
 					num_consecutive_appearances: 1,
 					volume__ld_tick: 0,
-					ordinal_sort_position: snapshot.ordinal_sort_position,
 				};
 
 				// Assemble a key-value pair for the ticker oldEntry

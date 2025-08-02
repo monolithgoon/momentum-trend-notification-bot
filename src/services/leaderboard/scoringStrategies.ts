@@ -1,10 +1,14 @@
-/**
- * Provides multiple scoring strategies for leaderboard ranking.
- * Import the desired strategy and use as:
- *   const leaderboardScore = scoringStrategies.weightedLinear({ pctChangeVelocity, pctChangeAcceleration, change_pct__ld_tick, ... });
- */
-
 import { KineticsCalculator } from "./KineticsCalculator";
+
+export enum LeaderboardScoringStrategyKey {
+	POP_UP_DECAY_MOMENTUM = "popUpDecayMomentum", // Combines multiple momentum components with pop-up boost and decay
+	POP_UP_DECAY = "popUpDecay", // Basic pop-up and decay scoring based on velocity and acceleration
+	WEIGHTED_LINEAR = "weightedLinear", // Weighted linear combination of pctChangeVelocity and pctChangeAcceleration
+	MAGNITUDE = "magnitude", // Euclidean norm of velocity and acceleration (non-linear magnitude scoring)
+	PERCENTAGE_CHANGE_ONLY = "percentageChangeOnly", // Uses only the raw % price change
+	THRESHOLDED = "thresholded", // Ignores small-magnitude velocity/acceleration below threshold
+	DOMAIN_INSPIRED = "domainInspired", // Domain-inspired log-adjusted score that incorporates volume
+}
 
 type ScoringParams = {
 	changePct: number;
@@ -20,7 +24,17 @@ type ScoringParams = {
 	stdPCAcceleration?: number;
 };
 
-export const scoringStrategies = {
+export interface LeaderboardScoringStrategies{
+	[key: string]: (params: ScoringParams, options?: any) => number;
+}
+
+/**
+ * Provides multiple scoring strategies for leaderboard ranking.
+ * Import the desired strategy and use as:
+ *   const leaderboardScore = scoringStrategies.weightedLinear({ pctChangeVelocity, pctChangeAcceleration, change_pct__ld_tick, ... });
+ */
+
+export const scoringStrategies: LeaderboardScoringStrategies = {
 	/**
 	 * Pop-Up & Longevity Decay (broader momentum version)
 	 * Calculates leaderboard_momentum_score as a weighted sum of price velocity/acceleration and volume velocity/acceleration,
@@ -50,7 +64,7 @@ export const scoringStrategies = {
 			volVelWeight?: number;
 			volAccelWeight?: number;
 		} = {}
-	) => {
+	): number => {
 		let leaderboard_momentum_score =
 			pctVelWeight * pctChangeVelocity +
 			pctAccelWeight * pctChangeAcceleration +

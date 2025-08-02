@@ -37,8 +37,11 @@ interface AppConstantsInterface {
 	PRE_MARKET_MIN_VOLUME: number;
 	PRE_MARKET_MIN_CHANGE_PERC: number;
 
-	// --- Leaderboard Data Buffering/Storage/Analytics ---
-	TICKER_BUFFER_MAX_LENGTH: number;
+	// --- Web Sockets Connection/Buffers ---
+	WEBSOCKET_TICKER_BUFFER_MAX_LENGTH: number;
+	WEBSOCKET_RECONNECT_DELAY_MS: number;
+
+	// --- Leaderboard Storage ---
 	REDIS_SNAPSHOT_LIMIT: number;
 	MIN_LEADERBOARD_TICKER_HISTORY_COUNT: number;
 
@@ -89,8 +92,11 @@ export const APP_CONSTANTS: AppConstantsInterface = {
 	PRE_MARKET_MIN_VOLUME: 100000,
 	PRE_MARKET_MIN_CHANGE_PERC: 3,
 
-	// --- Data Buffering/Storage ---
-	TICKER_BUFFER_MAX_LENGTH: 200,
+	// --- Web Sockets Connection/Buffers ---
+	WEBSOCKET_TICKER_BUFFER_MAX_LENGTH: 200,
+	WEBSOCKET_RECONNECT_DELAY_MS: 5000, // Delay before attempting to reconnect
+
+	// --- Leaderboard Storage ---
 	REDIS_SNAPSHOT_LIMIT: 10,
 	MIN_LEADERBOARD_TICKER_HISTORY_COUNT: 2,
 
@@ -106,4 +112,16 @@ export const APP_CONSTANTS: AppConstantsInterface = {
 	// --- EODHD API ---
 	EODHD_LIVE_US_QUOTE_URL: "https://eodhd.com/api/real-time",
 	EODHD_WEBSOCKET_URL: validateWebSocketUrl("wss://ws.eodhistoricaldata.com/ws/us-quote?api_token=demo"),
+
+	
 };
+
+// src/constants/EVENTS.ts
+export const EVENTS = {
+  MARKET_SCAN_COMPLETE: "market_scan:complete",
+  LEADERBOARD_UPDATE: "leaderboard.update",
+  LEADERBOARD_FAILED_UPDATE: "leaderboard.fail",
+  // Add more as needed...
+} as const;
+
+export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
