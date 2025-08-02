@@ -1,0 +1,47 @@
+import * as constants from "./constants";
+import { ENV } from "./env";
+
+export const APP_CONFIG_2 = {
+  env: ENV,
+  market: {
+    openUtc: constants.MARKET_OPEN_UTC,
+    closeUtc: constants.MARKET_CLOSE_UTC,
+  },
+  daemon: {
+    safeRunInterval: constants.APP_DAEMON_SAFE_RUN_INTERVAL_MS,
+    maxFailures: constants.APP_DAEMON_MAX_ALLOWED_CONSECUTIVE_FAILURES,
+  },
+    internet: {
+    hosts: constants.DNS_CHECK_HOSTS,
+    timeoutMs: constants.DEFAULT_INTERNET_TIMEOUT_MS,
+  },
+  polygon: {
+    baseUrl: constants.POLYGON_BASE_URL,
+    endpoints: constants.POLYGON_MARKET_MOVERS_ENDPOINTS,
+  },
+  eodhd: {
+    quoteUrl: constants.EODHD_LIVE_US_QUOTE_URL,
+    socketUrl: constants.EODHD_WEBSOCKET_URL,
+  },
+  leaderboard: {
+    snapshotLimit: constants.REDIS_SNAPSHOT_LIMIT,
+    minHistory: constants.MIN_LEADERBOARD_TICKER_HISTORY_COUNT,
+  },
+  premarket: {
+    minVolume: constants.PRE_MARKET_MIN_VOLUME,
+    minChangePct: constants.PRE_MARKET_MIN_CHANGE_PERC,
+  },
+  websocket: {
+    bufferMax: constants.WEBSOCKET_TICKER_BUFFER_MAX_LENGTH,
+    reconnectDelay: constants.WEBSOCKET_RECONNECT_DELAY_MS,
+  },
+  indicators: {
+    kcMultiplier: constants.KC_MULTIPLIER,
+    trendWindow: constants.TREND_WINDOW,
+    volumeLookback: constants.VOLUME_LOOKBACK,
+    volumeSpikeMultiplier: constants.VOLUME_SPIKE_MULTIPLIER,
+    trendThreshold: constants.TREND_THRESHOLD,
+    aggregateLookback: constants.AGGREGATE_LOOKBACK_MINUTES,
+    maxKcTicks: constants.MAX_KC_TICKS,
+  },
+};

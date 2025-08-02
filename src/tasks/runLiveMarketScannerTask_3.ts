@@ -10,12 +10,11 @@ import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRe
 
 import { MarketScanOrchestrator_3 } from "src/strategies/scan_2/MarketScanOrchestrator_3";
 import { MarketScanStrategyPresetKey } from "src/strategies/scan_2/MarketScanStrategyPresetKey.enum";
-import { MarketScanPayload } from "src/strategies/scan_2/MarketScanPayload.interface";
+import { MarketScanPayload } from "src/types/events/MarketScanEventPayload.interface";
 import { AdvancedThresholdConfig } from "src/strategies/filter_2/filterByThresholds";
 import { NormalizedSnapshotSorter } from "src/strategies/sort/NormalizedSnapshotSorter";
-
 import { getSnapshotTickerNames } from "../core/utils/getSnapshotTickerNames";
-import { EVENTS } from "@config/constants";
+import { appEvents } from "@config/appEvents";
 
 /**
  * Runs a live market scan using predefined filters and logs the results.
@@ -75,7 +74,7 @@ export async function runLiveMarketScannerTask_3() {
 		);
 
 		// 6. ✅ Trigger event listeners (leaderboard, ws, etc)
-		eventEmitter.emit(EVENTS.MARKET_SCAN_COMPLETE, marketScanPayload);
+		eventEmitter.emit(appEvents.MARKET_SCAN_COMPLETE, marketScanPayload);
 	} catch (error) {
 		logger.error({ correlationId, error }, "❌ Market scan failed");
 		return [];

@@ -1,0 +1,3 @@
+
+export const PRE_MARKET_MIN_VOLUME = 100000;
+export const PRE_MARKET_MIN_CHANGE_PERC = 3;

@@ -1,4 +1,4 @@
-import { APP_CONFIG } from "@config/index";
+import { APP_CONFIG_2 } from "src/config_2/app_config";
 import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
@@ -172,10 +172,10 @@ export class LeaderboardService {
 				const snapshotHistory = await this.storage.retrieveRecentSnapshots(
 					leaderboardTag,
 					snapshot.ticker_name__ld_tick,
-					Math.max(3, APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT)
+					Math.max(3, APP_CONFIG_2.leaderboard.minHistory)
 				);
 
-				if (snapshotHistory.length < APP_CONFIG.MIN_LEADERBOARD_TICKER_HISTORY_COUNT) {
+				if (snapshotHistory.length < APP_CONFIG_2.leaderboard.snapshotLimit) {
 					continue;
 				}
 

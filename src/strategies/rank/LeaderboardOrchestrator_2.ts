@@ -4,7 +4,7 @@ import { LeaderboardService } from "@services/leaderboard/LeaderboardService";
 import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
 import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardUpdateEvent } from "src/types/LeaderboardUpdateEvent.interface";
+import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
 
 interface LeaderboardOrchestratorOptions {
 	correlationId: string;

@@ -112,16 +112,4 @@ export const APP_CONSTANTS: AppConstantsInterface = {
 	// --- EODHD API ---
 	EODHD_LIVE_US_QUOTE_URL: "https://eodhd.com/api/real-time",
 	EODHD_WEBSOCKET_URL: validateWebSocketUrl("wss://ws.eodhistoricaldata.com/ws/us-quote?api_token=demo"),
-
-	
 };
-
-// src/constants/EVENTS.ts
-export const EVENTS = {
-  MARKET_SCAN_COMPLETE: "market_scan:complete",
-  LEADERBOARD_UPDATE: "leaderboard.update",
-  LEADERBOARD_FAILED_UPDATE: "leaderboard.fail",
-  // Add more as needed...
-} as const;
-
-export type EventName = (typeof EVENTS)[keyof typeof EVENTS];

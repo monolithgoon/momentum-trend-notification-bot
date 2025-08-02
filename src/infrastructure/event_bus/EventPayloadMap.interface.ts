@@ -1,16 +1,16 @@
-import { EVENTS } from "@config/constants";
-import { MarketScanPayload } from "src/strategies/scan_2/MarketScanPayload.interface";
+import { appEvents } from "@config/appEvents";
+import { MarketScanPayload } from "src/types/events/MarketScanEventPayload.interface";
 
 export interface EventPayloadMap {
-  [EVENTS.MARKET_SCAN_COMPLETE]: MarketScanPayload;
+  [appEvents.MARKET_SCAN_COMPLETE]: MarketScanPayload;
 
-  [EVENTS.LEADERBOARD_UPDATE]: {
+  [appEvents.LEADERBOARD_UPDATE]: {
     tag: string;
     total: number;
     topTicker?: string;
   };
 
-  [EVENTS.LEADERBOARD_FAILED_UPDATE]: {
+  [appEvents.LEADERBOARD_UPDATE_FAIL]: {
     correlationId: string;
     error: unknown;
   };

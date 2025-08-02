@@ -1,0 +1,3 @@
+
+export const REDIS_SNAPSHOT_LIMIT = 10;
+export const MIN_LEADERBOARD_TICKER_HISTORY_COUNT = 2;

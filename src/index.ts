@@ -1,36 +1,8 @@
-import { APP_CONFIG } from "@config/index";
-import { verifyRedisConnection } from "@infrastructure/redis/redis.service";
-import { initializeAlertListeners } from "@app/bootstrap/__deprecated__alertListeners";
-import startAppDaemon_2 from "./app/daemon";
-import gracefulDaemonShutdown from "./app/daemonShutdownHandler";
-import { registerAllListeners } from "./listeners/registerListeners";
+import { bootstrapApp } from "./main";
 
 // ---- main.ts (entry point) ----
-
-(async () => {
-	try {
-		console.log("🚀 Bootstrapping app...");
-
-		// REMOVE - DEPRECATD
-		// Step 1: Verify Redis (fail fast if down)
-		// await verifyRedisConnection();
-		
-		// Step 2: Initialize listeners/subscriptions
-		registerAllListeners(); // ⬅️ bind global listeners once
-		// REMOVE - DEPRECATD
-		// await initializeAlertListeners();
-
-		// Step 3: Defer daemon startup — don't block on flaky network
-		setTimeout(() => {
-			startAppDaemon_2(APP_CONFIG.APP_DAEMON_SAFE_RUN_INTERVAL_MS);
-		}, 0); // async kickoff, non-blocking
-
-		console.log("✅ App fully initialized.");
-	} catch (err) {
-		console.error("❌ App failed to initialize:", err);
-		await gracefulDaemonShutdown(`Too many app daemon failures`);
-	}
-})();
+// Start the bootstrap process
+bootstrapApp();
 
 function climbStairs(n: number): number {
 	const memo: Record<number, number> = {};

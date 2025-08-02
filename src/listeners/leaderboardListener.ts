@@ -1,5 +1,5 @@
 import logger from "@infrastructure/logger";
-import { MarketScanPayload } from "src/strategies/scan_2/MarketScanPayload.interface";
+import { MarketScanPayload } from "src/types/events/MarketScanEventPayload.interface";
 import { generateCorrelationId } from "@core/utils/correlation";
 import timer from "@core/utils/timer";
 import { LeaderboardOrchestrator_2 } from "src/strategies/rank/LeaderboardOrchestrator_2";
@@ -9,9 +9,9 @@ import { scoringStrategies } from "@services/leaderboard/scoringStrategies";
 import { FileLeaderboardStorage } from "@services/leaderboard/FileLeaderboardStorage";
 import { LeaderboardTickersSorter } from "@services/leaderboard/LeaderboardTickersSorter";
 import { SortOrder } from "@core/enums/SortOrder.enum";
-import { EVENTS } from "@config/constants";
 import { typedEventEmitter } from "@infrastructure/event_bus/TypedEventEmitter";
-import { LeaderboardUpdateEvent } from "src/types/LeaderboardUpdateEvent.interface";
+import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
+import { appEvents } from "@config/appEvents";
 
 async function handleMarketScanComplete(payload: MarketScanPayload) {
 	const { snapshots, marketScanStrategyPresetKeys } = payload;
@@ -47,7 +47,7 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 					topTicker: undefined,
 				};
 
-		typedEventEmitter.emit(EVENTS.LEADERBOARD_UPDATE, leaderboardUpdateEvent);
+		typedEventEmitter.emit(appEvents.LEADERBOARD_UPDATE, leaderboardUpdateEvent);
 	} catch (err) {
 		logger.error({ correlationId, err }, "❌ Leaderboard ingestion task failed");
 	} finally {
@@ -57,7 +57,7 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 }
 
 export function registerLeaderboardListener() {
-	typedEventEmitter.on(EVENTS.MARKET_SCAN_COMPLETE, handleMarketScanComplete);
+	typedEventEmitter.on(appEvents.MARKET_SCAN_COMPLETE, handleMarketScanComplete);
 }
 
 // await orchestrator
