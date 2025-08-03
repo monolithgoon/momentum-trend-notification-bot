@@ -1,4 +1,4 @@
-import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/models/LeaderboardRestTickerSnapshot.interface";
 
 type VelocityFieldType = Extract<
 	keyof LeaderboardRestTickerSnapshot,
@@ -10,7 +10,7 @@ type AccelerationFieldType = Extract<
 	"pct_change_acceleration__ld_tick" | "volume__ld_tick"
 >;
 
-export class KineticsCalculator {
+export class KineticsCalculator { 
 	history: LeaderboardRestTickerSnapshot[];
 
 	constructor(history: LeaderboardRestTickerSnapshot[]) {

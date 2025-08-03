@@ -1,8 +1,8 @@
 import logger from "@infrastructure/logger";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
-import { generateMockSnapshots } from "@core/rest_api/rest_api/generateMockSnapshots";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
+import { generateMockSnapshots } from "@core/models/rest_api/mocks/generateMockSnapshots";
 import { GenericDatasetFilter } from "../filter/GenericDatasetFilter.interface";
 import { CompositeFilterScreener } from "../filter/CompositeFilterScreener";
 import { MarketQuoteScanner } from "./MarketQuoteScanner";
@@ -15,7 +15,7 @@ export interface OrchestratorOptions {
 }
 
 export interface DatasetScreenerConfig<T = any> {
-	scanFilter: GenericDatasetFilter<T, NormalizedRestTickerSnapshot>;
+	dataFilter: GenericDatasetFilter<T, NormalizedRestTickerSnapshot>;
 	config: T;
 }
 
@@ -43,7 +43,7 @@ export class MarketScanOrchestrator {
 
 		// 4. Run scan and extract tickers
 		const returnedSnapshots = await scanner.executeScan();
-		const tickers = returnedSnapshots.map((s) => s.ticker_name__nz_tick);
+		const tickers = returnedSnapshots.map((s) => s.ticker_symbol__nz_tick);
 
 		// 5. Bail early if nothing found
 		if (!tickers.length) {
@@ -70,9 +70,9 @@ export class MarketScanOrchestrator {
 		this.log.info({ correlationId: this.opts.correlationId, filters }, "🔍 Running screener with filters");
 
 		const screener = new CompositeFilterScreener<NormalizedRestTickerSnapshot>(filters);
-		// const filtered = screener.runScreener(mockSnapshots, "ticker_name__nz_tick");
-		const filtered = screener.runScreener(returnedSnapshots, "ticker_name__nz_tick");
-		const deduped = dedupeByField(filtered, "ticker_name__nz_tick");
+		// const filtered = screener.runScreener(mockSnapshots, "ticker_symbol__nz_tick");
+		const filtered = screener.runScreener(returnedSnapshots, "ticker_symbol__nz_tick");
+		const deduped = dedupeByField(filtered, "ticker_symbol__nz_tick");
 
 		// 9. Log final result count
 		this.log.info({ correlationId: this.opts.correlationId, found: deduped.length }, "📈 Scan complete");

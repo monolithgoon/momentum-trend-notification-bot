@@ -1,9 +1,9 @@
-import { SortedNormalizedTickerSnapshot } from "../../core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
+import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/models/SortedNormalizedTickerSnapshot.interface";
 import { LeaderboardTickersSorter } from "@services/leaderboard/LeaderboardTickersSorter";
 import { LeaderboardService } from "@services/leaderboard/LeaderboardService";
-import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
+import { LeaderboardSnapshotsMap } from "@core/models/rest_api/models/LeaderboardSnapshotsMap.interface";
 import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
-import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/models/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
 
 interface LeaderboardOrchestratorOptions {

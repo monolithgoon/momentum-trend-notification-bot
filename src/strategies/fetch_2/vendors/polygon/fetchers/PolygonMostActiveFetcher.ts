@@ -22,6 +22,7 @@ export class PolygonMostActiveFetcher implements PolygonRestApiQuoteFetcher {
       return tickers
         .filter(t => t.lastTradeTimestampNs && timestampTradeSessionChk(nsToUnixSec(t.lastTradeTimestampNs), session, this.nowUtc))
         .map((t): PolygonRestTickerSnapshot => ({
+          polygon_ticker_symbol: t.polygon_ticker_symbol,
           polygon_ticker_name: t.polygon_ticker_name,
           tradingVolumeToday: t.tradingVolumeToday ?? 0,
           priceChangeTodayPerc: t.priceChangeTodayPerc ?? 0,

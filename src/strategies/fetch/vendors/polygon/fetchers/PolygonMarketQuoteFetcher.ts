@@ -1,13 +1,13 @@
 import { MarketSession } from "@core/enums/MarketSession.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { RawRestApiTckerSnapshotTransformer } from "@core/models/rest_api/transformers/types/RawRestApiTickerSnapshotTransformer.interface";
 import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
-import { RawRestApiTickerTransformer } from "@core/models/rest_api/transformers/types/RawRestApiTickerTransformer.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
 import { PolygonRestApiQuoteFetchStrategy } from "../types/PolygonRestApiQuoteFetchStrategy.interface";
 import { SessionMarketQuoteFetcher } from "src/strategies/fetch/types/SessionMarketQuoteFetcher.interface";
 
 export class PolygonMarketQuoteFetcher implements SessionMarketQuoteFetcher {
 	constructor(
-		private readonly transformer: RawRestApiTickerTransformer<PolygonRestTickerSnapshot>,
+		private readonly transformer: RawRestApiTckerSnapshotTransformer<PolygonRestTickerSnapshot>,
 		private readonly strategies: PolygonRestApiQuoteFetchStrategy[]
 	) {}
 
@@ -29,8 +29,8 @@ export class PolygonMarketQuoteFetcher implements SessionMarketQuoteFetcher {
 				const seen = new Set();
 
 				return transformedSnapshots.filter((snap) => {
-					if (seen.has(snap.ticker_name__nz_tick)) return false;
-					seen.add(snap.ticker_name__nz_tick);
+					if (seen.has(snap.ticker_symbol__nz_tick)) return false;
+					seen.add(snap.ticker_symbol__nz_tick);
 					return true;
 				});
 

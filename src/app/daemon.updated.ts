@@ -45,7 +45,7 @@ async function runDaemonCycleSafely() {
 		await new FileStorageHealthChecker().verifyWriteAccess(); // fail fast before main market scan task
 
 		if (firstRun) {
-			console.log("🌐 Internet + Redis connection confirmed.");
+			console.log("🌐 Internet + file storage access confirmed.");
 			onAppReady("✅ Daemon ready");
 			firstRun = false;
 		}

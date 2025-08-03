@@ -5,7 +5,7 @@ export enum LeaderboardScoringStrategyKey {
 	POP_UP_DECAY = "popUpDecay", // Basic pop-up and decay scoring based on velocity and acceleration
 	WEIGHTED_LINEAR = "weightedLinear", // Weighted linear combination of pctChangeVelocity and pctChangeAcceleration
 	MAGNITUDE = "magnitude", // Euclidean norm of velocity and acceleration (non-linear magnitude scoring)
-	PERCENTAGE_CHANGE_ONLY = "percentageChangeOnly", // Uses only the raw % price change
+	PERCENTAGE_CHANGE_ONLY = "percentageChangeOnly", // Uses only the raw price% change
 	THRESHOLDED = "thresholded", // Ignores small-magnitude velocity/acceleration below threshold
 	DOMAIN_INSPIRED = "domainInspired", // Domain-inspired log-adjusted score that incorporates volume
 }

@@ -1,8 +1,7 @@
 import logger from "@infrastructure/logger";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
-import { generateMockSnapshots } from "@core/rest_api/rest_api/generateMockSnapshots";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
 import { GenericDatasetFilter } from "../filter/GenericDatasetFilter.interface";
 import { CompositeFilterScreener } from "../filter/CompositeFilterScreener";
 import { MarketQuoteScanner_2 } from "./MarketQuoteScanner_2";
@@ -38,7 +37,7 @@ export class MarketScanOrchestrator_2 {
 		// const filtered = this.applyFilters(rawSnapshots, fieldThresholdFilters);
 		const screener = new CompositeFilterScreener<NormalizedRestTickerSnapshot>(fieldThresholdFilters);
 		const filtered = screener.runScreener(rawSnapshots);
-		const deduped = dedupeByField(filtered, "ticker_name__nz_tick");
+		const deduped = dedupeByField(filtered, "ticker_symbol__nz_tick");
 
 		this.log.info(
 			{
@@ -68,7 +67,7 @@ export class MarketScanOrchestrator_2 {
 			{
 				correlationId: this.ochOptions.correlationId,
 				fetched: snapshots.length,
-				tickers: snapshots.map((s) => s.ticker_name__nz_tick),
+				tickers: snapshots.map((s) => s.ticker_symbol__nz_tick),
 			},
 			"📦 Raw snapshots fetched"
 		);
@@ -81,6 +80,6 @@ export class MarketScanOrchestrator_2 {
 	// 		fieldThresholdFilters: DatasetScreenerConfig[]
 	// 	): NormalizedRestTickerSnapshot[] {
 	// 		const screener = new CompositeFilterScreener<NormalizedRestTickerSnapshot>(fieldThresholdFilters);
-	// 		return screener.runScreener(data, "ticker_name__nz_tick", data);
+	// 		return screener.runScreener(data, "ticker_symbol__nz_tick", data);
 	// 	}
 }

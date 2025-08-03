@@ -4,11 +4,12 @@ graph TD
   %% 📘 Normalized domain
   NormalizedRestTickerSnapshot["<b>NormalizedRestTickerSnapshot</b>
   ordinal_sort_position
-  timestamp
+  timestamp__nz_tick
   ticker_name__nz_tick
+  ticker_symbol__nz_tick
   change_pct__nz_tick
-  price?
-  volume?
+  price__nz_tick?
+  volume__nz_tick?
   currnt_day_stats_high?
   current_day_stats_low?"]:::normalized
 
@@ -60,7 +61,7 @@ SortedNormalizedTickerSnapshot["<b>SortedNormalizedTickerSnapshot</b>
   transform(input: PolygonRestTickerSnapshot): NormalizedRestTickerSnapshot"]:::polygon
 
   %% 🟣 Raw / Transformer
-  RawRestApiTickerTransformer["<b>RawRestApiTickerTransformer</b>"]:::raw
+  RawRestApiTckerSnapshotTransformer["<b>RawRestApiTckerSnapshotTransformer</b>"]:::raw
   DefaultTickerSnapshotTransformer["<b>DefaultTickerSnapshotTransformer</b>
   transform(TIn, position: number): TOut"]:::raw
 
@@ -72,7 +73,7 @@ SortedNormalizedTickerSnapshot["<b>SortedNormalizedTickerSnapshot</b>
   LeaderboardRestTickerSnapshot -- "transforms to" --> SortedNormalizedTickerSnapshot
   DefaultTickerSnapshotTransformer -- "implemented →" --> PolygonSnapshotTransformer
   DefaultTickerSnapshotTransformer -- "implemented by →" --> LeaderboardTickerTransformer
-  RawRestApiTickerTransformer -- "data input" --> PolygonRestTickerSnapshot
+  RawRestApiTckerSnapshotTransformer -- "data input" --> PolygonRestTickerSnapshot
 
   %% Styles
   classDef normalized fill:light-grey,stroke:#004085,stroke-width:4

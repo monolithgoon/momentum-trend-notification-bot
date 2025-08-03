@@ -4,11 +4,11 @@ import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
 import { DedupableKey } from "./__deprecated__MarketScanOrchestrator_3 copy";
 import { MarketScanAdapterRegistry } from "./MarketScanAdapterRegistry";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
-import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
+import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/models/SortedNormalizedTickerSnapshot.interface";
 import { AdvancedThresholdConfig, filterByThresholds } from "../filter_2/filterByThresholds";
 import { dedupeByField } from "@core/generics/dedupeByField";
-import { generateMockSnapshots } from "@core/models/rest_api/generateMockSnapshots";
+import { generateMockSnapshots } from "@core/models/rest_api/mocks/generateMockSnapshots";
 import { NormalizedSnapshotSorter } from "../sort/NormalizedSnapshotSorter";
 
 interface OrchestratorContext {
@@ -42,7 +42,7 @@ export class MarketScanOrchestrator_3 {
 	public async executeScan(options: ScanRunOptions): Promise<SortedNormalizedTickerSnapshot[]> {
 		const {
 			numericFieldLimiters,
-			dedupField = "ticker_name__nz_tick",
+			dedupField = "ticker_symbol__nz_tick",
 			marketSession,
 			marketScanStrategyPresetKeys,
 			marketDataVendor,
@@ -112,7 +112,7 @@ export class MarketScanOrchestrator_3 {
 			{
 				correlationId: this.context.correlationId,
 				fetched: results.length,
-				tickers: results.map((s) => s.ticker_name__nz_tick),
+				tickers: results.map((s) => s.ticker_symbol__nz_tick),
 			},
 			`📦 Snapshots fetched via [${vendor}] and normalized`
 		);

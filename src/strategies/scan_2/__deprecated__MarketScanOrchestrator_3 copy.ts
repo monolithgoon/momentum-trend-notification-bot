@@ -36,7 +36,7 @@ export class MarketScanOrchestrator_3 {
 	public async executeScan(options: RunOptions): Promise<NormalizedRestTickerSnapshot[]> {
 		const {
 			numericFieldLimiters,
-			dedupField = "ticker_name__nz_tick",
+			dedupField = "ticker_symbol__nz_tick",
 			marketSession,
 			marketScanStrategyPresetKeys,
 			marketDataVendor,
@@ -82,7 +82,7 @@ export class MarketScanOrchestrator_3 {
 			{
 				correlationId: this.ochOptions.correlationId,
 				fetched: snapshots.length,
-				tickers: snapshots.map((s) => s.ticker_name__nz_tick),
+				tickers: snapshots.map((s) => s.ticker_symbol__nz_tick),
 			},
 			`📦 Raw snapshots fetched via **${marketDataVendor}** and transformed (normalized)`
 		);

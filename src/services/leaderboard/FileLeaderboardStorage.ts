@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
-import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/models/LeaderboardRestTickerSnapshot.interface";
 import { existsSync } from "fs";
 
 export class FileLeaderboardStorage implements LeaderboardStorage {

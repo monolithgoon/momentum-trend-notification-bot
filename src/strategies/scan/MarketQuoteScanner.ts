@@ -1,6 +1,6 @@
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketSession } from "@core/enums/MarketSession.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
 import { ScanFilterConfigTypes } from "./types/ScanFilterConfigs.types";
 import { NormalizedSnapshotScreener } from "../filter/NormalizedSnapshotScreener";
 import { getMarketQuoteFetcherForStrategies } from "../fetch/factories/getMarketQuoteFetcherForStrategies";
@@ -22,7 +22,7 @@ export class MarketQuoteScanner {
 
 		console.log(`✅ Found ${tickers.length} active tickers:`);
 		for (const t of tickers) {
-			console.log(`→ ${t.ticker_name__nz_tick} | Δ ${t.change_pct__nz_tick}% | Volume: ${t.volume ?? "?"}`);
+			console.log(`→ ${t.ticker_symbol__nz_tick} | Δ ${t.change_pct__nz_tick}% | Volume: ${t.volume__nz_tick ?? "?"}`);
 		}
 	}
 

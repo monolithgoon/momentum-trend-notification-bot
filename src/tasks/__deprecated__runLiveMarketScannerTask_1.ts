@@ -177,7 +177,7 @@ export default async function runLiveMarketScannerTask() {
 			currentMarketSession,
 			scanStrategyKeys
 		);
-		const returnedTickerNames: string[] = returnedSnapshots.map((snapshot) => snapshot.ticker_name__nz_tick);
+		const returnedTickerNames: string[] = returnedSnapshots.map((snapshot) => snapshot.ticker_symbol__nz_tick);
 
 		// 1b. Check if any tickers were returned
 		if (!returnedTickerNames?.length) {

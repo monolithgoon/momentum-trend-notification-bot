@@ -1,5 +1,5 @@
 import { MarketSession } from "@core/enums/MarketSession.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
 
 // REMOVE - DEPRECATED
 export interface RestApiQuoteFetcherAdapter_0<TInput, TOutput> {

@@ -6,7 +6,7 @@ import { getCurrentMarketSession } from "@core/utils";
 import { generateCorrelationId } from "@core/utils/correlation";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { SortOrder } from "@core/enums/SortOrder.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
 
 import { MarketScanOrchestrator_3 } from "src/strategies/scan_2/MarketScanOrchestrator_3";
 import { MarketScanStrategyPresetKey } from "src/strategies/scan_2/MarketScanStrategyPresetKey.enum";
@@ -37,16 +37,16 @@ export async function runLiveMarketScannerTask_3() {
 
 		// 3. Define scan filter config
 		const fieldLimiters: AdvancedThresholdConfig<NormalizedRestTickerSnapshot> = {
-			// volume: { operation: ">", value: 1_000_000 },
+			// volume__nz_tick: { operation: ">", value: 1_000_000 },
 			// change_pct__nz_tick: { operation: ">=", value: 2.5 },
-			volume: { operation: ">", value: 100 },
+			volume__nz_tick: { operation: ">", value: 100 },
 			change_pct__nz_tick: { operation: ">=", value: 0 },
 		};
 
 		// 4. Run orchestrator
 		const snapshots = await marketScanOrchestrator.executeScan({
 			numericFieldLimiters: fieldLimiters,
-			dedupField: "ticker_name__nz_tick",
+			dedupField: "ticker_symbol__nz_tick",
 			marketSession: getCurrentMarketSession(),
 			marketScanStrategyPresetKeys,
 			marketDataVendor: MarketDataVendor.POLYGON,
@@ -55,7 +55,7 @@ export async function runLiveMarketScannerTask_3() {
 
 		const marketScanPayload: MarketScanPayload = {
 			snapshots,
-			tickerNames: getSnapshotTickerNames(snapshots, "ticker_name__nz_tick"),
+			tickerNames: getSnapshotTickerNames(snapshots, "ticker_symbol__nz_tick"),
 			marketScanStrategyPresetKeys,
 			correlationId,
 			timestampMs: Date.now(),

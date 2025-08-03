@@ -1,3 +1,5 @@
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedTickerScanFilter } from "../scan/types/NormalizedTickerScanFilter.interface";
 
 /**
  * NormalizedSnapshotScreener applies one or more scan filters to a set of market data snapshots.
@@ -15,9 +17,6 @@
  * @returns A deduplicated list of tickers that matched at least one filter.
  */
 
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
-import { NormalizedTickerScanFilter } from "../scan/types/NormalizedTickerScanFilter.interface";
-
 export class NormalizedSnapshotScreener {
 	constructor(private scanFilters: { scanFilter: NormalizedTickerScanFilter<any>; config: any }[]) {}
 
@@ -26,7 +25,7 @@ export class NormalizedSnapshotScreener {
 
 		const uniqueByTicker = new Map<string, NormalizedRestTickerSnapshot>();
 		for (const snapshot of results) {
-			if (snapshot.ticker_name__nz_tick) uniqueByTicker.set(snapshot.ticker_name__nz_tick, snapshot);
+			if (snapshot.ticker_symbol__nz_tick) uniqueByTicker.set(snapshot.ticker_symbol__nz_tick, snapshot);
 		}
 
 		return [...uniqueByTicker.values()];

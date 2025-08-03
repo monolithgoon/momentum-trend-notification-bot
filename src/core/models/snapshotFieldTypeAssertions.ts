@@ -1,5 +1,5 @@
-import { LeaderboardRestTickerSnapshot } from "./rest_api/LeaderboardRestTickerSnapshot.interface";
-import { NormalizedRestTickerSnapshot } from "./rest_api/NormalizedRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "./rest_api/models/LeaderboardRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "./rest_api/models/NormalizedRestTickerSnapshot.interface";
 
 // Compile-time utility: Validates that all keys in K exist in T
 type ValidateKeys<T, K extends readonly string[]> = K[number] extends keyof T ? true : "❌ Invalid field in array";
@@ -38,7 +38,7 @@ export type LeaderboardSortFieldType = (typeof LEADERBOARD_SORT_FIELDS)[number];
 ============================================================================ */
 
 // List of valid normalized snapshot sort fields
-export const NORMALIZED_SORT_FIELDS = ["change_pct__nz_tick", "volume", "price"] as const;
+export const NORMALIZED_SORT_FIELDS = ["change_pct__nz_tick", "volume__nz_tick", "price__nz_tick"] as const;
 
 // Compile-time assertion: Ensures all NORMALIZED_SORT_FIELDS are valid keys
 export type AssertNormalizedSortFieldsValid = ValidateKeys<NormalizedRestTickerSnapshot, typeof NORMALIZED_SORT_FIELDS>;

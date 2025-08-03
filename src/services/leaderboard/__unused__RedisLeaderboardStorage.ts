@@ -1,8 +1,8 @@
 import Redis from "ioredis";
-import { NormalizedRestTickerSnapshot } from "@core/snapshots/rest_api/types/NormalizedRestTickerSnapshot.interface";
-import { LeaderboardRestTickerSnapshot } from "@core/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/models/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
-import { redisClient } from "@infrastructure/__deprecated__redis/redis.service";
+import { redisClient } from "@infrastructure/redis/redis.service";
 
 export class RedisLeaderboardStorage implements LeaderboardStorage {
 	private redis: Redis;

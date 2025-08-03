@@ -1,4 +1,4 @@
-import { NormalizedRestTickerSnapshot } from "./NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "../models/NormalizedRestTickerSnapshot.interface";
 
 type MockSnapshotOptions = {
 	changePctRange?: [number, number];
@@ -31,7 +31,7 @@ export function generateMockSnapshots(
 		};
 	}
 
-	for (const ticker_name__nz_tick of tickers) {
+	for (const ticker_symbol__nz_tick of tickers) {
 		let base = changePctRange[0] + random() * (changePctRange[1] - changePctRange[0]);
 
 		for (let i = 0; i < numPerTicker; i++) {
@@ -52,20 +52,21 @@ export function generateMockSnapshots(
 			}
 
 			snapshots.push({
-				ticker_name__nz_tick,
-				timestamp,
+				ticker_symbol__nz_tick,
+				ticker_name__nz_tick: "",
+				timestamp__nz_tick: timestamp,
 				change_pct__nz_tick: change_pct,
-				price: 100 + random() * 10,
-				volume: 1000 + Math.floor(random() * 500),
-				ingestion_ordinal_index: i
+				price__nz_tick: 100 + random() * 10,
+				volume__nz_tick: 1000 + Math.floor(random() * 500),
+				ingestion_ordinal_index: i,
 			});
 		}
 	}
 
 	// Sort descending per ticker by timestamp (optional)
 	return snapshots.sort((a, b) =>
-		a.ticker_name__nz_tick === b.ticker_name__nz_tick
-			? b.timestamp - a.timestamp
-			: a.ticker_name__nz_tick.localeCompare(b.ticker_name__nz_tick)
+		a.ticker_symbol__nz_tick === b.ticker_symbol__nz_tick
+			? b.timestamp__nz_tick - a.timestamp__nz_tick
+			: a.ticker_symbol__nz_tick.localeCompare(b.ticker_symbol__nz_tick)
 	);
 }

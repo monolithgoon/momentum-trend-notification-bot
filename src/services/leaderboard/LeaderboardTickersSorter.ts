@@ -1,6 +1,6 @@
 import { SortOrder } from "@core/enums/SortOrder.enum";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/models/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardSortFieldType } from "@core/models/snapshotFieldTypeAssertions";
 
 export class LeaderboardTickersSorter

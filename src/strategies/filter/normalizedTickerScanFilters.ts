@@ -1,4 +1,4 @@
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
 
 interface NormalizedTickerScanFilter<TConfig = unknown> {
 	name: string;
@@ -30,7 +30,7 @@ export class VolumeChangeScanFilter implements NormalizedTickerScanFilter<Volume
 	runFilter(data: NormalizedRestTickerSnapshot[], config: VolumePctChangeConfig): NormalizedRestTickerSnapshot[] {
 		return data.filter(
 			(ticker) =>
-				(ticker.volume ?? 0) >= config.volumeThreshold &&
+				(ticker.volume__nz_tick ?? 0) >= config.volumeThreshold &&
 				ticker.change_pct__nz_tick >= config.changePercentageThreshold
 		);
 	}

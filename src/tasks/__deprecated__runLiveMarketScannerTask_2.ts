@@ -33,7 +33,7 @@ export async function runLiveMarketScannerTask_2(): Promise<void> {
 					Record<keyof NormalizedRestTickerSnapshot, number>
 				>(),
 				config: {
-					volume: 1000000,
+					volume__nz_tick: 1000000,
 					change_pct__nz_tick: 2.5,
 				},
 			},
@@ -50,15 +50,15 @@ export async function runLiveMarketScannerTask_2(): Promise<void> {
 			{
 				dataFilter: new ComposableDatasetFieldThresholdFilter<NormalizedRestTickerSnapshot>(),
 				config: {
-					volume: 1_000_000,
+					volume__nz_tick: 1_000_000,
 					change_pct__nz_tick: 2.5,
 				} satisfies ThresholdConfig<NormalizedRestTickerSnapshot>,
 			},
 			{
 				dataFilter: new ComposableDatasetFieldThresholdFilter<NormalizedRestTickerSnapshot>(),
 				config: {
-					volume: 1_000_000,
-					price: 200,
+					volume__nz_tick: 1_000_000,
+					price__nz_tick: 200,
 				} satisfies ThresholdConfig<NormalizedRestTickerSnapshot>,
 			}
 		];
@@ -70,7 +70,7 @@ export async function runLiveMarketScannerTask_2(): Promise<void> {
 			{
 				correlationId,
 				found: scanResults.length,
-				tickers: scanResults.map((t) => t.ticker_name__nz_tick),
+				tickers: scanResults.map((t) => t.ticker_symbol__nz_tick),
 			},
 			"✅ Market scan complete"
 		);

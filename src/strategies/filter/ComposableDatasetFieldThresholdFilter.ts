@@ -48,7 +48,7 @@ export class ComposableDatasetFieldThresholdFilter<
  *
  * 📦 EXAMPLE CONFIG:
  * const config = {
- *   volume: 1_000_000,
+ *   volume__nz_tick: 1_000_000,
  *   change_pct__nz_tick: 2.5
  * };
  *

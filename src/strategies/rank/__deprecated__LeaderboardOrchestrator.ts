@@ -59,7 +59,7 @@ export class LeaderboardOrchestrator {
 			return {
 				tag: leaderboardTag,
 				total: incomingSnapshots.length,
-				topTicker: incomingSnapshots[0]?.ticker_name__nz_tick,
+				topTicker: incomingSnapshots[0]?.ticker_symbol__nz_tick,
 				preview: incomingSnapshots,
 			};
 		}
