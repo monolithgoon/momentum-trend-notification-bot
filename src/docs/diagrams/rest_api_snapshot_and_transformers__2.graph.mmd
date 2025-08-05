@@ -1,0 +1,94 @@
+flowchart TD
+
+  %% === POLYGON CLUSTER (Vendor Input) ===
+  subgraph POLYGON
+    direction TB
+    style POLYGON fill:#fcfff5,stroke:olive,stroke-width:3px,color:#000;
+    R1["🧩 Interface: FlatRawPolygonTickerSnapshot\n- polygon_ticker_symbol\n- polygon_ticker_name\n- priceChangeTodayAbs\n- priceChangeTodayPerc\n- lastTradeTimestampNs\n- tradingVolumeToday\n- rawTickerSnapshot\n- currDay\n- prevDay\n- minute\n- lastQuote\n- lastTrade\n- ticker\n- todaysChange\n- todaysChangePerc\n- updated"]
+  end
+
+  %% === FMP CLUSTER (Vendor Input) ===
+  subgraph FMP
+    direction TB
+    style FMP fill:#fff2e6,stroke:#d35400,stroke-width:2px,color:#000;
+    R2["🧩 Interface: IEnrichedRawFmpQuoteSnapshot\n- symbol\n- price\n- volume\n- timestamp\n- name\n- change\n- changesPercentage\n- marketCap\n- previousClose"]
+  end
+
+  %% === TRANSFORMERS CLUSTER ===
+  subgraph TRANSFORMERS
+    direction TB
+    style TRANSFORMERS fill:#,stroke:black,stroke-width:1px,color:#000;
+    I4["🧩 Interface: SnapshotTransformer"]
+    I1["🧩 Interface: RawRestApiTickerSnapshotTransformer"]
+    I3["🧩 Interface: NormalizedRestTickerSnapshotTransformer"]
+    C1["🏛️ Class: PolygonSnapshotTransformer"]
+    C3["🏛️ Class: FmpTopGainersSnapshotTransformer"]
+    C2["🏛️ Class: LeaderboardTickerTransformer"]
+  end
+
+  %% === NORMALIZED CLUSTER ===
+  subgraph NORMALIZED
+    direction TB
+    style NORMALIZED fill:#e7f3ff,stroke:#1c6cb3,stroke-width:1px,color:#000;
+    A1["📦 Base: BaseInternalTickerSnapshot"]
+    A2["🧩 Interface: NormalizedRestTickerSnapshot\n- ingestion_ordinal_index\n- timestamp__nz_tick\n- ticker_name__nz_tick\n- ticker_symbol__nz_tick\n- change_pct__nz_tick\n- change_abs__nz_tick\n- price__nz_tick\n- volume__nz_tick\n- currnt_day_stats_high\n- current_day_stats_low\n- market_cap__nz_tick\n- timestamp_utc__nz_tick\n- vendor_name__nz_tick\n- raw_source_snapshot"]
+    A3["🧩 Interface: SortedNormalizedTickerSnapshot\n- sort_ordinal_index"]
+  end
+
+  %% === LEADERBOARD CLUSTER ===
+  subgraph LEADERBOARD
+    direction TB
+    style LEADERBOARD fill:#f2e0ff,stroke:#8e44ad,stroke-width:2px,color:#000;
+    A4["🧩 Interface: LeaderboardRestTickerSnapshot\n- ticker_name__ld_tick\n- change_pct__ld_tick\n- timestamp__ld_tick\n- volume__ld_tick\n- pct_change_velocity__ld_tick\n- pct_change_acceleration__ld_tick\n- volume_velocity__ld_tick\n- volume_acceleration__ld_tick\n- leaderboard_momentum_score\n- leaderboard_rank\n- num_consecutive_appearances"]
+    M1["🧭 Map: LeaderboardSnapshotsMap"]
+  end
+
+  %% === Transformer Interface Hierarchies ===
+  I4 --> I1
+  I4 --> I3
+  I1 --> C1
+  I1 --> C3
+  I3 --> C2
+
+  %% === Vendor → Transformer → Output Chains ===
+  R1 --> C1
+  C1 -->|produces| A2
+
+  R2 --> C3
+  C3 -->|produces| A2
+
+  A2 --> C2
+  C2 -->|produces| A4
+
+  %% === Snapshot Inheritance
+  A2 -->|extends| A1
+  A3 -->|extends| A2
+  A4 -->|extends| A1
+  A4 -->|used in| M1
+
+  %% === Style Definitions ===
+  classDef base-interface fill:white,stroke:black,color:blue,stroke-dasharray: 5 5;
+  classDef normalized-interface fill:apple,stroke:green,color:#000,stroke-dasharray: 5 5;
+  classDef leaderboard-interface fill:#f2e0ff,stroke:#8e44ad,color:#000,stroke-dasharray: 5 5;
+
+  classDef polygon-interface fill:#fcfff5,stroke:olive,color:#000,stroke-dasharray: 7 7;
+  classDef fmp-interface fill:#fff2e6,stroke:#d35400,color:#000,stroke-dasharray: 6 4;
+
+  classDef polygon-class fill:none,stroke:olive,color:#000,stroke-width:4px;
+  classDef fmp-class fill:#ffe5d3,stroke:#d35400,color:#000,stroke-width:4px;
+  classDef leaderboard-class fill:#f2e0ff,stroke:#6c2c94,color:#000,stroke-width:5px;
+
+  %% === Apply Styles ===
+  class A1 base-interface
+  class A2,A3 normalized-interface
+  class A4 leaderboard-interface
+
+  class R1 polygon-interface
+  class R2 fmp-interface
+
+  class I1,I3,I4 base-interface
+  class C1 polygon-class
+  class C2 leaderboard-class
+  class C3 fmp-class
+  class M1 leaderboard-class
+

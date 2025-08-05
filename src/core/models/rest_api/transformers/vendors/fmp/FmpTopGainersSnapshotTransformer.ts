@@ -45,6 +45,7 @@ function parsePercentage(pct: string | number): number {
 }
 
 export class FmpTopGainersSnapshotTransformer {
+	private readonly VENDOR_NAME: "FMP" = "FMP"
 	/**
 	 * Transforms a single IEnrichedRawFmpQuoteSnapshot into a NormalizedRestTickerSnapshot
 	 */
@@ -58,9 +59,8 @@ export class FmpTopGainersSnapshotTransformer {
 			change_pct__nz_tick: parsePercentage(m.changesPercentage ?? 0),
 			change_abs__nz_tick: m.change ?? 0,
 			volume__nz_tick: m.volume ?? 0,
-			// market_cap__nz_tick: m.marketCap ?? 0, // TODO
-			// vendor__nz_tick: "FMP", // TODO
-			// raw_source_snapshot: m,
+			market_cap__nz_tick: m.marketCap ?? 0, // TODO
+			vendor_name__nz_tick: this.VENDOR_NAME,
 		};
 	}
 }

@@ -1,7 +1,26 @@
-// src/infrastructure/eventBus/typedEventEmitter.ts
-
 import { EventEmitter } from "events";
 import { EventPayloadMap } from "./EventPayloadMap.interface";
+
+/**
+ * A strongly-typed wrapper around Node.js's EventEmitter, allowing for type-safe event emission and handling.
+ * 
+ * The `TypedEventEmitter` class enforces that only events and payloads defined in the `EventPayloadMap` type
+ * can be emitted or listened to, providing compile-time safety for event-driven architectures.
+ * 
+ * @template EventPayloadMap - An interface mapping event names (as keys) to their corresponding payload types.
+ * 
+ * Example EventPayloadMap:
+ * 
+ * interface EventPayloadMap {
+ *   USER_CREATED: { id: string, name: string };
+ *   ORDER_PLACED: { orderId: string, total: number };
+ * }
+ *
+ * Usage:
+ * 
+ * typedEventEmitter.emit("USER_CREATED", { id: "123", name: "Alice" });
+ * typedEventEmitter.on("ORDER_PLACED", (data) => console.log(data.orderId));
+ */
 
 class TypedEventEmitter {
   private emitter = new EventEmitter();

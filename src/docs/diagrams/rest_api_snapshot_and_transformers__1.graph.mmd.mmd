@@ -1,0 +1,107 @@
+flowchart TD
+
+  %% === TRANSFORMERS CLUSTER ===
+  subgraph TRANSFORMERS
+    direction TB
+    style TRANSFORMERS fill:#,stroke:#2980b9,stroke-width:1px,color:#000;
+    I4["🧩 Interface: SnapshotTransformer"]
+    I1["🧩 Interface: RawRestApiTickerSnapshotTransformer"]
+    I3["🧩 Interface: NormalizedRestTickerSnapshotTransformer"]
+    C1["🏛️ Class: PolygonSnapshotTransformer"]
+    C2["🏛️ Class: LeaderboardTickerTransformer"]
+    C3["🏛️ Class: EodhdSnapshotTransformer"]
+  end
+
+  %% === NORMALIZED CLUSTER ===
+  subgraph NORMALIZED
+    direction TB
+    style NORMALIZED fill:#e7f3ff,stroke:#1c6cb3,stroke-width:1px,color:#000;
+    A1["📦 Base: BaseInternalTickerSnapshot"]
+    A2["🧩 Interface: NormalizedRestTickerSnapshot\n- ingestion_ordinal_index\n- timestamp\n- ticker_name__nz_tick\n- change_pct__nz_tick\n- price\n- volume\n- currnt_day_stats_high\n- current_day_stats_low"]
+    A3["🧩 Interface: SortedNormalizedTickerSnapshot\n- sort_ordinal_index"]
+  end
+
+  %% === LEADERBOARD CLUSTER ===
+  subgraph LEADERBOARD
+    direction TB
+    style LEADERBOARD fill:#f2e0ff,stroke:#8e44ad,stroke-width:2px,color:#000;
+    A4["🧩 Interface: LeaderboardRestTickerSnapshot\n- ticker_name__ld_tick\n- change_pct__ld_tick\n- timestamp__ld_tick\n- volume__ld_tick\n- pct_change_velocity__ld_tick\n- pct_change_acceleration__ld_tick\n- volume_velocity__ld_tick\n- volume_acceleration__ld_tick\n- leaderboard_momentum_score\n- leaderboard_rank\n- num_consecutive_appearances"]
+    M1["🧭 Map: LeaderboardSnapshotsMap"]
+  end
+
+  %% === POLYGON CLUSTER ===
+  subgraph POLYGON
+    direction TB
+    style POLYGON fill:#,stroke:olive,stroke-width:3px,color:#000;
+    R1["🧩 Interface: FlatPolygonRestTickerSnapshot\n- polygon_ticker_name\n- lastTradeTimestampNs\n- priceChangeTodayPerc\n- lastTrade.p\n- tradingVolumeToday"]
+  end
+
+  %% === REST API SNAPSHOT ===
+  subgraph REST_API
+    direction TB
+    style REST_API fill:white,stroke:black,stroke-width:1px,color:#000;
+    R2["🧩 Interface: RawRestApiTickerSnapshotTransformer\n- raw_symbol\n- last_trade\n- trade_volume"]
+  end
+
+  R2 -->|input for| C3
+  R2 -->|input for| C1
+  C3 -->|produces| A2
+  C3 -->|implements| I1
+
+  %% === Rank / Positioning Edges
+  I4 --> I1
+  I4 --> I3
+  I1 --> C1
+  I3 --> C2
+  C1 --> A2
+  C2 --> A4
+
+  %% === Snapshot Inheritance
+  A2 -->|extends| A1
+  A3 -->|extends| A2
+  A4 -->|extends| A1
+
+  %% === Implementation + Transformation Edges
+  C1 -->|implements| I1
+  C1 -->|produces| A2
+  C1 -->|from| R1
+
+  C2 -->|implements| I4
+  C2 -->|produces| A4
+  C2 -->|from| A2
+
+  A4 -->|used in| M1
+
+  %% === Style Definitions ===
+  classDef normalized-interface fill:apple,stroke:green,color:#000,stroke-dasharray: 5 5;
+  classDef normalized-class fill:lightgreen,stroke:green,color:#000,stroke-width:4px;
+
+  classDef polygon-class fill:none,stroke:olive,color:#000,stroke-width:4px;
+  classDef polygon-interface fill:none,stroke:olive,color:#000,stroke-dasharray: 7 7;
+
+  classDef leaderboard-interface fill:#f2e0ff,stroke:#8e44ad,color:#000,stroke-dasharray: 5 5;
+  classDef leaderboard-class fill:#f2e0ff,stroke:#6c2c94,color:#000,stroke-width:5px;
+  classDef map fill:none,stroke:#6c2c94,color:#000,fill:#f2e0ff,stroke-width:1px;
+
+  classDef eodhd-class fill:lightpink,stroke:red,color:#000,stroke-width:5px;
+
+  classDef normalized-transformer-interface fill:non,stroke:green,color:#000,stroke-dasharray: 5 5;
+  classDef base-transformer-interface fill:white,stroke:#3a75c4,color:#000,stroke:7, stroke-dasharray: 5 5;
+
+  classDef base-interface fill:none,stroke:green,color:#000,stroke-dasharray: 10;
+  classDef base-interface fill:white,stroke:black,color:#000,stroke-dasharray: 5 5;
+
+  %% === Apply Styles ===
+  class A1 base-interface
+  class A2,A3 normalized-interface
+  class A4 leaderboard-interface
+  class R1 polygon-interface
+  class R2 base-interface
+
+  class I4 base-interface
+  class I3 normalized-transformer-interface
+  class I1 base-transformer-interface
+  class C1 polygon-class
+  class C2 leaderboard-class
+  class C3 eodhd-class
+  class M1 map

@@ -1,0 +1,104 @@
+flowchart TD
+
+  %% === FETCHERS CLUSTER ===
+  subgraph FETCHERS
+    direction TB
+    style FETCHERS fill:#fffbea,stroke:#e1b000,stroke-width:2px;
+    F1["📦 Class: PolygonTopGainersFetcher"]
+    F2["📦 Class: PolygonMostActiveFetcher"]
+    F3["📦 Class: FmpTopGainersFetcher"]
+  end
+
+  %% === ADAPTERS CLUSTER ===
+  subgraph ADAPTERS
+    direction TB
+    style ADAPTERS fill:#e7faff,stroke:#17a2b8,stroke-width:2px;
+    A1["🔌 Class: PolygonFetcherAdapter"]
+    A2["🔌 Class: FmpFetcherAdapter"]
+    AI["🧩 Interface: RestApiQuoteFetcherAdapter"]
+  end
+
+  %% === STRATEGY REGISTRY CLUSTER ===
+  subgraph STRATEGY_REGISTRY
+    direction TB
+    style STRATEGY_REGISTRY fill:white,stroke:black,stroke-dasharray: 5 5;
+    R1["📚 Registry: MarketScanAdapterRegistry"]
+    R2["📚 Registry: VendorStrategyRegistry"]
+    PK["🔑 Enum: MarketScanStrategyPresetKey
+    <font color='blue'>MARKET_MOST_ACTIVE</font>
+    <font color='blue'>MARKET_TOP_GAINERS</font>
+    <font color='blue'>MARKET_TOP_LOSERS</font>
+    <font color='blue'>MARKET_TOP_RECENT_IPO</font>"]
+
+  end
+
+  %% === ORCHESTRATORS CLUSTER ===
+  subgraph ORCHESTRATORS
+    direction TB
+    style ORCHESTRATORS fill:#f2f0ff,stroke:#6f42c1,stroke-width:2px;
+    O1["🧠 Class: MarketScanOrchestrator"]
+    O2["🧠 Class: LeaderboardOrchestrator"]
+  end
+
+  %% === TASKS CLUSTER ===
+  subgraph TASKS
+    direction TB
+    style TASKS fill:#f0fff4,stroke:#2ecc71,stroke-width:2px;
+    T1["✅ Task: runLiveMarketScannerTask"]
+    T2["✅ Task: runLeaderboardRankerTask"]
+  end
+
+  %% === LISTENERS CLUSTER ===
+  subgraph LISTENERS
+    direction TB
+    style LISTENERS fill:#fef6fb,stroke:#e83e8c,stroke-width:2px;
+    L1["🔔 Listener: registerNotificationListeners"]
+    L2["🔔 Listener: registerListeners"]
+  end
+
+  %% === VENDOR → ADAPTER → REGISTRY → ORCHESTRATOR FLOW ===
+  F1 --> A1
+  F2 --> A1
+  F3 --> A2
+
+  A1 -->|implements| AI
+  A2 -->|implements| AI
+
+  A1 --> R1
+  A2 --> R1
+  PK --> R1
+
+  R1 --> O1
+  R2 --> O1
+
+  O1 --> T1
+  O2 --> T2
+  
+  T1 --> O1
+  T2 --> O2
+
+  %% === TAGGED EVENT CONNECTORS ===
+  T1 -- "<font color='red'>MARKET_SCAN_COMPLETE</font>" --> L1
+  T2 -- "<font color='red'>LEADERBOARD_UPDATE</font>" --> L2
+
+  %% === STYLE DEFINITIONS ===
+  classDef fetcher-class fill:#fffbea,stroke:#e1b000,color:#000;
+  classDef adapter-class fill:#e7faff,stroke:#17a2b8,color:#000;
+  classDef registry-class fill:#f5f5f5,stroke:#999,color:#000;
+  classDef orchestrator-class fill:#f2f0ff,stroke:#6f42c1,color:#000;
+  classDef task-class fill:#f0fff4,stroke:#2ecc71,color:#000;
+  classDef listener-class fill:#fef6fb,stroke:#e83e8c,color:#000;
+  classDef adapter-interface fill:white,stroke:darkblue,color:#000,stroke-dasharray: 5 5,stroke-width:1px;
+  classDef enum-node fill:#f0f0f0,stroke:#555,color:#000,stroke-dasharray: 5 3;
+
+
+  class F1,F2,F3 fetcher-class
+  class A1,A2 adapter-class
+  class AI adapter-class
+  class R1,R2,PK registry-class
+  class O1,O2 orchestrator-class
+  class T1,T2 task-class
+  class L1,L2 listener-class
+  class AI adapter-interface
+  class PK enum-node
+

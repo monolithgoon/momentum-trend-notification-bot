@@ -1,6 +1,5 @@
 import { MarketSession } from "@core/enums/MarketSession.enum";
 
-// WIP
 export interface IRestApiQuoteFetcher {
 	/**
 	 * Base interface from which all vendor market data fetchers extend..

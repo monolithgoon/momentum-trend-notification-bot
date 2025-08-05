@@ -1,0 +1,55 @@
+graph TD
+
+  runLiveMarketScannerTask["🟢 <b>runLiveMarketScannerTask()</b><br/>🏗️ <b>Function</b> | 🟢 <b>public</b><br/><b>Input:</b> None<br/><b>Output:</b> Promise&lt;void&gt;<br/><i>Main entrypoint: scan, notify, sort, tag, rank, stream</i>"]:::mainnode
+
+  MarketQuoteScanner["📈 <b>MarketQuoteScanner</b><br/>🏛️ <b>Class</b><br/><b>Input:</b> { vendor, marketSession, strategyKeys }<br/><b>Output:</b> MarketQuoteScanner instance<br/><i>Scans and filters quote data</i>"]:::classnode
+
+  NotifierService["🔔 <b>NotifierService</b><br/>🏛️ <b>Class</b><br/><b>Input:</b> TelegramNotifier<br/><b>Output:</b> NotifierService instance<br/><i>Sends notifications via adapter</i>"]:::classnode
+
+  LeaderboardService["🏆 <b>LeaderboardService</b><br/>🏛️ <b>Class</b><br/><b>Input:</b> storage, scoringFn<br/><b>Output:</b> LeaderboardService instance<br/><i>Handles ranking logic</i>"]:::classnode
+
+  EodhdWebSocketClient["🌐 <b>EodhdWebSocketClient</b><br/>🏛️ <b>Class</b><br/><b>Input:</b> apiKey, tickers[], callback<br/><b>Output:</b> WebSocketClient instance<br/><i>Streams live tickers</i>"]:::classnode
+
+  NormalizedRestTickerSnapshot["📊 <b>NormalizedRestTickerSnapshot</b><br/>🏷️ <b>Type</b><br/><b>Output:</b> Snapshot[]"]:::typenode
+
+  SortedNormalizedTickerSnapshot["🏅 <b>SortedNormalizedTickerSnapshot</b><br/>🏷️ <b>Type</b><br/><b>Output:</b> RankedSnapshot[]"]:::typenode
+
+  LeaderboardSnapshotsMap["📘 <b>LeaderboardSnapshotsMap</b><br/>🏷️ <b>Type</b><br/><b>Output:</b> { strategy_tag: string, tickers: Snapshot[] }"]:::typenode
+
+  SortOrder["🔢 <b>SortOrder</b><br/>🏷️ <b>Enum</b><br/><b>Output:</b> 'asc' | 'desc'"]:::typenode
+
+  scanMarketTickers["🔍 <b>scanMarketTickers()</b><br/>🧩 <b>Async Function</b><br/><b>Output:</b> string[]<br/><i>Fetches matching symbols</i>"]:::util
+  notifyScanResult["🔔 <b>notifyScanResult()</b><br/>🧩 <b>Async Function</b><br/><b>Output:</b> Promise&lt;void&gt;<br/><i>Sends Telegram scan alert</i>"]:::util
+  addTagsToMarketScanResult["🏷️ <b>tagResults()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> LeaderboardSnapshotsMap"]:::util
+  addRankFields["🏅 <b>addRankFields()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> SortedNormalizedTickerSnapshot[]"]:::util
+  buildScreenerConfigs["🔎 <b>buildScreenerConfigs()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> FilterConfig[]"]:::util
+  getCurrentMarketSession["🕒 <b>getCurrentMarketSession()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> MarketSession"]:::util
+  composeScanStrategyTag["🏷️ <b>composeTag()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> string"]:::util
+  processLeaderboard["🏁 <b>processLeaderboard()</b><br/>🧩 <b>Async Function</b><br/><b>Output:</b> Promise&lt;void&gt;"]:::util
+  setupWebSocketClient["🌐 <b>setupWebSocketClient()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> EodhdWebSocketClient"]:::util
+
+  %% Edges
+  runLiveMarketScannerTask --> getCurrentMarketSession
+  runLiveMarketScannerTask --> scanMarketTickers
+  runLiveMarketScannerTask --> notifyScanResult
+  runLiveMarketScannerTask --> composeScanStrategyTag
+  runLiveMarketScannerTask --> addTagsToMarketScanResult
+  runLiveMarketScannerTask --> addRankFields
+  runLiveMarketScannerTask --> processLeaderboard
+  runLiveMarketScannerTask --> setupWebSocketClient
+
+  scanMarketTickers --> MarketQuoteScanner
+  scanMarketTickers --> buildScreenerConfigs
+
+  notifyScanResult --> NotifierService
+  NotifierService --> NormalizedRestTickerSnapshot
+
+  addRankFields --> SortedNormalizedTickerSnapshot
+  processLeaderboard --> LeaderboardService
+  setupWebSocketClient --> EodhdWebSocketClient
+
+  %% Styling
+  classDef mainnode stroke:#000,stroke-width:5px,fill:#a7f6ff;
+  classDef classnode stroke:#000,stroke-width:3px,fill:#ffb6e6;
+  classDef typenode fill:#e0e0e0,stroke-dasharray: 5, 5,stroke:#222,stroke-width:1.5px;
+  classDef util fill:#f5faff,stroke:#007acc,stroke-width:1.5px;
