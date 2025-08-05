@@ -4,8 +4,8 @@ import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
 import { DedupableKey } from "./__deprecated__MarketScanOrchestrator_3 copy";
 import { MarketScanAdapterRegistry } from "./MarketScanAdapterRegistry";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
-import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/models/SortedNormalizedTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
 import { AdvancedThresholdConfig, filterByThresholds } from "../filter_2/filterByThresholds";
 import { dedupeByField } from "@core/generics/dedupeByField";
 import { generateMockSnapshots } from "@core/models/rest_api/mocks/generateMockSnapshots";
@@ -66,12 +66,12 @@ export class MarketScanOrchestrator_3 {
 			trend: "increasing",
 		});
 
-		console.log({ mockSnapshots });
+		// console.log({ mockSnapshots });
 
 		// FIXME ->
 		// Step 2: Apply field-based numeric filters (volume, price, etc.)
 		// const filtered = filterByThresholds(snapshots.length ? snapshots : mockSnapshots, numericFieldLimiters);
-		const snapshotsWithSortIndex: SortedNormalizedTickerSnapshot[] = mockSnapshots.map((s, idx) => ({
+		const snapshotsWithSortIndex: SortedNormalizedTickerSnapshot[] = snapshots.map((s, idx) => ({
 			...s,
 			sort_ordinal_index: idx,
 		}));

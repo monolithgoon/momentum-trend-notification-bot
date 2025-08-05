@@ -1,7 +1,7 @@
 import axios from "axios";
 import { APP_CONFIG } from "@config/index";
 import { nsToUnixSec, safeAPICall } from "@core/utils/index";
-import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { FlatRawPolygonTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { PolygonRestApiQuoteFetchStrategy } from "../types/PolygonRestApiQuoteFetchStrategy.interface";
 
 export class PolygonPreMarketQuoteFetchStrategy implements PolygonRestApiQuoteFetchStrategy {
@@ -12,7 +12,7 @@ export class PolygonPreMarketQuoteFetchStrategy implements PolygonRestApiQuoteFe
 		return tradeSec < this.nowUtc && tradeSec < APP_CONFIG.MARKET_OPEN_UTC;
 	}
 
-	async fetch(): Promise<PolygonRestTickerSnapshot[]> {
+	async fetch(): Promise<FlatRawPolygonTickerSnapshot[]> {
 		try {
 			const [gainersRes, losersRes, activeRes] = await Promise.all([
 				safeAPICall(() =>
@@ -41,7 +41,7 @@ export class PolygonPreMarketQuoteFetchStrategy implements PolygonRestApiQuoteFe
 			return allTickers
 				.filter((t: any) => t.lastTradeTimestampNs && this.isPreMarket(t.lastTradeTimestampNs))
 				.map(
-					(t: any): PolygonRestTickerSnapshot => ({
+					(t: any): FlatRawPolygonTickerSnapshot => ({
 						polygon_ticker_name: t.polygon_ticker_name,
 						tradingVolumeToday: t.tradingVolumeToday ?? 0,
 						priceChangeTodayPerc: t.priceChangeTodayPerc ?? 0,

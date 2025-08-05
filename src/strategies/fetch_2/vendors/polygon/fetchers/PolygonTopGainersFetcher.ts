@@ -2,14 +2,14 @@ import axios from "axios";
 import { APP_CONFIG } from "@config/index";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { nsToUnixSec, safeAPICall } from "@core/utils/index";
-import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { FlatRawPolygonTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { PolygonRestApiQuoteFetcher } from "../types/PolygonRestApiQuoteFetcher.interface";
 import { timestampTradeSessionChk } from "@core/utils/timestampTradeSessionChk";
 
 export class PolygonTopGainersFetcher implements PolygonRestApiQuoteFetcher {
   private readonly nowUtc = Math.floor(Date.now() / 1000);
 
-  public async fetch(session: MarketSession): Promise<PolygonRestTickerSnapshot[]> {
+  public async fetch(session: MarketSession): Promise<FlatRawPolygonTickerSnapshot[]> {
     try {
       const res = await safeAPICall(() =>
         axios.get(APP_CONFIG.POLYGON_MARKET_MOVERS_ENDPOINTS.GAINERS, {
@@ -21,7 +21,7 @@ export class PolygonTopGainersFetcher implements PolygonRestApiQuoteFetcher {
 
       return tickers
         .filter(t => t.lastTradeTimestampNs && timestampTradeSessionChk(nsToUnixSec(t.lastTradeTimestampNs), session, this.nowUtc))
-        .map((t): PolygonRestTickerSnapshot => ({
+        .map((t): FlatRawPolygonTickerSnapshot => ({
           polygon_ticker_symbol: t.polygon_ticker_symbol,
           polygon_ticker_name: t.polygon_ticker_name,
           tradingVolumeToday: t.tradingVolumeToday ?? 0,

@@ -1,4 +1,4 @@
-import { BaseInternalTickerSnapshot } from "@core/models/rest_api/models/BaseInternalTickerSnapshot.interface";
+import { BaseInternalTickerSnapshot } from "@core/models/rest_api/BaseInternalTickerSnapshot.interface";
 import { GenericDatasetFilter } from "./GenericDatasetFilter.interface";
 
 /**

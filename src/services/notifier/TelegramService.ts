@@ -1,11 +1,10 @@
-// src/services/notifier/TelegramNotifier.ts
-
 import axios from "axios";
-import { APP_CONFIG } from "../../config";
+import { APP_CONFIG_2 } from "src/config_2/app_config";
 
 export class TelegramNotifier {
   async send(message: string): Promise<void> {
-    const { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID } = APP_CONFIG;
+    const TELEGRAM_BOT_TOKEN = APP_CONFIG_2.env.TELEGRAM_BOT_TOKEN;
+    const TELEGRAM_CHAT_ID = APP_CONFIG_2.env.TELEGRAM_CHAT_ID;
 
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
 

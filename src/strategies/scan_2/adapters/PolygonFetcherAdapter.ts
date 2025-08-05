@@ -1,14 +1,13 @@
 import { MarketSession } from "@core/enums/MarketSession.enum";
-// import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/PolygonSnapshotTransformer";
-import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { FlatRawPolygonTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { RestApiQuoteFetcherAdapter, RestApiQuoteFetcherAdapter_0 } from "./RestApiQuoteFetcherAdapter.interface";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { PolygonRestApiQuoteFetcher } from "src/strategies/fetch_2/vendors/polygon/types/PolygonRestApiQuoteFetcher.interface";
 
 // REMOVE - DEPRECATED
 export class PolygonFetcherAdapter_0
-	implements RestApiQuoteFetcherAdapter_0<PolygonRestTickerSnapshot, NormalizedRestTickerSnapshot>
+	implements RestApiQuoteFetcherAdapter_0<FlatRawPolygonTickerSnapshot, NormalizedRestTickerSnapshot>
 {
 	constructor(
 		private readonly marketSession: MarketSession,
@@ -17,7 +16,7 @@ export class PolygonFetcherAdapter_0
 	) {}
 
 	// export class PolygonFetcherAdapter
-	// 	implements RestApiQuoteFetcherAdapter<PolygonRestTickerSnapshot, NormalizedRestTickerSnapshot> {
+	// 	implements RestApiQuoteFetcherAdapter<FlatRawPolygonTickerSnapshot, NormalizedRestTickerSnapshot> {
 	// 	private readonly marketSession: MarketSession;
 	// 	private readonly fetcher: PolygonRestApiQuoteFetcher;
 	// 	private readonly transformer: PolygonSnapshotTransformer;
@@ -32,12 +31,12 @@ export class PolygonFetcherAdapter_0
 	// 		this.fetcher = fetcher;
 	// 	}
 
-	transform(payload: PolygonRestTickerSnapshot[]): NormalizedRestTickerSnapshot[] {
+	transform(payload: FlatRawPolygonTickerSnapshot[]): NormalizedRestTickerSnapshot[] {
 		return payload.map((snapshot, index) => this.transformer.transform(snapshot, index));
 	}
 
 	async plug(): Promise<NormalizedRestTickerSnapshot[]> {
-		const polygonResults: PolygonRestTickerSnapshot[] = await this.fetcher.fetch(this.marketSession);
+		const polygonResults: FlatRawPolygonTickerSnapshot[] = await this.fetcher.fetch(this.marketSession);
 		return this.transform(polygonResults);
 	}
 }
@@ -53,7 +52,7 @@ export class PolygonFetcherAdapter_0
  * - `RestApiQuoteFetcherAdapter` interface for standardized fetching and transformation.
  *
  * Responsibilities:
- * - Uses a `PolygonRestApiQuoteFetcher` to fetch `PolygonRestTickerSnapshot[]` for a given `MarketSession`.
+ * - Uses a `PolygonRestApiQuoteFetcher` to fetch `FlatRawPolygonTickerSnapshot[]` for a given `MarketSession`.
  * - Applies a `PolygonSnapshotTransformer` to convert each snapshot into a `NormalizedRestTickerSnapshot`.
  *
  * Example usage:
@@ -64,7 +63,6 @@ export class PolygonFetcherAdapter_0
  *   transformer
  * );
  * const normalizedSnapshots = await adapter.fetchAndTransform();
- * ```
  *
  * @see PolygonRestApiQuoteFetcher
  * @see PolygonSnapshotTransformer

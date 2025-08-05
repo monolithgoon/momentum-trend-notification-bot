@@ -1,4 +1,4 @@
-import { NormalizedRestTickerSnapshot } from "../models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "../NormalizedRestTickerSnapshot.interface";
 
 type MockSnapshotOptions = {
 	changePctRange?: [number, number];

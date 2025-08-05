@@ -2,7 +2,7 @@
 
 /**
  * Base interface for all fetch strategies, regardless of vendor.
- * T represents the raw snapshot format (e.g., PolygonRestTickerSnapshot).
+ * T represents the raw snapshot format (e.g., FlatRawPolygonTickerSnapshot).
  */
 export interface RestApiQuoteFetchStrategy<T> {
 	/**

@@ -19,6 +19,10 @@ export const APP_CONFIG_2 = {
     baseUrl: constants.POLYGON_BASE_URL,
     endpoints: constants.POLYGON_MARKET_MOVERS_ENDPOINTS,
   },
+  fmp: {
+    baseUrl: constants.FMP_BASE_URL,
+    moversUrls: constants.FMP_MARKET_MOVERS_URLS,
+  },
   eodhd: {
     quoteUrl: constants.EODHD_LIVE_US_QUOTE_URL,
     socketUrl: constants.EODHD_WEBSOCKET_URL,

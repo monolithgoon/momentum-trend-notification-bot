@@ -1,16 +1,16 @@
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
-import { PolygonRestTickerSnapshot } from "../../../vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { FlatRawPolygonTickerSnapshot } from "../../../vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { RawRestApiTckerSnapshotTransformer } from "../../types/RawRestApiTickerSnapshotTransformer.interface";
 
 /**
- * Transforms a `PolygonRestTickerSnapshot` into a normalized ticker snapshot.
+ * Transforms a `FlatRawPolygonTickerSnapshot` into a normalized ticker snapshot.
  * @param snapshot - The raw ticker snapshot from the Polygon API.
  * @param ingestionOrdinalIndex - The ordinal index representing the ingestion order.
  * @returns A `NormalizedRestTickerSnapshot` object containing normalized and computed fields.
  */
 
-export class PolygonSnapshotTransformer implements RawRestApiTckerSnapshotTransformer<PolygonRestTickerSnapshot> {
-	transform(snapshot: PolygonRestTickerSnapshot, ingestionOrdinalIndex: number): NormalizedRestTickerSnapshot {
+export class PolygonSnapshotTransformer implements RawRestApiTckerSnapshotTransformer<FlatRawPolygonTickerSnapshot> {
+	transform(snapshot: FlatRawPolygonTickerSnapshot, ingestionOrdinalIndex: number): NormalizedRestTickerSnapshot {
 		return {
 			ticker_name__nz_tick: snapshot.polygon_ticker_symbol,
 			ticker_symbol__nz_tick: snapshot.polygon_ticker_name,

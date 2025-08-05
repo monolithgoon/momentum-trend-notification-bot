@@ -1,20 +1,20 @@
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { RawRestApiTckerSnapshotTransformer } from "@core/models/rest_api/transformers/types/RawRestApiTickerSnapshotTransformer.interface";
-import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { FlatRawPolygonTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
 import { PolygonRestApiQuoteFetchStrategy } from "../types/PolygonRestApiQuoteFetchStrategy.interface";
 import { SessionMarketQuoteFetcher } from "src/strategies/fetch/types/SessionMarketQuoteFetcher.interface";
 
 export class PolygonMarketQuoteFetcher implements SessionMarketQuoteFetcher {
 	constructor(
-		private readonly transformer: RawRestApiTckerSnapshotTransformer<PolygonRestTickerSnapshot>,
+		private readonly transformer: RawRestApiTckerSnapshotTransformer<FlatRawPolygonTickerSnapshot>,
 		private readonly strategies: PolygonRestApiQuoteFetchStrategy[]
 	) {}
 
 	async fetchData(marketSession: MarketSession): Promise<NormalizedRestTickerSnapshot[]> {
 		switch (marketSession) {
 			case MarketSession.PRE_MARKET:
-				const allTickerSnapshots: PolygonRestTickerSnapshot[] = [];
+				const allTickerSnapshots: FlatRawPolygonTickerSnapshot[] = [];
 
 				for (const strategy of this.strategies) {
 					const result = await strategy.fetch();

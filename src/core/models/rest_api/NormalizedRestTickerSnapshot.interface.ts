@@ -7,8 +7,8 @@ export interface NormalizedRestTickerSnapshot extends BaseInternalTickerSnapshot
 	ticker_symbol__nz_tick: string;
 	change_pct__nz_tick: number;
 	change_abs__nz_tick?: number;
-	price__nz_tick: number | 0; // Nullable, can be 0
-	volume__nz_tick: number | 0; // Nullable, can be 0
+	price__nz_tick: number; // Nullable, can be 0
+	volume__nz_tick: number; // Nullable, can be 0
 	// volume__nz_tick: number | 0; // Nullable, can be 0
 	currnt_day_stats_high?: number; // Today's high
 	current_day_stats_low?: number; // Today's low

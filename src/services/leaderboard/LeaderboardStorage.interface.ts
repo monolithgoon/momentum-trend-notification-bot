@@ -1,4 +1,4 @@
-import { LeaderboardRestTickerSnapshot } from "@core/snapshots/rest_api/types/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 
 export interface LeaderboardStorage {
 	initializeLeaderboardStore(leaderboardName: string): Promise<void>; // pass the scan_strategy_tag here

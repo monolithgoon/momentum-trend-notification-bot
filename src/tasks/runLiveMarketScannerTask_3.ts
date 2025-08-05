@@ -1,12 +1,12 @@
 import logger from "@infrastructure/logger";
 import timer from "@core/utils/timer";
-import eventEmitter from "@infrastructure/event_bus/eventEmitter";
+import { typedEventEmitter } from "@infrastructure/event_bus/TypedEventEmitter";
 
 import { getCurrentMarketSession } from "@core/utils";
 import { generateCorrelationId } from "@core/utils/correlation";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { SortOrder } from "@core/enums/SortOrder.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 
 import { MarketScanOrchestrator_3 } from "src/strategies/scan_2/MarketScanOrchestrator_3";
 import { MarketScanStrategyPresetKey } from "src/strategies/scan_2/MarketScanStrategyPresetKey.enum";
@@ -32,7 +32,7 @@ export async function runLiveMarketScannerTask_3() {
 		const marketScanOrchestrator = new MarketScanOrchestrator_3({ marketSession, correlationId });
 		const marketScanStrategyPresetKeys: MarketScanStrategyPresetKey[] = [
 			MarketScanStrategyPresetKey.MARKET_TOP_GAINERS,
-			MarketScanStrategyPresetKey.MARKET_TOP_RECENT_IPO,
+			// MarketScanStrategyPresetKey.MARKET_TOP_RECENT_IPO,
 		];
 
 		// 3. Define scan filter config
@@ -49,7 +49,8 @@ export async function runLiveMarketScannerTask_3() {
 			dedupField: "ticker_symbol__nz_tick",
 			marketSession: getCurrentMarketSession(),
 			marketScanStrategyPresetKeys,
-			marketDataVendor: MarketDataVendor.POLYGON,
+			// marketDataVendor: MarketDataVendor.POLYGON,
+			marketDataVendor: MarketDataVendor.FMP,
 			fieldSorter: new NormalizedSnapshotSorter("change_pct__nz_tick", SortOrder.DESC),
 		});
 
@@ -61,7 +62,7 @@ export async function runLiveMarketScannerTask_3() {
 			timestampMs: Date.now(),
 		};
 
-		console.log({ marketScanPayload });
+		console.log({ marketScanPayload: marketScanPayload.snapshots.slice(0, 3) });
 
 		// 5. Log sorted snapshots
 		logger.info(
@@ -74,7 +75,7 @@ export async function runLiveMarketScannerTask_3() {
 		);
 
 		// 6. ✅ Trigger event listeners (leaderboard, ws, etc)
-		eventEmitter.emit(appEvents.MARKET_SCAN_COMPLETE, marketScanPayload);
+		typedEventEmitter.emit(appEvents.MARKET_SCAN_COMPLETE, marketScanPayload);
 	} catch (error) {
 		logger.error({ correlationId, error }, "❌ Market scan failed");
 		return [];

@@ -22,6 +22,6 @@ export function registerWebSocketListener() {
 			handleWebSocketTickerUpdate
 		);
 		const wsManager = new WebSocketManager(wsClient);
-		wsManager.connect();
+		// wsManager.connect();
 	});
 }

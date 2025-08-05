@@ -1,6 +1,7 @@
 export * from "./market_session.constants";
 export * from "./daemon.constants";
 export * from "./polygon.constants";
+export * from "./fmp.constants";
 export * from "./eodhd.constants";
 export * from "./leaderboard.constants";
 export * from "./premarket_filters.constants";

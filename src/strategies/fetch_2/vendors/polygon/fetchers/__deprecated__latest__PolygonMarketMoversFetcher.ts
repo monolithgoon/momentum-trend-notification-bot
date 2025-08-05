@@ -2,14 +2,14 @@ import axios from "axios";
 import { APP_CONFIG } from "@config/index";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { nsToUnixSec, safeAPICall } from "@core/utils/index";
-import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { FlatRawPolygonTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 import { PolygonRestApiQuoteFetcher } from "src/strategies/fetch_2/vendors/polygon/types/PolygonRestApiQuoteFetcher.interface";
 import { timestampTradeSessionChk } from "@core/utils/timestampTradeSessionChk";
 
 /**
  * Fetches "gainers", "losers", and "most active" tickers from the Polygon API,
  * filters them by the specified market session (pre-market, RTH, after-hours),
- * and transforms them into a consistent `PolygonRestTickerSnapshot[]` format.
+ * and transforms them into a consistent `FlatRawPolygonTickerSnapshot[]` format.
  *
  * This class is **session-aware**: the consumer must specify the desired session
  * at runtime (e.g., `MarketSession.PRE_MARKET`) during the `fetch()` call.
@@ -22,7 +22,7 @@ export class PolygonMarketMoversFetcher implements PolygonRestApiQuoteFetcher {
 	 *
 	 * @param marketSession - Market session to filter by (PRE_MARKET, RTH, AFTER_MARKET)
 	 */
-	public async fetch(marketSession: MarketSession): Promise<PolygonRestTickerSnapshot[]> {
+	public async fetch(marketSession: MarketSession): Promise<FlatRawPolygonTickerSnapshot[]> {
 		try {
 			// Parallel API calls for top gainers, losers, and most active
 			const [gainersRes, losersRes, activesRes] = await Promise.all([
@@ -59,7 +59,7 @@ export class PolygonMarketMoversFetcher implements PolygonRestApiQuoteFetcher {
 					return timestampTradeSessionChk(tradeSec, marketSession, this.nowUtc);
 				})
 				.map(
-					(t): PolygonRestTickerSnapshot => ({
+					(t): FlatRawPolygonTickerSnapshot => ({
 						polygon_ticker_symbol: t.polygon_ticker_symbol,
 						polygon_ticker_name: t.polygon_ticker_name,
 						tradingVolumeToday: t.tradingVolumeToday ?? 0,

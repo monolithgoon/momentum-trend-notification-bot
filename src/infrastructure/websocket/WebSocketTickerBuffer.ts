@@ -28,7 +28,7 @@ export class WebSocketTickerBuffer {
 	}
 
 	getBufferLength(symbol: string): number {
-		console.log(`${symbol} buffer length: ${this.buffers[symbol]?.length || 0}`);
+		// console.log(`${symbol} buffer length: ${this.buffers[symbol]?.length || 0}`);
 		return this.buffers[symbol]?.length || 0;
 	}
 }

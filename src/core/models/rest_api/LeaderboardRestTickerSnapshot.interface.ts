@@ -1,4 +1,4 @@
-import { BaseInternalTickerSnapshot } from "./BaseInternalTickerSnapshot.interface";
+import { BaseInternalTickerSnapshot } from "../BaseInternalTickerSnapshot.interface";
 
 export interface LeaderboardRestTickerSnapshot extends BaseInternalTickerSnapshot {
 	ticker_name__ld_tick: string;

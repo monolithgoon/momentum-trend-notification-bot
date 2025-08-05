@@ -3,7 +3,7 @@ import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum"
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 
-import { PolygonRestTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
+import { FlatRawPolygonTickerSnapshot } from "@core/models/rest_api/vendors/polygon/PolygonRestTickerSnapshot.interface";
 // import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 // import { PolygonSnapshotTransformer } from "@core/models/rest_api/transformers/vendors/polygon/__deprecated__PolygonSnapshotTransformer";
 
@@ -35,7 +35,7 @@ import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/Norma
 export class MarketScanAdapterRegistry {
 	private scanPresetMap: Record<
 		MarketScanStrategyPresetKey,
-		RestApiQuoteFetcherAdapter<PolygonRestTickerSnapshot, NormalizedRestTickerSnapshot>
+		RestApiQuoteFetcherAdapter<FlatRawPolygonTickerSnapshot, NormalizedRestTickerSnapshot>
 	>;
 
 	constructor(vendor: MarketDataVendor) {
@@ -47,7 +47,7 @@ export class MarketScanAdapterRegistry {
 		vendor: MarketDataVendor
 	): Record<
 		MarketScanStrategyPresetKey,
-		RestApiQuoteFetcherAdapter<PolygonRestTickerSnapshot, NormalizedRestTickerSnapshot>
+		RestApiQuoteFetcherAdapter<FlatRawPolygonTickerSnapshot, NormalizedRestTickerSnapshot>
 	> {
 		switch (vendor) {
 			case MarketDataVendor.POLYGON:
@@ -80,7 +80,7 @@ export class MarketScanAdapterRegistry {
 	 */
 	public getQuoteFetcherAdapter(
 		key: MarketScanStrategyPresetKey
-	): RestApiQuoteFetcherAdapter<PolygonRestTickerSnapshot, NormalizedRestTickerSnapshot> {
+	): RestApiQuoteFetcherAdapter<FlatRawPolygonTickerSnapshot, NormalizedRestTickerSnapshot> {
 		const quoteFetcher = this.scanPresetMap[key];
 		if (!quoteFetcher) throw new Error(`Fetcher not found for this scan preset: ${key}`);
 		return quoteFetcher;

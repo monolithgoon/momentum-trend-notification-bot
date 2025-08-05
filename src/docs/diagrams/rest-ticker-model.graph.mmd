@@ -44,7 +44,7 @@ SortedNormalizedTickerSnapshot["<b>SortedNormalizedTickerSnapshot</b>
   transform(input: NormalizedRestTickerSnapshot): LeaderboardRestTickerSnapshot"]:::leaderboard
 
   %% 🟠 Polygon domain
-  PolygonRestTickerSnapshot["<b>PolygonRestTickerSnapshot</b>
+  FlatRawPolygonTickerSnapshot["<b>FlatRawPolygonTickerSnapshot</b>
   polygon_ticker_name
   priceChangeTodayAbs
   priceChangeTodayPerc
@@ -58,7 +58,7 @@ SortedNormalizedTickerSnapshot["<b>SortedNormalizedTickerSnapshot</b>
   lastTrade"]:::polygon
 
   PolygonSnapshotTransformer["<b>PolygonSnapshotTransformer</b>
-  transform(input: PolygonRestTickerSnapshot): NormalizedRestTickerSnapshot"]:::polygon
+  transform(input: FlatRawPolygonTickerSnapshot): NormalizedRestTickerSnapshot"]:::polygon
 
   %% 🟣 Raw / Transformer
   RawRestApiTckerSnapshotTransformer["<b>RawRestApiTckerSnapshotTransformer</b>"]:::raw
@@ -66,14 +66,14 @@ SortedNormalizedTickerSnapshot["<b>SortedNormalizedTickerSnapshot</b>
   transform(TIn, position: number): TOut"]:::raw
 
   %% 🔀 Updated Relationship Annotations
-  PolygonRestTickerSnapshot -- "transforms to" --> NormalizedRestTickerSnapshot
+  FlatRawPolygonTickerSnapshot -- "transforms to" --> NormalizedRestTickerSnapshot
   EodhdWebSocketSnapshot -- "transforms to" --> NormalizedRestTickerSnapshot
   SortedNormalizedTickerSnapshot -- "derives from" --> NormalizedRestTickerSnapshot
   NormalizedRestTickerSnapshot -- "composed in" --> LeaderboardRestTickerSnapshot
   LeaderboardRestTickerSnapshot -- "transforms to" --> SortedNormalizedTickerSnapshot
   DefaultTickerSnapshotTransformer -- "implemented →" --> PolygonSnapshotTransformer
   DefaultTickerSnapshotTransformer -- "implemented by →" --> LeaderboardTickerTransformer
-  RawRestApiTckerSnapshotTransformer -- "data input" --> PolygonRestTickerSnapshot
+  RawRestApiTckerSnapshotTransformer -- "data input" --> FlatRawPolygonTickerSnapshot
 
   %% Styles
   classDef normalized fill:light-grey,stroke:#004085,stroke-width:4

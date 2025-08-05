@@ -1,4 +1,4 @@
-export interface PolygonRestTickerSnapshot {
+export interface FlatRawPolygonTickerSnapshot {
 	polygon_ticker_symbol: RawTickerSnapshot["ticker"]; // Normalized ticker symbol, e.g. "AAPL" for Apple Inc.
 	polygon_ticker_name: RawTickerSnapshot["ticker"];
 	priceChangeTodayAbs: RawTickerSnapshot["todaysChange"];
@@ -77,10 +77,10 @@ export function fromMilliSecToDate(ms: number): Date {
 }
 
 /**
- * Utility fn. to create an default PolygonRestTickerSnapshot
+ * Utility fn. to create an default FlatRawPolygonTickerSnapshot
  * Useful for testing or initializing empty snapshots
  */
-export function createTickerSnapshot(overrides: Partial<PolygonRestTickerSnapshot> = {}): PolygonRestTickerSnapshot {
+export function createTickerSnapshot(overrides: Partial<FlatRawPolygonTickerSnapshot> = {}): FlatRawPolygonTickerSnapshot {
 	const polygon_ticker_symbol = "TICKER";
 	const lastTradeTimestampNs = Date.now() * 1_000_000;
 	return {

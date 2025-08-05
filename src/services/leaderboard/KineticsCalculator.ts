@@ -1,4 +1,4 @@
-import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/models/LeaderboardRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 
 type VelocityFieldType = Extract<
 	keyof LeaderboardRestTickerSnapshot,
@@ -18,6 +18,9 @@ export class KineticsCalculator {
 	}
 
 	/**
+	 * This logic generalized across FMP fetchers (e.g. gainers/losers/actives)
+Caching or retry support inside the FmpBulkQuoteFetcher
+Custom typed FmpQuote interface returned from it
 	 * Computes the average velocity for the specified field.
 	 * Velocity is the rate of change between consecutive data points.
 	 * @param field - Field to compute velocity for.

@@ -1,5 +1,5 @@
-import { LeaderboardRestTickerSnapshot } from "../models/LeaderboardRestTickerSnapshot.interface";
-import { NormalizedRestTickerSnapshot } from "../models/NormalizedRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "../LeaderboardRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "../NormalizedRestTickerSnapshot.interface";
 import { NormalizedRestTickerSnapshotTransformer } from "./types/NormalizedRestTickerSnapshotTransformer.interface";
 
 export class LeaderboardTickerTransformer implements NormalizedRestTickerSnapshotTransformer<LeaderboardRestTickerSnapshot> {

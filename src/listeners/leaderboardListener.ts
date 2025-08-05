@@ -47,6 +47,8 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 					topTicker: undefined,
 				};
 
+				console.log({ leaderboardUpdateEvent });
+
 		typedEventEmitter.emit(appEvents.LEADERBOARD_UPDATE, leaderboardUpdateEvent);
 	} catch (err) {
 		logger.error({ correlationId, err }, "❌ Leaderboard ingestion task failed");

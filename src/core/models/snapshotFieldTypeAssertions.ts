@@ -1,5 +1,5 @@
-import { LeaderboardRestTickerSnapshot } from "./rest_api/models/LeaderboardRestTickerSnapshot.interface";
-import { NormalizedRestTickerSnapshot } from "./rest_api/models/NormalizedRestTickerSnapshot.interface";
+import { LeaderboardRestTickerSnapshot } from "./rest_api/LeaderboardRestTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "./rest_api/NormalizedRestTickerSnapshot.interface";
 
 // Compile-time utility: Validates that all keys in K exist in T
 type ValidateKeys<T, K extends readonly string[]> = K[number] extends keyof T ? true : "❌ Invalid field in array";

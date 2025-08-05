@@ -1,6 +1,6 @@
 import { SortOrder } from "@core/enums/SortOrder.enum";
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
-import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/models/SortedNormalizedTickerSnapshot.interface";
+import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
+import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
 import { NormalizedSortableFieldType } from "../../core/models/snapshotFieldTypeAssertions";
 
 export class NormalizedSnapshotSorter {
