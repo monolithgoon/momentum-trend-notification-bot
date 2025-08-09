@@ -1,13 +1,13 @@
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/NormalizedRestTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/models/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardService } from "../LeaderboardService";
+import { LeaderboardService } from "../__deprecated__LeaderboardService";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
 // import { LeaderboardKineticsCalculator } from "../KineticsCalculator";
 
 // --- Mock Config ---
 const APP_CONFIG = {
-  MIN_LEADERBOARD_TICKER_HISTORY_COUNT: 2
+  MIN_SNAPSHOTS_REQUIRED_FOR_KINETICS: 2
 };
 
 // --- Mock Storage ---
@@ -46,7 +46,7 @@ const mockKineticsCalculator: LeaderboardKineticsCalculator = {
 };
 
 // --- Mock Data In ---
-const testData: LeaderboardSnapshotsMap = {
+const testData: ITaggedLeaderboardSnapshotsBatch = {
   scan_strategy_tag: "test-strategy",
   normalized_leaderboard_tickers: [
     { ticker: "AAA", timestamp: 100, ordinal_sort_position: 0, change_pct: 1.2 },

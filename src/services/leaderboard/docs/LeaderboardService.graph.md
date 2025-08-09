@@ -39,7 +39,7 @@ graph TD
   <br/><i>Global configuration</i>
   "]:::config
 
-  LeaderboardSnapshotsMap["📄 LeaderboardSnapshotsMap
+  ITaggedLeaderboardSnapshotsBatch["📄 ITaggedLeaderboardSnapshotsBatch
   <br/>🏷️ Type
   <br/><i>Batch of processed ticker data</i>
   "]:::type
@@ -52,7 +52,7 @@ graph TD
   %% Entrypoint
   rankAndUpdateLeaderboard["▶️ rankAndUpdateLeaderboard()
   <br/>🟢 public ⚡ async
-  <br/>Input: 📄 LeaderboardSnapshotsMap, 🔢 GenericTickerSorter
+  <br/>Input: 📄 ITaggedLeaderboardSnapshotsBatch, 🔢 GenericTickerSorter
   <br/>Output: 📊 Promise&lt;LeaderboardRestTickerSnapshot[]&gt;
   <br/>💾 persists, ⚠️ error logging
   <br/><i>Batch orchestrator: processes, ranks, persists, returns leaderboard</i>
@@ -69,7 +69,7 @@ graph TD
 
   storeNewSnapshots["💾 storeNewSnapshots()
   <br/>🔒 private ⚡ async
-  <br/>Input: 📄 LeaderboardSnapshotsMap, string
+  <br/>Input: 📄 ITaggedLeaderboardSnapshotsBatch, string
   <br/>Output: void (Promise)
   <br/>💾 persists, ⚠️ error logging
   <br/><i>Stores each ticker snapshot in storage</i>
@@ -77,7 +77,7 @@ graph TD
 
   computeBatchKinetics["⚡ computeBatchKinetics()
   <br/>🔒 private ⚡ async
-  <br/>Input: 📄 LeaderboardSnapshotsMap, string
+  <br/>Input: 📄 ITaggedLeaderboardSnapshotsBatch, string
   <br/>Output: Map&lt;string, 📊 LeaderboardRestTickerSnapshot&gt; (Promise)
   <br/>💾 reads, ⚠️ error logging
   <br/><i>Calculates velocity and acceleration for each ticker</i>
@@ -144,7 +144,7 @@ graph TD
   sortAndRankLeaderboard --> sorter
 
   %% Input/Output types
-  rankAndUpdateLeaderboard -.-> LeaderboardSnapshotsMap
+  rankAndUpdateLeaderboard -.-> ITaggedLeaderboardSnapshotsBatch
   sortAndRankLeaderboard -.-> LeaderboardRestTickerSnapshot
 
   %% API

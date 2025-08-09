@@ -3,10 +3,11 @@ import path from "path";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { existsSync } from "fs";
+import { APP_CONFIG_2 } from "src/config_2/app_config";
 
 export class FileLeaderboardStorage implements LeaderboardStorage {
 	private readonly storageDir = path.resolve("storage");
-	private readonly MAX_SNAPSHOTS_STORED_PER_TICKER = 10;
+	private readonly maxNumSnapshotsStored = APP_CONFIG_2.leaderboard.maxSnapshotsStoredPerTicker;
 
 	constructor() {
 		fs.mkdir(this.storageDir, { recursive: true }).catch(console.error);
@@ -32,18 +33,22 @@ export class FileLeaderboardStorage implements LeaderboardStorage {
 		}
 	}
 
-	async storeSnapshot(leaderboardName: string, ticker: string, snapshot: LeaderboardRestTickerSnapshot): Promise<void> {
+	async storeSnapshot(
+		leaderboardName: string,
+		ticker: string,
+		snapshot: LeaderboardRestTickerSnapshot
+	): Promise<void> {
 		const file = this.tickerFile(leaderboardName, ticker);
 
 		let snapshots: LeaderboardRestTickerSnapshot[] = [];
-    
+
 		try {
 			const raw = await fs.readFile(file, "utf8");
 			snapshots = JSON.parse(raw);
 		} catch (_) {}
 
 		snapshots.unshift(snapshot);
-		snapshots = snapshots.slice(0, this.MAX_SNAPSHOTS_STORED_PER_TICKER);
+		snapshots = snapshots.slice(0, this.maxNumSnapshotsStored);
 
 		await fs.writeFile(file, JSON.stringify(snapshots, null, 2));
 	}
@@ -61,7 +66,7 @@ export class FileLeaderboardStorage implements LeaderboardStorage {
 		}
 	}
 
-	async retrieveRecentSnapshots(
+	async readSnapshotHistoryForTicker(
 		leaderboardName: string,
 		ticker: string,
 		limit: number

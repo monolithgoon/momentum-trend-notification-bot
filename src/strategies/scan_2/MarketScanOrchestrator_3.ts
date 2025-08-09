@@ -68,13 +68,14 @@ export class MarketScanOrchestrator_3 {
 
 		// console.log({ mockSnapshots });
 
-		// FIXME ->
+		// FIXME -> possibly remove sort_ordinal_idex because it's never applied anywhere
 		// Step 2: Apply field-based numeric filters (volume, price, etc.)
 		// const filtered = filterByThresholds(snapshots.length ? snapshots : mockSnapshots, numericFieldLimiters);
 		const snapshotsWithSortIndex: SortedNormalizedTickerSnapshot[] = snapshots.map((s, idx) => ({
 			...s,
 			sort_ordinal_index: idx,
 		}));
+
 		const filtered = filterByThresholds(snapshotsWithSortIndex, numericFieldLimiters);
 
 		// Step 3: Deduplicate based on specified key (e.g. ticker symbol)

@@ -1,3 +1,4 @@
+import { ILeaderboardTickerSnapshot } from "./rest_api/ILeaderboardTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "./rest_api/LeaderboardRestTickerSnapshot.interface";
 import { NormalizedRestTickerSnapshot } from "./rest_api/NormalizedRestTickerSnapshot.interface";
 
@@ -32,6 +33,24 @@ export type AssertLeaderboardSortFieldKeysValid = ValidateKeys<
 
 // Type: Union of all leaderboard sort field names
 export type LeaderboardSortFieldType = (typeof LEADERBOARD_SORT_FIELDS)[number];
+
+// WIP
+
+export const LEADERBOARD_SORT_FIELDS_2 = [
+	"leaderboard_momentum_score",
+	"aggregate_kinetics_rank",
+	"volume__ld_tick",
+	"change_pct__ld_tick",
+] as const;
+
+// Compile-time assertion: Ensures all LEADERBOARD_SORT_FIELDS are valid keys
+export type AssertLeaderboardSortFieldKeysValid_2 = ValidateKeys<
+	ILeaderboardTickerSnapshot,
+	typeof LEADERBOARD_SORT_FIELDS_2
+>;
+
+// Type: Union of all leaderboard sort field names
+export type LeaderboardSortFieldType_2 = (typeof LEADERBOARD_SORT_FIELDS_2)[number];
 
 /* ============================================================================
    NORMALIZED SNAPSHOT SORT FIELD TYPES & VALIDATION

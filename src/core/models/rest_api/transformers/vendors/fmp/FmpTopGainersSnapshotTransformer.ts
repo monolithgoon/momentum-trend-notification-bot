@@ -44,8 +44,8 @@ function parsePercentage(pct: string | number): number {
 	return parseFloat(pct.replace(/[%+]/g, "")) || 0;
 }
 
-export class FmpTopGainersSnapshotTransformer {
-	private readonly VENDOR_NAME: "FMP" = "FMP"
+export class FmpTopGainersSnapshotTransformer implements RawRestApiTckerSnapshotTransformer<IEnrichedRawFmpQuoteSnapshot>{
+	readonly VENDOR_NAME: "FMP" = "FMP"
 	/**
 	 * Transforms a single IEnrichedRawFmpQuoteSnapshot into a NormalizedRestTickerSnapshot
 	 */
@@ -59,7 +59,7 @@ export class FmpTopGainersSnapshotTransformer {
 			change_pct__nz_tick: parsePercentage(m.changesPercentage ?? 0),
 			change_abs__nz_tick: m.change ?? 0,
 			volume__nz_tick: m.volume ?? 0,
-			market_cap__nz_tick: m.marketCap ?? 0, // TODO
+			market_cap__nz_tick: m.marketCap ?? 0,
 			vendor_name__nz_tick: this.VENDOR_NAME,
 		};
 	}

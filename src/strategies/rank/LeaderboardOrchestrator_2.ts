@@ -1,7 +1,7 @@
 import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
-import { LeaderboardTickersSorter } from "@services/leaderboard/LeaderboardTickersSorter";
-import { LeaderboardService } from "@services/leaderboard/LeaderboardService";
-import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
+import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/LeaderboardTickerSnapshotsSorter";
+import { LeaderboardService } from "@services/leaderboard/__deprecated__LeaderboardService";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
 import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
@@ -11,7 +11,7 @@ interface LeaderboardOrchestratorOptions {
 	snapshots: SortedNormalizedTickerSnapshot[];
 	snapshotTransformer: LeaderboardTickerTransformer;
 	leaderboardScanStrategyTag: string[];
-	leaderboardSortingFn: LeaderboardTickersSorter;
+	leaderboardSortingFn: LeaderboardTickerSnapshotsSorter;
 	leaderboardService: LeaderboardService;
 	onStepComplete?: (step: string, payload?: any) => void;
 	preprocessFn?: (snapshots: SortedNormalizedTickerSnapshot[]) => SortedNormalizedTickerSnapshot[];
@@ -28,12 +28,14 @@ export class LeaderboardOrchestrator_2 {
 		const snapshotsMap = this._getSnapshotsMap(incomingSnapshots, leaderboardTag);
 
 		// Start the scoring & ranking pipeline
-		await this._runService(snapshotsMap);
+		// await this.orchestrate(snapshotsMap);
+		const rankedLeaderboard = await this.orchestratorOptions.leaderboardService.rankAndUpdateLeaderboard(snapshotsMap, this.orchestratorOptions.leaderboardSortingFn);
+		this.orchestratorOptions.onStepComplete?.("LEADERBOARD_UPDATED", snapshotsMap.scan_strategy_tag);
 
 		return {
-			tag: leaderboardTag,
-			total: Object.keys(snapshotsMap).length,
-			topTicker: Object.values(snapshotsMap)[0]?.ticker_name__ld_tick,
+			leaderboardTag,
+			total: Object.keys(rankedLeaderboard).length,
+			topTicker: Object.values(rankedLeaderboard)[0]?.ticker_name__ld_tick,
 		};
 	}
 
@@ -56,7 +58,7 @@ export class LeaderboardOrchestrator_2 {
 		this.orchestratorOptions.onStepComplete?.("LEADERBOARD_PREVIEW", previewTop);
 
 		return {
-			tag: leaderboardTag,
+			leaderboardTag,
 			total: previewTop.length,
 			topTicker: previewTop[0]?.ticker_name__ld_tick,
 			preview: previewTop,
@@ -82,14 +84,15 @@ export class LeaderboardOrchestrator_2 {
 		return incomingSnapshots.map((snapshot) => snapshotTransformer.transform(snapshot));
 	}
 
-	private _getSnapshotsMap(incomingSnapshots: SortedNormalizedTickerSnapshot[], tag: string): LeaderboardSnapshotsMap {
+	private _getSnapshotsMap(incomingSnapshots: SortedNormalizedTickerSnapshot[], tag: string): ITaggedLeaderboardSnapshotsBatch {
 		const transformed = this._transformSnapshots(incomingSnapshots);
 		const map = tagSnapshotsWithStrategyMeta(transformed, tag);
 		this.orchestratorOptions.onStepComplete?.("LEADERBOARD_METADATA_TAGGING", map);
 		return map;
 	}
 
-	private async _runService(snapshotsMap: LeaderboardSnapshotsMap): Promise<void> {
+	// REMOVE -> deprecated
+	private async orchestrate(snapshotsMap: ITaggedLeaderboardSnapshotsBatch): Promise<void> {
 		const { leaderboardService, leaderboardSortingFn, onStepComplete } = this.orchestratorOptions;
 		await leaderboardService.rankAndUpdateLeaderboard(snapshotsMap, leaderboardSortingFn);
 		onStepComplete?.("LEADERBOARD_UPDATED", snapshotsMap.scan_strategy_tag);
@@ -108,7 +111,7 @@ function composeScanStrategyTag(scanStrategyKeys: string[]): string {
 function tagSnapshotsWithStrategyMeta(
 	tickers: LeaderboardRestTickerSnapshot[],
 	scan_strategy_tag: string
-): LeaderboardSnapshotsMap {
+): ITaggedLeaderboardSnapshotsBatch {
 	return {
 		scan_strategy_tag,
 		normalized_leaderboard_tickers: tickers.map((ticker) => ({

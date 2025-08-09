@@ -1,5 +1,5 @@
 import { APP_CONFIG_2 } from "src/config_2/app_config";
-import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
@@ -103,7 +103,7 @@ import { LeaderboardScoringFnType, scoringStrategies } from "./scoringStrategies
 export class LeaderboardService {
 	constructor(
 		private readonly storage: LeaderboardStorage,
-		private readonly computeLeaderboardScoreFn: LeaderboardScoringFnType,
+		private readonly computeLeaderboardScoreFn: LeaderboardScoringFnType
 	) {}
 
 	/**
@@ -111,19 +111,19 @@ export class LeaderboardService {
 	 * scores each ticker based on volume & pct. change velocity & acceleration kinetics calculations and appearance count,
 	 * sorts and ranks the leaderboard, then persists and returns the results.
 	 */
-	async rankAndUpdateLeaderboard(
-		data: LeaderboardSnapshotsMap,
+	public async rankAndUpdateLeaderboard(
+		data: ITaggedLeaderboardSnapshotsBatch,
 		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
 	): Promise<LeaderboardRestTickerSnapshot[]> {
 		const leaderboardTag = data.scan_strategy_tag;
 
 		await this.initializeLeaderboardIfMissing(leaderboardTag);
 		await this.storeNewSnapshots(data, leaderboardTag); // store the new snapshots to the storage interface (file, in-memory, redis, etc)
-		
+
 		const newBatchMap = await this.computeNewBatchKinetics(data, leaderboardTag); // process each snapshot in the batch
 		const mergedUpdatedBatchMap = await this.mergeWithExistingLeaderboard(leaderboardTag, newBatchMap); // merge with oldEntries leaderboard
 		const rankedLeaderboard = this.computeScoresAndRankings(Array.from(mergedUpdatedBatchMap.values()), sorter);
-		
+
 		// Persist the updated leaderboard
 		await this.persistLeaderboard(leaderboardTag, rankedLeaderboard);
 		return rankedLeaderboard;
@@ -140,10 +140,10 @@ export class LeaderboardService {
 	/**
 	 * Stores new ticker snapshots in the leaderboard storage.
 	 * - Each snapshot is stored with its ticker name and the associated leaderboard tag.
-	 * @param data - LeaderboardSnapshotsMap containing the snapshots to store.
+	 * @param data - ITaggedLeaderboardSnapshotsBatch containing the snapshots to store.
 	 * @param leaderboardTag - The tag identifying the leaderboard context for storage.
 	 */
-	private async storeNewSnapshots(data: LeaderboardSnapshotsMap, leaderboardTag: string): Promise<void> {
+	private async storeNewSnapshots(data: ITaggedLeaderboardSnapshotsBatch, leaderboardTag: string): Promise<void> {
 		for (const snapshot of data.normalized_leaderboard_tickers) {
 			try {
 				await this.storage.storeSnapshot(leaderboardTag, snapshot.ticker_name__ld_tick, snapshot);
@@ -162,20 +162,20 @@ export class LeaderboardService {
 	 * Returns a map of ticker symbols to their leaderboard entries.
 	 */
 	private async computeNewBatchKinetics(
-		data: LeaderboardSnapshotsMap,
+		data: ITaggedLeaderboardSnapshotsBatch,
 		leaderboardTag: string
 	): Promise<Map<string, LeaderboardRestTickerSnapshot>> {
 		const tickerEntries: Map<string, LeaderboardRestTickerSnapshot> = new Map();
 
 		for (const snapshot of data.normalized_leaderboard_tickers) {
 			try {
-				const snapshotHistory = await this.storage.retrieveRecentSnapshots(
+				const snapshotHistory = await this.storage.readSnapshotHistoryForTicker(
 					leaderboardTag,
 					snapshot.ticker_name__ld_tick,
-					Math.max(3, APP_CONFIG_2.leaderboard.minHistory)
+					Math.max(3, APP_CONFIG_2.leaderboard.minSnapshotsRequiredForKinetics) // Ensure we have enough history
 				);
 
-				if (snapshotHistory.length < APP_CONFIG_2.leaderboard.snapshotLimit) {
+				if (snapshotHistory.length < APP_CONFIG_2.leaderboard.minSnapshotsRequiredForKinetics) {
 					continue;
 				}
 
@@ -187,7 +187,7 @@ export class LeaderboardService {
 				const pcAccel = kinetics.computeAcceleration("pct_change_acceleration__ld_tick");
 				const volVel = kinetics.computeVelocity("volume__ld_tick");
 				const volAccel = kinetics.computeVelocity("volume__ld_tick");
-				
+
 				// We'll update num_consecutive_appearances after merging with existing leaderboard
 				const leaderboardEntry: LeaderboardRestTickerSnapshot = {
 					ticker_name__ld_tick: snapshot.ticker_name__ld_tick,
@@ -200,8 +200,10 @@ export class LeaderboardService {
 					// TODO -> should this be -1 or 0
 					leaderboard_rank: -1, // Temp; will be sorted by momentum score
 					leaderboard_momentum_score: 0, // Temp; will compute after num_consecutive_appearances set
-					num_consecutive_appearances: 1,
+					num_consecutive_appearances: 1, // TODO 1 or 0????
 					volume__ld_tick: 0,
+					ticker_symbol__ld_tick: "",
+					num_consecutive_absences: 0
 				};
 
 				// Assemble a key-value pair for the ticker oldEntry
@@ -274,6 +276,7 @@ export class LeaderboardService {
 	 * then sorts the entries using the provided sorter and assigns sequential ranks.
 	 * Returns the sorted and ranked leaderboard.
 	 */
+
 	private computeScoresAndRankings(
 		entries: LeaderboardRestTickerSnapshot[],
 		sorter: GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
@@ -296,7 +299,6 @@ export class LeaderboardService {
 		sorted.forEach((snapshot, idx) => (snapshot.leaderboard_rank = idx + 1));
 		return sorted;
 	}
-
 
 	/**
 	 * Persists the updated leaderboard for the given tag to storage.

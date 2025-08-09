@@ -1,15 +1,14 @@
-import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 
 // export class InMemoryLeaderboardStorage_0 implements LeaderboardStorage {
-// 	private data: Record<string, NormalizedRestTickerSnapshot[]> = {};
+// 	private data: Record<string, LeaderboardRestTickerSnapshot[]> = {};
 // 	private currentLeaderboard: LeaderboardRestTickerSnapshot[] = [];
 
 // 	// TODO → Move to APP_CONFIG
 // 	private readonly MIN_SNAPSHOT_HISTORY_COUNT = 2;
 
-// 	async storeSnapshot(ticker: string, snapshot: NormalizedRestTickerSnapshot): Promise<void> {
+// 	async storeSnapshot(ticker: string, snapshot: LeaderboardRestTickerSnapshot): Promise<void> {
 // 		if (!this.data[ticker]) {
 // 			this.data[ticker] = [];
 // 		}
@@ -19,11 +18,11 @@ import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/Leaderboard
 // 		}
 // 	}
 
-// 	async retrieveAllSnapshotsForTicker(ticker: string): Promise<NormalizedRestTickerSnapshot[]> {
+// 	async retrieveAllSnapshotsForTicker(ticker: string): Promise<LeaderboardRestTickerSnapshot[]> {
 // 		return this.data[ticker] ?? [];
 // 	}
 
-// 	async retrieveRecentSnapshots(ticker: string, limit: number): Promise<NormalizedRestTickerSnapshot[]> {
+// 	async readSnapshotHistoryForTicker(ticker: string, limit: number): Promise<LeaderboardRestTickerSnapshot[]> {
 // 		const all = await this.retrieveAllSnapshotsForTicker(ticker);
 // 		return all.slice(-limit);
 // 	}
@@ -42,7 +41,7 @@ import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/Leaderboard
 // }
 
 export class InMemoryLeaderboardStorage implements LeaderboardStorage {
-	private data: Record<string, Record<string, NormalizedRestTickerSnapshot[]>> = {};
+	private data: Record<string, Record<string, LeaderboardRestTickerSnapshot[]>> = {};
 	private currentLeaderboards: Record<string, LeaderboardRestTickerSnapshot[]> = {};
 
 	private readonly MIN_SNAPSHOT_HISTORY_COUNT = 2;
@@ -56,7 +55,7 @@ export class InMemoryLeaderboardStorage implements LeaderboardStorage {
 		}
 	}
 
-	async storeSnapshot(leaderboardName: string, ticker: string, snapshot: NormalizedRestTickerSnapshot): Promise<void> {
+	async storeSnapshot(leaderboardName: string, ticker: string, snapshot: LeaderboardRestTickerSnapshot): Promise<void> {
 		this.initializeLeaderboardStore(leaderboardName);
 		if (!this.data[leaderboardName][ticker]) {
 			this.data[leaderboardName][ticker] = [];
@@ -67,12 +66,12 @@ export class InMemoryLeaderboardStorage implements LeaderboardStorage {
 		}
 	}
 
-	async retrieveAllSnapshotsForTicker(leaderboardName: string, ticker: string): Promise<NormalizedRestTickerSnapshot[]> {
+	async retrieveAllSnapshotsForTicker(leaderboardName: string, ticker: string): Promise<LeaderboardRestTickerSnapshot[]> {
 		this.initializeLeaderboardStore(leaderboardName);
 		return this.data[leaderboardName][ticker] ?? [];
 	}
 
-	async retrieveRecentSnapshots(leaderboardName: string, ticker: string, limit: number): Promise<NormalizedRestTickerSnapshot[]> {
+	async readSnapshotHistoryForTicker(leaderboardName: string, ticker: string, limit: number): Promise<LeaderboardRestTickerSnapshot[]> {
 		const all = await this.retrieveAllSnapshotsForTicker(leaderboardName, ticker);
 		return all.slice(-limit);
 	}

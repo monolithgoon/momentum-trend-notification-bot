@@ -24,7 +24,7 @@ export class RedisLeaderboardStorage implements LeaderboardStorage {
 		return entries.map((entry) => JSON.parse(entry));
 	}
 
-	async retrieveRecentSnapshots(ticker: string, limit: number): Promise<NormalizedRestTickerSnapshot[]> {
+	async readSnapshotHistoryForTicker(ticker: string, limit: number): Promise<NormalizedRestTickerSnapshot[]> {
 		const key = `snapshots:${ticker}`;
 		const entries = await this.redis.lrange(key, 0, limit - 1);
 		return entries.map((entry) => JSON.parse(entry));

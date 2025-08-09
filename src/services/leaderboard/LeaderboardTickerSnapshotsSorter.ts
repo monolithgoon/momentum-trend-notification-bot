@@ -3,7 +3,7 @@ import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interfac
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardSortFieldType } from "@core/models/snapshotFieldTypeAssertions";
 
-export class LeaderboardTickersSorter
+export class LeaderboardTickerSnapshotsSorter
 	implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot>
 {
 	constructor(

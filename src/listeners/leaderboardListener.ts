@@ -4,10 +4,10 @@ import { generateCorrelationId } from "@core/utils/correlation";
 import timer from "@core/utils/timer";
 import { LeaderboardOrchestrator_2 } from "src/strategies/rank/LeaderboardOrchestrator_2";
 import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
-import { LeaderboardService } from "@services/leaderboard/LeaderboardService";
+import { LeaderboardService } from "@services/leaderboard/__deprecated__LeaderboardService";
 import { scoringStrategies } from "@services/leaderboard/scoringStrategies";
 import { FileLeaderboardStorage } from "@services/leaderboard/FileLeaderboardStorage";
-import { LeaderboardTickersSorter } from "@services/leaderboard/LeaderboardTickersSorter";
+import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/LeaderboardTickerSnapshotsSorter";
 import { SortOrder } from "@core/enums/SortOrder.enum";
 import { typedEventEmitter } from "@infrastructure/event_bus/TypedEventEmitter";
 import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
@@ -22,12 +22,9 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 		correlationId,
 		snapshots,
 		snapshotTransformer: new LeaderboardTickerTransformer(),
-		leaderboardService: new LeaderboardService(
-			new FileLeaderboardStorage(),
-			scoringStrategies.popUpDecayMomentum
-		),
+		leaderboardService: new LeaderboardService(new FileLeaderboardStorage(), scoringStrategies.popUpDecayMomentum),
 		leaderboardScanStrategyTag: marketScanStrategyPresetKeys,
-		leaderboardSortingFn: new LeaderboardTickersSorter("leaderboard_momentum_score", SortOrder.DESC),
+		leaderboardSortingFn: new LeaderboardTickerSnapshotsSorter("leaderboard_momentum_score", SortOrder.DESC),
 		previewOnly: false,
 		onStepComplete: (step) => logger.info({ step, correlationId }, "Leaderboard step complete"),
 	});
@@ -37,17 +34,18 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 
 		const leaderboardUpdateEvent: LeaderboardUpdateEvent = result
 			? {
-					tag: result.tag,
+
+					leaderboardTag: result.leaderboardTag,
 					total: result.total,
 					topTicker: result.topTicker,
-				}
+			  }
 			: {
-					tag: "unknown",
+					leaderboardTag: "unknown",
 					total: 0,
 					topTicker: undefined,
-				};
+			  };
 
-				console.log({ leaderboardUpdateEvent });
+		console.log({ leaderboardUpdateEvent });
 
 		typedEventEmitter.emit(appEvents.LEADERBOARD_UPDATE, leaderboardUpdateEvent);
 	} catch (err) {

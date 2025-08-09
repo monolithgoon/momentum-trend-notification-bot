@@ -12,7 +12,7 @@
 		"baseUrl": ".", // This is the root of your project
 		"paths": {
 			"@app/*": ["src/app/*"],
-			"@analytics/*": ["src/core/analytics/*"],
+			"@analytics/*": ["src/analytics/*"],
 			"@config/*": ["src/config/*"],
 			"@core/*": ["src/core/*"],
 			"@data/*": ["src/core/data/*"],

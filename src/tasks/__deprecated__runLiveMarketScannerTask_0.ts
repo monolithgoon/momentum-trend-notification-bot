@@ -1,5 +1,5 @@
 import { APP_CONFIG } from "../config";
-import { LeaderboardSnapshotsMap } from "@core/snapshots/rest_api/types/LeaderboardSnapshotsMap";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/snapshots/rest_api/types/ITaggedLeaderboardSnapshotsBatch";
 import { MarketQuoteScanner } from "@core/scanners/MarketQuoteScanner";
 import { formatSessionLabel, getCurrentMarketSession } from "../core/utils";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
@@ -12,18 +12,18 @@ import { SortedNormalizedTickerSnapshot } from "@core/snapshots/rest_api/types/S
 import { GenericSorter } from "@core/generics/GenericSorter";
 import { InMemoryLeaderboardStorage } from "@core/analytics/leaderboard/InMemoryLeaderboardStorage";
 import { LeaderboardService } from "@core/analytics/leaderboard/LeaderboardService";
-import { LeaderboardTickersSorter } from "@analytics/leaderboard/LeaderboardTickersSorter";
+import { LeaderboardTickerSnapshotsSorter } from "@analytics/leaderboard/LeaderboardTickerSnapshotsSorter";
 import { EodhdWebSocketClient } from "@core/strategies/stream/eodhd/eodhdWebSocketClient";
 import handleWebSocketTickerUpdate from "@core/snapshots/websocket/handleWebSocketTickerUpdate";
 import { PriceChangeScanFilter, VolumeChangeScanFilter } from "@core/scanners/scanFilters";
 import { ScanFilterConfigTypes } from "@core/scanners/types/scanScreenerConfigs.type";
-import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage";
+import { FileLeaderboardStorage } from "@services/leaderboard/FileLeaderboardStorage";
 import { scoringStrategies } from "@analytics/leaderboard/scoringStrategies";
 
 function addTagsToMarketScanResult(
 	tickers: NormalizedRestTickerSnapshot[],
 	scanStrategyTag: string,
-): LeaderboardSnapshotsMap {
+): ITaggedLeaderboardSnapshotsBatch {
 	return {
 		scan_strategy_tag: scanStrategyTag,
 		normalized_leaderboard_tickers: tickers.map((ticker) => ({
@@ -107,7 +107,7 @@ export default async function runLiveMarketScannerTask() {
 
 		// 5. Tag the scan results for leaderboard
 		const leaderboardTag: string = composeScanStrategyTag(scanStrategyKeys);
-		const taggedTickers: LeaderboardSnapshotsMap = addTagsToMarketScanResult(
+		const taggedTickers: ITaggedLeaderboardSnapshotsBatch = addTagsToMarketScanResult(
 			sortedSnapshots,
 			leaderboardTag
 		);
@@ -118,7 +118,7 @@ export default async function runLiveMarketScannerTask() {
 		await storage.initializeLeaderboardStore(leaderboardTag);
 		const scoringFn = scoringStrategies.popUpDecay;
 		// When invoking the leaderboard service sorter, you should always sort by leaderboard_momentum_score (not leaderboard_rank), as rank is assigned after sorting.
-		const sorter = new LeaderboardTickersSorter("leaderboard_momentum_score" as const, SortOrder.DESC); 
+		const sorter = new LeaderboardTickerSnapshotsSorter("leaderboard_momentum_score" as const, SortOrder.DESC); 
 		const leaderboardService = new LeaderboardService(storage, scoringFn);
 
 		await leaderboardService.rankAndUpdateLeaderboard(taggedTickers, sorter);

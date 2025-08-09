@@ -6,7 +6,7 @@ flowchart TD
     D -->|NormalizedRestTickerSnapshot| E0{{✅ Validate snapshot #40;Sanity checks#41;}}:::branch
     E0 -- Invalid --> E5([🛑 Skip invalid snapshot]):::exit
     E0 -- Valid --> NormalizedRestTickerSnapshot --> E1[💾 Store new snapshot<br/><i>storeSnapshot</i>]:::storage
-    E1 -->|NormalizedRestTickerSnapshot| E2[📚 Fetch recent history<br/><i>retrieveRecentSnapshots</i>]:::async
+    E1 -->|NormalizedRestTickerSnapshot| E2[📚 Fetch recent history<br/><i>readSnapshotHistoryForTicker</i>]:::async
     E2 -->| NormalizedRestTickerSnapshot#91;&#93 | E3{{📊 <b>Enough history for ticker?</b>}}:::branch
     E3 --> No -->|false| E4([🚫 Skip ticker<br/>not enough data]):::exit
 

@@ -6,7 +6,7 @@ import { MarketScanPayload } from "src/types/events/MarketScanEventPayload.inter
 
 // ✅ Main callback logic
 async function handleMarketScanComplete(marketScanPayload: MarketScanPayload): Promise<void> {
-	const { tickerNames, snapshots } = marketScanPayload;
+	const { tickerNames, snapshots, marketSession } = marketScanPayload;
 
 	if (!tickerNames?.length) return;
 
@@ -24,7 +24,7 @@ async function handleMarketScanComplete(marketScanPayload: MarketScanPayload): P
 		return `${symbol} ${sign}${Math.abs(+pct)}%`;
 	});
 
-	const message = `Top 3\n` + summaryLines.map((s) => `• ${s}`).join(" ");
+	const message = `${marketSession} gainers\n` + summaryLines.map((s) => `• ${s}`).join(" ");
 
 	try {
 		await notifierService.notify(message);

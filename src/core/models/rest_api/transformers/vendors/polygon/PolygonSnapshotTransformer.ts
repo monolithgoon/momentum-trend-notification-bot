@@ -10,7 +10,7 @@ import { RawRestApiTckerSnapshotTransformer } from "../../types/RawRestApiTicker
  */
 
 export class PolygonSnapshotTransformer implements RawRestApiTckerSnapshotTransformer<FlatRawPolygonTickerSnapshot> {
-	readonly VENDOR_NAME: "Polygon" = "Polygon";
+	public readonly VENDOR_NAME: "Polygon" = "Polygon";
 	transform(snapshot: FlatRawPolygonTickerSnapshot, ingestionOrdinalIndex: number): NormalizedRestTickerSnapshot {
 		return {
 			ticker_name__nz_tick: snapshot.polygon_ticker_symbol,

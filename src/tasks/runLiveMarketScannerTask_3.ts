@@ -39,7 +39,7 @@ export async function runLiveMarketScannerTask_3() {
 		const fieldLimiters: AdvancedThresholdConfig<NormalizedRestTickerSnapshot> = {
 			// volume__nz_tick: { operation: ">", value: 1_000_000 },
 			// change_pct__nz_tick: { operation: ">=", value: 2.5 },
-			volume__nz_tick: { operation: ">", value: 100 },
+			volume__nz_tick: { operation: ">", value: 50_000 },
 			change_pct__nz_tick: { operation: ">=", value: 0 },
 		};
 
@@ -60,6 +60,7 @@ export async function runLiveMarketScannerTask_3() {
 			marketScanStrategyPresetKeys,
 			correlationId,
 			timestampMs: Date.now(),
+			marketSession,
 		};
 
 		console.log({ marketScanPayload: marketScanPayload.snapshots.slice(0, 3) });

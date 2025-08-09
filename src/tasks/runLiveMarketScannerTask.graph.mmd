@@ -67,10 +67,10 @@ graph TD
   <br/><i>Processes leaderboard ticks</i>
   "]:::classnode
 
-  LeaderboardTickersSorter["⏫ <b>LeaderboardTickersSorter</b>
+  LeaderboardTickerSnapshotsSorter["⏫ <b>LeaderboardTickerSnapshotsSorter</b>
   <br/>🏛️ <b>Class</b>
   <br/><b>Input:</b> field: string, order: SortOrder
-  <br/><b>Output:</b> Instance of LeaderboardTickersSorter
+  <br/><b>Output:</b> Instance of LeaderboardTickerSnapshotsSorter
   <br/><i>Sorts leaderboard tickers</i>
   "]:::classnode
 
@@ -102,10 +102,10 @@ graph TD
   <br/><i>Ranked snapshot result</i>
   "]:::typenode
 
-  LeaderboardSnapshotsMap["🏷️ <b>LeaderboardSnapshotsMap</b>
+  ITaggedLeaderboardSnapshotsBatch["🏷️ <b>ITaggedLeaderboardSnapshotsBatch</b>
   <br/>🏷️ <b>Type</b>
   <br/><b>Input:</b> { scan_strategy_tag: string, normalized_leaderboard_tickers: NormalizedRestTickerSnapshot[] }
-  <br/><b>Output:</b> LeaderboardSnapshotsMap
+  <br/><b>Output:</b> ITaggedLeaderboardSnapshotsBatch
   <br/><i>Tagged scan result</i>
   "]:::typenode
 
@@ -120,7 +120,7 @@ graph TD
   addTagsToMarketScanResult["🏷️ <b>addTagsToMarketScanResult()</b>
   <br/>🧩 <b>Function</b>
   <br/><b>Input:</b> tickers: NormalizedRestTickerSnapshot[], scan_strategy_tag?: string
-  <br/><b>Output:</b> LeaderboardSnapshotsMap
+  <br/><b>Output:</b> ITaggedLeaderboardSnapshotsBatch
   <br/><i>Tags scan results</i>
   "]:::util
 
@@ -168,7 +168,7 @@ graph TD
 
   processLeaderboard["🏆 <b>processLeaderboard()</b>
   <br/>🧩 <b>Async Function</b>
-  <br/><b>Input:</b> taggedTickers: LeaderboardSnapshotsMap, leaderboardTag: string
+  <br/><b>Input:</b> taggedTickers: ITaggedLeaderboardSnapshotsBatch, leaderboardTag: string
   <br/><b>Output:</b> Promise&lt;FileLeaderboardStorage&gt;
   <br/><i>Processes leaderboard with tagged tickers</i>
   "]:::util
@@ -242,11 +242,11 @@ graph TD
 
   subgraph "🏷️ <b>Tagging & Leaderboard</b>"
     addTagsToMarketScanResult
-    LeaderboardSnapshotsMap
+    ITaggedLeaderboardSnapshotsBatch
     processLeaderboard
     FileLeaderboardStorage
     scoringStrategies
-    LeaderboardTickersSorter
+    LeaderboardTickerSnapshotsSorter
     LeaderboardService
   end
 
@@ -288,12 +288,12 @@ graph TD
   %% processLeaderboard
   processLeaderboard --> FileLeaderboardStorage
   processLeaderboard --> scoringStrategies
-  processLeaderboard --> LeaderboardTickersSorter
+  processLeaderboard --> LeaderboardTickerSnapshotsSorter
   processLeaderboard --> LeaderboardService
-  processLeaderboard --> LeaderboardSnapshotsMap
+  processLeaderboard --> ITaggedLeaderboardSnapshotsBatch
 
   %% Tagging
-  addTagsToMarketScanResult --> LeaderboardSnapshotsMap
+  addTagsToMarketScanResult --> ITaggedLeaderboardSnapshotsBatch
 
   %% Compose tag
   composeScanStrategyTag --> addTagsToMarketScanResult

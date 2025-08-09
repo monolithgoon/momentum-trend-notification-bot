@@ -109,12 +109,12 @@ export class GenericSorter<
 /**
  * Rationale: From Specific to Generic Sorting Abstractions
  *
- * Previously, sorting implementations like LeaderboardTickersSorter were tightly coupled to a specific data structure (e.g., LeaderboardRestTickerSnapshot)
+ * Previously, sorting implementations like LeaderboardTickerSnapshotsSorter were tightly coupled to a specific data structure (e.g., LeaderboardRestTickerSnapshot)
  * and a limited set of sortable fields (defined as type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "pct_change_acceleration">).
  * This approach required creating a new sorter class and a dedicated field union type for each new data shape, leading to code duplication
  * and limited flexibility.
  *
- * The dedicated LeaderboardTickersSorter, for example, hardcoded the item type and sortable fields, making it inflexible and unreusable for other data structures.
+ * The dedicated LeaderboardTickerSnapshotsSorter, for example, hardcoded the item type and sortable fields, making it inflexible and unreusable for other data structures.
  *
  * By introducing a generic field sorter abstraction using TypeScript generics, we:
  *   - Allow sorting any array of objects, as long as the field exists on the object.
@@ -122,13 +122,13 @@ export class GenericSorter<
  *   - Ensure type safety by constraining the sortable field ('F extends keyof T') to valid keys of the provided type.
  *   - Enable code reuse and easier maintenance, as the same sorting logic works across different contexts (e.g., tickers, leaderboards, etc.).
  *
- * In summary, the generic sorter abstracts away the need for specific implementations like LeaderboardTickersSorter
+ * In summary, the generic sorter abstracts away the need for specific implementations like LeaderboardTickerSnapshotsSorter
  * and field unions like LeaderboardSortableField, enabling reusable, maintainable, and type-safe sorting logic for any object-based data in the codebase.
  */
 
 // type LeaderboardSortableField = keyof Pick<LeaderboardRestTickerSnapshot, "leaderboard_momentum_score" | "perc_change_velocity" | "pct_change_acceleration">;
 
-// export class LeaderboardTickersSorter implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
+// export class LeaderboardTickerSnapshotsSorter implements GenericTickerSorter<LeaderboardRestTickerSnapshot, LeaderboardRestTickerSnapshot> {
 // 	constructor(
 // 		private readonly sortField: LeaderboardSortableField = "leaderboard_momentum_score",
 // 		private readonly sortOrder: SortOrder = SortOrder.DESC

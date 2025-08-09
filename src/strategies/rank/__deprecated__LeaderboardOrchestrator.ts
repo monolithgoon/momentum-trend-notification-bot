@@ -1,8 +1,8 @@
 import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
-import { LeaderboardTickersSorter } from "@services/leaderboard/LeaderboardTickersSorter";
-import { LeaderboardService } from "@services/leaderboard/LeaderboardService";
+import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/LeaderboardTickerSnapshotsSorter";
+import { LeaderboardService } from "@services/leaderboard/__deprecated__LeaderboardService";
 import { LeaderboardStorage } from "@services/leaderboard/LeaderboardStorage.interface";
-import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
 import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 
@@ -11,7 +11,7 @@ interface LeaderboardOrchestratorOptions {
 	snapshots: SortedNormalizedTickerSnapshot[];
   snapshotTransformer: LeaderboardTickerTransformer;
 	leaderboardScanStrategyTag: string[];
-	leaderboardSortingFn: LeaderboardTickersSorter;
+	leaderboardSortingFn: LeaderboardTickerSnapshotsSorter;
 	leaderboardService: LeaderboardService;
 	leaderboardStorage: LeaderboardStorage;
 	onStepComplete?: (step: string, payload?: any) => void;
@@ -97,7 +97,7 @@ function composeScanStrategyTag(scanStrategyKeys: string[]): string {
 function tagSnapshotsWithStrategyMeta(
   tickers: LeaderboardRestTickerSnapshot[],
   scan_strategy_tag: string
-): LeaderboardSnapshotsMap {
+): ITaggedLeaderboardSnapshotsBatch {
   return {
     scan_strategy_tag,
     normalized_leaderboard_tickers: tickers.map((ticker) => ({

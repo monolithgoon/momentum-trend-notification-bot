@@ -11,7 +11,7 @@ import { SortOrder } from "@core/enums/SortOrder.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
-import { LeaderboardSnapshotsMap } from "@core/models/rest_api/LeaderboardSnapshotsMap.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
 import { ScanFilterConfigTypes } from "src/strategies/scan/types/ScanFilterConfigs.types";
 
 // Core Generics & Transformers
@@ -28,8 +28,8 @@ import { TelegramNotifier } from "@services/notifier/TelegramService";
 
 // Leaderboard Services
 import { FileLeaderboardStorage } from "@services/leaderboard/FileLeaderboardStorage";
-import { LeaderboardTickersSorter } from "@services/leaderboard/LeaderboardTickersSorter";
-import { LeaderboardService } from "@services/leaderboard/LeaderboardService";
+import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/LeaderboardTickerSnapshotsSorter";
+import { LeaderboardService } from "@services/leaderboard/__deprecated__LeaderboardService";
 import { scoringStrategies } from "@services/leaderboard/scoringStrategies";
 
 // WebSocket Services
@@ -46,7 +46,7 @@ import { LeaderboardSortFieldType, NORMALIZED_SORT_FIELDS, NormalizedSortableFie
 function tagSnapshotsWithStrategyMeta(
 	tickers: LeaderboardRestTickerSnapshot[],
 	scan_strategy_tag: string = "OK"
-): LeaderboardSnapshotsMap {
+): ITaggedLeaderboardSnapshotsBatch {
 	return {
 		scan_strategy_tag,
 		normalized_leaderboard_tickers: tickers.map((ticker) => ({
@@ -135,13 +135,13 @@ function getSortedSnapshots(
  */
 
 async function processLeaderboard(
-	snapshotsMap: LeaderboardSnapshotsMap,
+	snapshotsMap: ITaggedLeaderboardSnapshotsBatch,
 	leaderboardTag: string,
 	sortField: LeaderboardSortFieldType
 ): Promise<FileLeaderboardStorage> {
 	const storage = new FileLeaderboardStorage();
 	await storage.initializeLeaderboardStore(leaderboardTag);
-	const sorter = new LeaderboardTickersSorter(sortField, SortOrder.DESC);
+	const sorter = new LeaderboardTickerSnapshotsSorter(sortField, SortOrder.DESC);
 	const leaderboardService = new LeaderboardService(storage, scoringStrategies.popUpDecayMomentum);
 	await leaderboardService.rankAndUpdateLeaderboard(snapshotsMap, sorter);
 	return storage;

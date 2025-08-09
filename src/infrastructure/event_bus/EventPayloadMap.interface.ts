@@ -5,7 +5,7 @@ export interface EventPayloadMap {
   [appEvents.MARKET_SCAN_COMPLETE]: MarketScanPayload;
 
   [appEvents.LEADERBOARD_UPDATE]: {
-    tag: string;
+    leaderboardTag: string;
     total: number;
     topTicker?: string;
   };

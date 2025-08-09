@@ -2,7 +2,7 @@
 
 import { EodhdWebSocketTickerSnapshot } from "@core/models/rest_api/vendors/eodhd/eodhdWebSocketSnapshot.interface";
 import { wsTickBuffer } from "./wsTickBufferInstance";
-import { isTrendingAboveKC } from "@core/analytics/indicators";
+import { isTrendingAboveKC } from "src/analytics/indicators";
 import { NotifierService } from "src/services/notifier/NotifierService";
 import { TelegramNotifier } from "src/services/notifier/TelegramService";
 

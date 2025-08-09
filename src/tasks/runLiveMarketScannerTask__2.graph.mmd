@@ -14,13 +14,13 @@ graph TD
 
   SortedNormalizedTickerSnapshot["🏅 <b>SortedNormalizedTickerSnapshot</b><br/>🏷️ <b>Type</b><br/><b>Output:</b> RankedSnapshot[]"]:::typenode
 
-  LeaderboardSnapshotsMap["📘 <b>LeaderboardSnapshotsMap</b><br/>🏷️ <b>Type</b><br/><b>Output:</b> { strategy_tag: string, tickers: Snapshot[] }"]:::typenode
+  ITaggedLeaderboardSnapshotsBatch["📘 <b>ITaggedLeaderboardSnapshotsBatch</b><br/>🏷️ <b>Type</b><br/><b>Output:</b> { strategy_tag: string, tickers: Snapshot[] }"]:::typenode
 
   SortOrder["🔢 <b>SortOrder</b><br/>🏷️ <b>Enum</b><br/><b>Output:</b> 'asc' | 'desc'"]:::typenode
 
   scanMarketTickers["🔍 <b>scanMarketTickers()</b><br/>🧩 <b>Async Function</b><br/><b>Output:</b> string[]<br/><i>Fetches matching symbols</i>"]:::util
   notifyScanResult["🔔 <b>notifyScanResult()</b><br/>🧩 <b>Async Function</b><br/><b>Output:</b> Promise&lt;void&gt;<br/><i>Sends Telegram scan alert</i>"]:::util
-  addTagsToMarketScanResult["🏷️ <b>tagResults()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> LeaderboardSnapshotsMap"]:::util
+  addTagsToMarketScanResult["🏷️ <b>tagResults()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> ITaggedLeaderboardSnapshotsBatch"]:::util
   addRankFields["🏅 <b>addRankFields()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> SortedNormalizedTickerSnapshot[]"]:::util
   buildScreenerConfigs["🔎 <b>buildScreenerConfigs()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> FilterConfig[]"]:::util
   getCurrentMarketSession["🕒 <b>getCurrentMarketSession()</b><br/>🧩 <b>Function</b><br/><b>Output:</b> MarketSession"]:::util
