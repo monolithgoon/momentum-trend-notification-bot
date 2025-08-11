@@ -1,9 +1,8 @@
 import path from "path";
 import fs from "fs/promises";
 import { existsSync } from "fs";
-import { LeaderboardStorage } from "@services/leaderboard/LeaderboardStorage.interface";
 import { APP_CONFIG_2 } from "src/config_2/app_config";
-import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface";
+import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface copy";
 import { ILeaderboardStorage } from "./types/ILeaderboardStorage.interface";
 
 export class FileLeaderboardStorage implements ILeaderboardStorage {
@@ -37,11 +36,11 @@ export class FileLeaderboardStorage implements ILeaderboardStorage {
 	async storeSnapshot(
 		leaderboardName: string,
 		ticker: string,
-		snapshot: ILeaderboardTickerSnapshot
+		snapshot: ILeaderboardTickerSnapshot_2
 	): Promise<void> {
 		const file = this.tickerFile(leaderboardName, ticker);
 
-		let snapshots: ILeaderboardTickerSnapshot[] = [];
+		let snapshots: ILeaderboardTickerSnapshot_2[] = [];
 
 		try {
 			const raw = await fs.readFile(file, "utf8");
@@ -57,7 +56,7 @@ export class FileLeaderboardStorage implements ILeaderboardStorage {
 	async retrieveAllSnapshotsForTicker(
 		leaderboardName: string,
 		ticker: string
-	): Promise<ILeaderboardTickerSnapshot[]> {
+	): Promise<ILeaderboardTickerSnapshot_2[]> {
 		const file = this.tickerFile(leaderboardName, ticker);
 		try {
 			const raw = await fs.readFile(file, "utf8");
@@ -71,7 +70,7 @@ export class FileLeaderboardStorage implements ILeaderboardStorage {
 		leaderboardName: string,
 		ticker: string,
 		limit: number
-	): Promise<ILeaderboardTickerSnapshot[]> {
+	): Promise<ILeaderboardTickerSnapshot_2[]> {
 		const all = await this.retrieveAllSnapshotsForTicker(leaderboardName, ticker);
 		return all.slice(0, limit);
 	}
@@ -84,7 +83,7 @@ export class FileLeaderboardStorage implements ILeaderboardStorage {
 	/**
 	 * Persist leaderboard data only if the file exists.
 	 */
-	async persistLeaderboard(leaderboardName: string, leaderboard: ILeaderboardTickerSnapshot[]): Promise<void> {
+	async persistLeaderboard(leaderboardName: string, leaderboard: ILeaderboardTickerSnapshot_2[]): Promise<void> {
 		const filePath = this.leaderboardFile(leaderboardName);
 
 		if (!existsSync(filePath)) {
@@ -94,12 +93,12 @@ export class FileLeaderboardStorage implements ILeaderboardStorage {
 		await fs.writeFile(filePath, JSON.stringify(leaderboard, null, 2));
 	}
 
-	async retrieveLeaderboard(leaderboardName: string): Promise<ILeaderboardTickerSnapshot[]> {
+	async retrieveLeaderboard(leaderboardName: string): Promise<ILeaderboardTickerSnapshot_2[]> {
 		const filePath = this.leaderboardFile(leaderboardName);
 
 		try {
 			const content = await fs.readFile(filePath, "utf-8");
-			const parsed = JSON.parse(content) as ILeaderboardTickerSnapshot[];
+			const parsed = JSON.parse(content) as ILeaderboardTickerSnapshot_2[];
 
 			if (!Array.isArray(parsed)) {
 				throw new Error("Leaderboard file is not an array.");

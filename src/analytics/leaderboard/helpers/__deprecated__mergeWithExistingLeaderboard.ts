@@ -1,4 +1,4 @@
-import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface";
+import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/__deprecatd__ILeaderboardTickerSnapshot.interface";
 import { APP_CONFIG_2 } from "src/config_2/app_config";
 
 /**

@@ -2,12 +2,12 @@ import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/Leaderboard
 
 type VelocityFieldType = Extract<
 	keyof LeaderboardRestTickerSnapshot,
-	"pct_change_velocity__ld_tick" | "volume__ld_tick"
+	"change_pct__ld_tick" | "volume__ld_tick"
 >;
 
 type AccelerationFieldType = Extract<
 	keyof LeaderboardRestTickerSnapshot,
-	"pct_change_acceleration__ld_tick" | "volume__ld_tick"
+	"change_pct__ld_tick" | "volume__ld_tick"
 >;
 
 export class KineticsCalculator {

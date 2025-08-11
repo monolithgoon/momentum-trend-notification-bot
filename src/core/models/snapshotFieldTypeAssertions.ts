@@ -1,4 +1,4 @@
-import { ILeaderboardTickerSnapshot } from "./rest_api/ILeaderboardTickerSnapshot.interface";
+import { ILeaderboardTickerSnapshot_2 } from "./rest_api/ILeaderboardTickerSnapshot.interface copy";
 import { LeaderboardRestTickerSnapshot } from "./rest_api/LeaderboardRestTickerSnapshot.interface";
 import { NormalizedRestTickerSnapshot } from "./rest_api/NormalizedRestTickerSnapshot.interface";
 
@@ -16,6 +16,7 @@ type StrictValidateKeys<T, K extends readonly (keyof T)[]> = Exclude<keyof T, K[
    LEADERBOARD SORT FIELD TYPES & VALIDATION
 ============================================================================ */
 
+// REMOVE - THESE ARE SUPPOSED TO BE EXCLUSIVELY TIE BREAKER FIELDS
 // List of valid leaderboard sort fields (kept in one place)
 export const LEADERBOARD_SORT_FIELDS = [
 	"leaderboard_momentum_score",
@@ -38,14 +39,15 @@ export type LeaderboardSortFieldType = (typeof LEADERBOARD_SORT_FIELDS)[number];
 
 export const LEADERBOARD_SORT_FIELDS_2 = [
 	"leaderboard_momentum_score",
-	"aggregate_kinetics_rank",
 	"volume__ld_tick",
 	"change_pct__ld_tick",
+	"aggregate_kinetics_rank",
+	"first_time_seen_flag",
 ] as const;
 
 // Compile-time assertion: Ensures all LEADERBOARD_SORT_FIELDS are valid keys
 export type AssertLeaderboardSortFieldKeysValid_2 = ValidateKeys<
-	ILeaderboardTickerSnapshot,
+	ILeaderboardTickerSnapshot_2,
 	typeof LEADERBOARD_SORT_FIELDS_2
 >;
 

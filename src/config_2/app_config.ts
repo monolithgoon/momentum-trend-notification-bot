@@ -27,18 +27,22 @@ export const APP_CONFIG_2 = {
 		quoteUrl: constants.EODHD_LIVE_US_QUOTE_URL,
 		socketUrl: constants.EODHD_WEBSOCKET_URL,
 	},
-  leaderboard: {
-    redisSnapshotRetentionLimit: constants.REDIS_SNAPSHOT_LIMIT,
-    minSnapshotsRequiredForKinetics: constants.MIN_SNAPSHOTS_REQUIRED_FOR_KINETICS,
-    maxSnapshotsStoredPerTicker: constants.MAX_SNAPSHOTS_STORED_PER_TICKER,
+	leaderboard: {
+		redisSnapshotRetentionLimit: constants.REDIS_SNAPSHOT_LIMIT,
+		minSnapshotsRequiredForKinetics: constants.MIN_SNAPSHOTS_REQUIRED_FOR_KINETICS,
+		maxSnapshotsStoredPerTicker: constants.MAX_SNAPSHOTS_IN_LEADERBOARD_STORAGE_PER_TICKER,
 
-    // New additions 👇
-    maxLeaderboardSnapshotLength: constants.LEADERBOARD_MAX_LENGTH,
-    // snapshotStorageRetentionLimit: constants.LEADERBOARD_SNAPSHOT_STORAGE_RETENTION_LIMIT,
-    pruneMode: constants.LEADERBOARD_PRUNE_MODE,
-    pruneConfig: constants.LEADERBOARD_PRUNE_CONFIG,
-    useAbsenceBasedTracking: constants.USE_ABSENCE_BASED_TRACKING,
-  },
+		// New additions 👇
+		// snapshotStorageRetentionLimit: constants.LEADERBOARD_SNAPSHOT_STORAGE_RETENTION_LIMIT,
+		pruneConfig: constants.LEADERBOARD_PRUNE_CONFIG,
+		useAbsenceBasedTracking: constants.USE_ABSENCE_BASED_TRACKING,
+		velWindow: constants.LEADERBOARD_VEL_WINDOW,
+		accWindow: constants.LEADERBOARD_ACC_WINDOW,
+		maxSnapshotHistoryLookback: constants.LEADERBOARD_MAX_SNAPSHOT_HISTORY_LOOKBACK,
+		useVelocityGuard: constants.LEADERBOARD_USE_VELOCITY_GUARD,
+		minPctChangeVelocity: constants.LEADERBOARD_MIN_PCT_CHANGE_VELOCITY,
+		maxLeaderboardSnapshotLength: constants.LEADERBOARD_MAX_SNAPSHOT_LENGTH,
+	},
 	premarket: {
 		minVolume: constants.PRE_MARKET_MIN_VOLUME,
 		minChangePct: constants.PRE_MARKET_MIN_CHANGE_PERC,

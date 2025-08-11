@@ -2,7 +2,7 @@ import logger from "@infrastructure/logger";
 import { MarketScanPayload } from "src/types/events/MarketScanEventPayload.interface";
 import { generateCorrelationId } from "@core/utils/correlation";
 import timer from "@core/utils/timer";
-import { LeaderboardOrchestrator_2 } from "src/strategies/rank/LeaderboardOrchestrator_2";
+import { LeaderboardOrchestrator_2 } from "@analytics/leaderboard/__deprecated__LeaderboardOrchestrator_2";
 import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
 import { LeaderboardService } from "@services/leaderboard/__deprecated__LeaderboardService";
 import { scoringStrategies } from "@services/leaderboard/scoringStrategies";

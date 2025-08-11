@@ -1,13 +1,13 @@
 import { MarketScanPayload } from "src/types/events/MarketScanEventPayload.interface";
 import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
-import { LeaderboardOrchestrator_3 } from "src/strategies/rank/LeaderboardOrchestrator_2 copy";
+import { LeaderboardOrchestrator_3 } from "@analytics/leaderboard/LeaderboardOrchestrator_3";
 import { LeaderboardEngine } from "src/analytics/leaderboard/LeaderboardEngine";
 import {
 	FieldSortConfig,
 	LeaderboardTickerSnapshotsSorter_2,
 } from "@analytics/leaderboard/LeaderboardTickerSnapshotsSorter_2";
 import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage_2";
-import { LeaderboardTickerTransformer_2 } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer_2";
+import { LeaderboardTickerTransformer_3 } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer_2 copy";
 import { SortOrder } from "@core/enums/SortOrder.enum";
 import { typedEventEmitter } from "@infrastructure/event_bus/TypedEventEmitter";
 import { appEvents } from "@config/appEvents";
@@ -29,6 +29,7 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 	// then tie-break by a couple of useful dimensions.
 	const tieBreakers: FieldSortConfig[] = [
 		// If you prefer .rankings fields, swap to those (e.g. "volume_rank")
+		// TODO -> add first_time_seen_flag field here
 		{ field: "change_pct__ld_tick", order: SortOrder.DESC },
 		{ field: "volume__ld_tick", order: SortOrder.DESC },
 	];
@@ -47,7 +48,7 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 		snapshots: snapshots.slice(0, 5), // Limit to 2 for testing
 		// snapshots, // Uncomment for full batch
 		// Note: transformer is used to convert raw snapshots to leaderboard format
-		snapshotTransformer: new LeaderboardTickerTransformer_2(),
+		snapshotTransformer: new LeaderboardTickerTransformer_3(),
 		leaderboardEngine: new LeaderboardEngine(storage, sorter),
 		leaderboardScanStrategyTag: marketScanStrategyPresetKeys,
 		previewOnly: false,

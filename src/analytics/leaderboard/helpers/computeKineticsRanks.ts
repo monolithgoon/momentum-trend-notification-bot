@@ -1,4 +1,4 @@
-import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface";
+import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface copy";
 import { assignDenseRanks1Based } from "./assignDenseRanks";
 import { ILbTickerKineticsRankings } from "../types/ILbTickerKineticsRankings";
 import { LeaderboardTickerSnapshotsSorter_2 } from "../LeaderboardTickerSnapshotsSorter_2";
@@ -8,8 +8,8 @@ import { LeaderboardTickerSnapshotsSorter_2 } from "../LeaderboardTickerSnapshot
  * Returns a new Map with updated snapshots including `.rankings` and reset absence count.
  */
 export function computeKineticsRanks(
-	snapshotsMap: Map<string, ILeaderboardTickerSnapshot>
-): Map<string, ILeaderboardTickerSnapshot> {
+	snapshotsMap: Map<string, ILeaderboardTickerSnapshot_2>
+): Map<string, ILeaderboardTickerSnapshot_2> {
 	// =============================================
 	// 🧱 1. Prepare data
 	// =============================================
@@ -59,7 +59,6 @@ export function computeKineticsRanks(
 			pct_change_rank: snapshot.rankings.pct_change_rank,
 			pct_change_vel_rank: snapshot.rankings.pct_change_vel_rank,
 			pct_change_acc_rank: snapshot.rankings.pct_change_acc_rank,
-			recency_rank: snapshot.rankings.recency_rank,
 		};
 
 		// Assign ranks
@@ -77,36 +76,51 @@ export function computeKineticsRanks(
 	return new Map(rankedSnapshots);
 }
 
-export function computeAggregateRank(snapshots: ILeaderboardTickerSnapshot[]): Map<string, ILeaderboardTickerSnapshot> {
-	const updated = snapshots.map((snap) => {
-		const rankingFields = Object.entries(snap.rankings ?? {})
-			// .filter(([key]) => key !== "recency_rank")
-			.map(([, val]) => val ?? Infinity);
+// Keys included in the aggregate
+const RANK_KEYS = [
+	"volume_rank",
+	"vol_vel_rank",
+	"vol_acc_rank",
+	"pct_change_rank",
+	"pct_change_vel_rank",
+	"pct_change_acc_rank",
+] as const;
 
-		const aggregateRank = rankingFields.reduce((sum, val) => sum + val, 0);
+type RankKey = (typeof RANK_KEYS)[number];
 
-		return [
-			snap.ticker_symbol__ld_tick,
-			{
-				...snap,
-				aggregate_kinetics_rank: aggregateRank, // attach directly to snapshot
-			},
-		] as const;
+// Use a large finite penalty instead of Infinity to keep sorts sane
+const MISSING_RANK_PENALTY = 1e9;
+
+export function computeAggregateRank(snapshots: ILeaderboardTickerSnapshot_2[]): Map<string, ILeaderboardTickerSnapshot_2> {
+
+	const updated: Array<[string, ILeaderboardTickerSnapshot_2]> = snapshots.map((snap) => {
+		const rankingFieldValues = RANK_KEYS.map((k: RankKey) => snap.rankings[k] ?? MISSING_RANK_PENALTY);
+
+		const aggregateRank = rankingFieldValues.reduce((sum, val) => sum + val, 0);
+
+		console.log({ symbol: snap.ticker_symbol__ld_tick, aggRank: aggregateRank });
+
+		const enriched: ILeaderboardTickerSnapshot_2 = {
+			...snap,
+			aggregate_kinetics_rank: aggregateRank,
+		};
+
+		return [snap.ticker_symbol__ld_tick, enriched];
 	});
 
 	return new Map(updated);
 }
 
 export function getFinalLeaderboardRank(
-	snapshots: ILeaderboardTickerSnapshot[],
+	snapshots: ILeaderboardTickerSnapshot_2[],
 	sorter: LeaderboardTickerSnapshotsSorter_2
-): ILeaderboardTickerSnapshot[] {
+): ILeaderboardTickerSnapshot_2[] {
 	const sorted = sorter.sort(snapshots);
 
 	// Assign final leaderboard_rank (1-based, dense)
 	sorted.forEach((snap, idx) => {
-		(snap as ILeaderboardTickerSnapshot).leaderboard_rank = idx + 1;
+		(snap as ILeaderboardTickerSnapshot_2).leaderboard_rank = idx + 1;
 	});
 
-	return sorted as ILeaderboardTickerSnapshot[];
+	return sorted as ILeaderboardTickerSnapshot_2[];
 }

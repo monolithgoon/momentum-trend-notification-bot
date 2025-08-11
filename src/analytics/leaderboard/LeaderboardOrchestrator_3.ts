@@ -1,14 +1,14 @@
-import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface";
+import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface copy";
 import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
-import { LeaderboardTickerTransformer_2 } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer_2";
+import { LeaderboardTickerTransformer_3 } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer_2 copy";
 import { LeaderboardEngine } from "src/analytics/leaderboard/LeaderboardEngine";
 import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
 
 interface LeaderboardOrchestratorOptions_3 {
   correlationId: string;
   snapshots: NormalizedRestTickerSnapshot[];
-  snapshotTransformer: LeaderboardTickerTransformer_2;
+  snapshotTransformer: LeaderboardTickerTransformer_3;
   leaderboardEngine: LeaderboardEngine;
   leaderboardScanStrategyTag: string[]; // we’ll join for a single tag string
   previewOnly?: boolean;
@@ -22,7 +22,7 @@ interface LeaderboardOrchestratorOptions_3 {
 export class LeaderboardOrchestrator_3 {
   private readonly correlationId: string;
   private readonly rawSnapshots: NormalizedRestTickerSnapshot[];
-  private readonly transformer: LeaderboardTickerTransformer_2;
+  private readonly transformer: LeaderboardTickerTransformer_3;
   private readonly engine: LeaderboardEngine;
   private readonly tag: string;
   private readonly previewOnly: boolean;
@@ -49,7 +49,7 @@ export class LeaderboardOrchestrator_3 {
   async ingestSnapshotBatch(): Promise<LeaderboardUpdateEvent> {
     // 1) Transform raw normalized snapshots → leaderboard snapshots
     this.emitStep("transform:begin", { count: this.rawSnapshots.length });
-    const transformed: ILeaderboardTickerSnapshot[] = this.rawSnapshots.map((s) =>
+    const transformed: ILeaderboardTickerSnapshot_2[] = this.rawSnapshots.map((s) =>
       this.transformer.transform(s)
     );
     this.emitStep("transform:done", { count: transformed.length });
@@ -68,7 +68,7 @@ export class LeaderboardOrchestrator_3 {
     const {
       finalLeaderboard,
       totalCount,
-    }: { finalLeaderboard: ILeaderboardTickerSnapshot[]; totalCount: number } =
+    }: { finalLeaderboard: ILeaderboardTickerSnapshot_2[]; totalCount: number } =
       await (this.engine as any).start(batch, {
         correlationId: this.correlationId,
         previewOnly: this.previewOnly,

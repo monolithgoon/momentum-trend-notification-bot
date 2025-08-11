@@ -1,5 +1,4 @@
 export interface ILbTickerKineticsRankings {
-  recency_rank: number;
   volume_rank: number;
   vol_vel_rank: number;
   vol_acc_rank: number;

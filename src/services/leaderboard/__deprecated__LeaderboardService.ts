@@ -3,7 +3,7 @@ import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedL
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
-import { KineticsCalculator } from "./KineticsCalculator";
+import { KineticsCalculator } from "./__deprecated__KineticsCalculator";
 import { LeaderboardScoringFnType, scoringStrategies } from "./scoringStrategies";
 
 /**

@@ -1,4 +1,4 @@
-import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface";
+import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/__deprecatd__ILeaderboardTickerSnapshot.interface";
 
 /**
  * Updates absence and appearance counters for tickers that were present in the previous

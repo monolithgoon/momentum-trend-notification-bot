@@ -4,7 +4,8 @@ import { NormalizedRestTickerSnapshot } from "../../NormalizedRestTickerSnapshot
 /**
  Specialized transformer for normalized REST API snapshot inputs 
  */
-export interface NormalizedRestTickerSnapshotTransformer<T>
-	extends SnapshotTransformer<NormalizedRestTickerSnapshot, T> {
-	transform(snapshot: NormalizedRestTickerSnapshot): T;
+
+export interface NormalizedRestTickerSnapshotTransformer<TOut>
+  extends SnapshotTransformer<NormalizedRestTickerSnapshot, TOut> {
+  transform(snapshot: NormalizedRestTickerSnapshot): TOut;
 }

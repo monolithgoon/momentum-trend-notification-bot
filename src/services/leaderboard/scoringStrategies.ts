@@ -1,4 +1,4 @@
-import { KineticsCalculator } from "./KineticsCalculator";
+import { KineticsCalculator } from "./__deprecated__KineticsCalculator";
 
 export enum LeaderboardScoringStrategyKey {
 	POP_UP_DECAY_MOMENTUM = "popUpDecayMomentum", // Combines multiple momentum components with pop-up boost and decay

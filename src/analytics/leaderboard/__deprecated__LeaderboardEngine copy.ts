@@ -10,8 +10,8 @@ import { updatePresenceCounters } from "./helpers/updatePresenceCounters";
 import { computeKineticsRanks } from "./helpers/computeKineticsRanks";
 // import { mergeWithExistingLeaderboard } from "./helpers/mergeWithExistingLeaderboard";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
-import { computeNewBatchKinetics } from "./helpers/computeNewBatchKinetics";
-import { mergeWithExistingLeaderboard } from "./helpers/mergeWithExistingLeaderboard";
+import { computeNewBatchKinetics } from "./helpers/__deprecated__computeNewBatchKinetics";
+import { mergeWithExistingLeaderboard } from "./helpers/__deprecated__mergeWithExistingLeaderboard";
 
 export class LeaderboardEngine {
 	constructor(

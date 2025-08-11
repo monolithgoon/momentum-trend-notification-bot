@@ -1,5 +1,5 @@
 import { SortOrder } from "@core/enums/SortOrder.enum";
-import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface";
+import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface copy";
 import { LeaderboardSortFieldType_2 } from "@core/models/snapshotFieldTypeAssertions";
 
 export type FieldSortConfig = {
@@ -14,7 +14,7 @@ export class LeaderboardTickerSnapshotsSorter_2 {
 		private readonly tieBreakerFields: FieldSortConfig[] = []
 	) {}
 
-	sort(snapshots: ILeaderboardTickerSnapshot[]): ILeaderboardTickerSnapshot[] {
+	sort(snapshots: ILeaderboardTickerSnapshot_2[]): ILeaderboardTickerSnapshot_2[] {
 		return snapshots.slice().sort((a, b) => {
 			// Step 1: Sort by primary field (default is aggregate_kinetics_rank)
 			const aPrimary = Number(a[this.primaryField] ?? Infinity);

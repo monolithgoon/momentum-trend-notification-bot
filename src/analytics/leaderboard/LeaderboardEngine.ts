@@ -1,13 +1,12 @@
-import { ILeaderboardTickerSnapshot } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface";
-import { ILeaderboardStorage } from "./types/ILeaderboardStorage.interface";
-import { computeAggregateRank, computeKineticsRanks, getFinalLeaderboardRank } from "./helpers/computeKineticsRanks";
-import { LeaderboardTickerSnapshotsSorter_2 } from "./LeaderboardTickerSnapshotsSorter_2";
-import { computeNewBatchKinetics } from "./helpers/computeNewBatchKinetics";
-import { mergeWithExistingLeaderboard } from "./helpers/mergeWithExistingLeaderboard";
-import { pruneStaleLeaderboardTickers } from "./helpers/pruneOldTickers";
-import { updatePresenceCounters } from "./helpers/updatePresenceCounters";
-import { ITaggedLeaderboardSnapshotsBatch_2 } from "./types/ITaggedLeaderboardSnapshotsBatch.interface_2";
 import { APP_CONFIG_2 } from "src/config_2/app_config";
+import { ITaggedLeaderboardSnapshotsBatch_2 } from "./types/ITaggedLeaderboardSnapshotsBatch.interface_2";
+import { ILeaderboardStorage } from "./types/ILeaderboardStorage.interface";
+import { LeaderboardTickerSnapshotsSorter_2 } from "./LeaderboardTickerSnapshotsSorter_2";
+import { pruneStaleLeaderboardTickers } from "./helpers/pruneOldTickers";
+import { computeAggregateRank, computeKineticsRanks, getFinalLeaderboardRank } from "./helpers/computeKineticsRanks";
+import { mergeWithExistingLeaderboard_3 } from "./helpers/mergeWithExistingLeaderboard_2 copy";
+import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface copy";
+import { computeNewBatchKinetics_2 } from "./helpers/computeNewBatchKinetics_2";
 
 export class LeaderboardEngine {
 	constructor(
@@ -25,45 +24,39 @@ export class LeaderboardEngine {
 	 * - Sorts and trims final leaderboard
 	 */
 
-	public async start(data: ITaggedLeaderboardSnapshotsBatch_2): Promise<ILeaderboardTickerSnapshot[]> {
+	public async start(data: ITaggedLeaderboardSnapshotsBatch_2): Promise<ILeaderboardTickerSnapshot_2[]> {
 		const leaderboardTag: string = data.scan_strategy_tag;
 		const snapshots = data.normalized_leaderboard_tickers;
 
-		// Ensure leaderboard store exists and save new batch
+		// Ensure leaderboard store exists
 		await this.initializeLeaderboardIfMissing(leaderboardTag);
-		await this.storeNewSnapshots(data, leaderboardTag);
 
 		// Pre-processing: create map of new batch
 		const newBatchMap = new Map(snapshots.map((s) => [s.ticker_symbol__ld_tick, s]));
 
 		// Step 1: Compute kinetics on incoming batch
-		const enrichedBatchMap = await computeNewBatchKinetics(newBatchMap, leaderboardTag, this.storage);
+		const enrichedBatchMap = await computeNewBatchKinetics_2(newBatchMap, leaderboardTag, this.storage);
 
-		// Step 2: Load and prune historical leaderboard data
+		// Step 2: Load and prune stale historical leaderboard data
 		const persistedLeaderboard = await this.storage.retrieveLeaderboard(leaderboardTag);
 		const prunedLeaderboardTickers = pruneStaleLeaderboardTickers(persistedLeaderboard ?? []);
 		const prunedLeaderboardMap = new Map(
 			prunedLeaderboardTickers.map((ticker) => [ticker.ticker_symbol__ld_tick, ticker])
 		);
 
-		// Step 3: Update inactivity for missing tickers
-		updatePresenceCounters(prunedLeaderboardMap, enrichedBatchMap);
-
 		// Step 4: Merge current batch into stored leaderboard
-		const mergedMap = mergeWithExistingLeaderboard(prunedLeaderboardMap, enrichedBatchMap);
+		const mergedMap = mergeWithExistingLeaderboard_3(prunedLeaderboardMap, enrichedBatchMap);
+
+		console.log(Array.from(mergedMap.values()));
 
 		// Step 5: Compute sub-leaderboard rankings
 		const snapsWithRankedKineticsMap = computeKineticsRanks(mergedMap);
 
-		// console.log({ snapsWithRankedKineticsMap });
-
 		// Step 6: Compute aggregate rankings
-		const snapsWithAggKineticsMap = computeAggregateRank(Array.from(Object.values(snapsWithRankedKineticsMap)));
+		const snapsWithAggKineticsMap = computeAggregateRank(Array.from(snapsWithRankedKineticsMap.values()));
 
-		// WIP
-		console.log({ snapsWithAggKineticsMap });
-		console.log(Array.from(snapsWithAggKineticsMap.values()).slice(0, 3));
-		console.log({ rankings: Array.from(snapsWithAggKineticsMap.values()).map((s) => s.rankings) });
+		// Store new snapshots at the end, after all enrichments
+		await this.appendHisoricalSnapshots([...snapsWithAggKineticsMap.values()], leaderboardTag);
 
 		// Step 7: Sort and trim the leaderboard
 		const finalLeaderboard_2 = getFinalLeaderboardRank(
@@ -94,8 +87,8 @@ export class LeaderboardEngine {
 	 *
 	 */
 
-	private async storeNewSnapshots(data: ITaggedLeaderboardSnapshotsBatch_2, leaderboardTag: string): Promise<void> {
-		for (const snapshot of data.normalized_leaderboard_tickers) {
+	private async appendHisoricalSnapshots(snapshots: ILeaderboardTickerSnapshot_2[], leaderboardTag: string): Promise<void> {
+		for (const snapshot of snapshots) {
 			try {
 				await this.storage.storeSnapshot(leaderboardTag, snapshot.ticker_symbol__ld_tick, snapshot);
 			} catch (err) {
