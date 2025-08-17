@@ -19,7 +19,7 @@ export function computeKineticsRanks(
 		volume_rank: "volume__ld_tick",
 		vol_vel_rank: "volume_velocity__ld_tick",
 		vol_acc_rank: "volume_acceleration__ld_tick",
-		pct_change_rank: "change_pct__ld_tick",
+		pct_change_rank: "pct_change__ld_tick",
 		pct_change_vel_rank: "pct_change_velocity__ld_tick",
 		pct_change_acc_rank: "pct_change_acceleration__ld_tick",
 	} as const;
@@ -122,5 +122,5 @@ export function getFinalLeaderboardRank(
 		(snap as ILeaderboardTickerSnapshot_2).leaderboard_rank = idx + 1;
 	});
 
-	return sorted as ILeaderboardTickerSnapshot_2[];
+	return sorted;
 }

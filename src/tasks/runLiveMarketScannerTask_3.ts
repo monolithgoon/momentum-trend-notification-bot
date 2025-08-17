@@ -63,8 +63,6 @@ export async function runLiveMarketScannerTask_3() {
 			marketSession,
 		};
 
-		console.log({ marketScanPayload: marketScanPayload.snapshots.slice(0, 3) });
-
 		// 5. Log sorted snapshots
 		logger.info(
 			{

@@ -1,4 +1,4 @@
-import { KineticsCalculator } from "./__deprecated__KineticsCalculator";
+import { KineticsCalculator } from "../../analytics/leaderboard/__deprecated__KineticsCalculator";
 
 export enum LeaderboardScoringStrategyKey {
 	POP_UP_DECAY_MOMENTUM = "popUpDecayMomentum", // Combines multiple momentum components with pop-up boost and decay
@@ -31,7 +31,7 @@ export interface LeaderboardScoringStrategies{
 /**
  * Provides multiple scoring strategies for leaderboard ranking.
  * Import the desired strategy and use as:
- *   const leaderboardScore = scoringStrategies.weightedLinear({ pctChangeVelocity, pctChangeAcceleration, change_pct__ld_tick, ... });
+ *   const leaderboardScore = scoringStrategies.weightedLinear({ pctChangeVelocity, pctChangeAcceleration, pct_change__ld_tick, ... });
  */
 
 export const scoringStrategies: LeaderboardScoringStrategies = {
@@ -141,7 +141,7 @@ export const scoringStrategies: LeaderboardScoringStrategies = {
 
 	/**
 	 * Change Only
-	 * leaderboard_momentum_score = change_pct__ld_tick (default 0 if missing)
+	 * leaderboard_momentum_score = pct_change__ld_tick (default 0 if missing)
 	 */
 	percentageChangeOnly: ({ changePct = 0 }: ScoringParams) => changePct,
 

@@ -4,7 +4,7 @@ export interface ILeaderboardTickerSnapshot extends BaseInternalTickerSnapshot {
 	readonly ticker_symbol__ld_tick: string;
 	readonly ticker_name__ld_tick: string;
 	readonly timestamp__ld_tick: number;
-	readonly change_pct__ld_tick: number;
+	readonly pct_change__ld_tick: number;
 	readonly volume__ld_tick: number;
 	// Kinetics metrics
 	pct_change_velocity__ld_tick: number;

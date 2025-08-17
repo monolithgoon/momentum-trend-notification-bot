@@ -2,7 +2,6 @@ import logger from "@infrastructure/logger";
 import { MarketSession } from "@core/enums/MarketSession.enum";
 import { MarketDataVendor } from "@core/enums/MarketDataVendor.enum";
 import { MarketScanStrategyPresetKey } from "./MarketScanStrategyPresetKey.enum";
-import { DedupableKey } from "./__deprecated__MarketScanOrchestrator_3 copy";
 import { MarketScanAdapterRegistry } from "./MarketScanAdapterRegistry";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
@@ -16,9 +15,13 @@ interface OrchestratorContext {
 	correlationId: string;
 }
 
+// Filters only the keys of T where the value is string and non-nullable
+// keyof T & string means: take all the property names of T (keyof T) and keep only the ones that are strings.
+export type DedupableKey<T> = keyof T & string;
+
 interface ScanRunOptions {
 	numericFieldLimiters: AdvancedThresholdConfig<SortedNormalizedTickerSnapshot>;
-	dedupField?: DedupableKey<SortedNormalizedTickerSnapshot>;
+	dedupField: DedupableKey<SortedNormalizedTickerSnapshot>;
 	marketSession: MarketSession;
 	marketScanStrategyPresetKeys: MarketScanStrategyPresetKey[];
 	marketDataVendor: MarketDataVendor;
@@ -42,7 +45,7 @@ export class MarketScanOrchestrator_3 {
 	public async executeScan(options: ScanRunOptions): Promise<SortedNormalizedTickerSnapshot[]> {
 		const {
 			numericFieldLimiters,
-			dedupField = "ticker_symbol__nz_tick",
+			dedupField,
 			marketSession,
 			marketScanStrategyPresetKeys,
 			marketDataVendor,

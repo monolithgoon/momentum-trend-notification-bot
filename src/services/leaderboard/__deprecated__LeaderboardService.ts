@@ -1,9 +1,9 @@
 import { APP_CONFIG_2 } from "src/config_2/app_config";
-import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/__deprecated__ITaggedLeaderboardSnapshotsBatch.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
 import { LeaderboardStorage } from "./LeaderboardStorage.interface";
-import { KineticsCalculator } from "./__deprecated__KineticsCalculator";
+import { KineticsCalculator } from "../../analytics/leaderboard/__deprecated__KineticsCalculator";
 import { LeaderboardScoringFnType, scoringStrategies } from "./scoringStrategies";
 
 /**
@@ -17,7 +17,7 @@ import { LeaderboardScoringFnType, scoringStrategies } from "./scoringStrategies
  *   - Favor tickers with strong short-term moves and penalize those that linger.
  *
  * Input:
- *   - Batch of normalized ticker snapshots (data.normalized_leaderboard_tickers), each representing a ticker's state at a moment.
+ *   - Batch of normalized ticker snapshots (data.normalized_leaderboard_snapshots), each representing a ticker's state at a moment.
  *   - Scan strategy tag to identify the leaderboard context.
  *
  * Steps:
@@ -144,7 +144,7 @@ export class LeaderboardService {
 	 * @param leaderboardTag - The tag identifying the leaderboard context for storage.
 	 */
 	private async storeNewSnapshots(data: ITaggedLeaderboardSnapshotsBatch, leaderboardTag: string): Promise<void> {
-		for (const snapshot of data.normalized_leaderboard_tickers) {
+		for (const snapshot of data.normalized_leaderboard_snapshots) {
 			try {
 				await this.storage.storeSnapshot(leaderboardTag, snapshot.ticker_name__ld_tick, snapshot);
 			} catch (err) {
@@ -167,7 +167,7 @@ export class LeaderboardService {
 	): Promise<Map<string, LeaderboardRestTickerSnapshot>> {
 		const tickerEntries: Map<string, LeaderboardRestTickerSnapshot> = new Map();
 
-		for (const snapshot of data.normalized_leaderboard_tickers) {
+		for (const snapshot of data.normalized_leaderboard_snapshots) {
 			try {
 				const snapshotHistory = await this.storage.readSnapshotHistoryForTicker(
 					leaderboardTag,
@@ -192,7 +192,7 @@ export class LeaderboardService {
 				const leaderboardEntry: LeaderboardRestTickerSnapshot = {
 					ticker_name__ld_tick: snapshot.ticker_name__ld_tick,
 					timestamp__ld_tick: snapshot.timestamp__ld_tick,
-					change_pct__ld_tick: snapshot.change_pct__ld_tick,
+					pct_change__ld_tick: snapshot.pct_change__ld_tick,
 					pct_change_velocity__ld_tick: pcVel,
 					pct_change_acceleration__ld_tick: pcAccel,
 					volume_velocity__ld_tick: volVel,
@@ -284,7 +284,7 @@ export class LeaderboardService {
 		// Compute scores
 		for (const entry of entries) {
 			entry.leaderboard_momentum_score = this.computeLeaderboardScoreFn({
-				changePct: entry.change_pct__ld_tick,
+				changePct: entry.pct_change__ld_tick,
 				volume: entry.volume__ld_tick,
 				pctChangeVelocity: entry.pct_change_velocity__ld_tick,
 				pctChangeAcceleration: entry.pct_change_acceleration__ld_tick,

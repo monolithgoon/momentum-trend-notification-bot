@@ -2,5 +2,5 @@ import { LeaderboardRestTickerSnapshot } from "./LeaderboardRestTickerSnapshot.i
 
 export interface ITaggedLeaderboardSnapshotsBatch {
   scan_strategy_tag: string;
-  normalized_leaderboard_tickers: LeaderboardRestTickerSnapshot[];
+  normalized_leaderboard_snapshots: LeaderboardRestTickerSnapshot[];
 }

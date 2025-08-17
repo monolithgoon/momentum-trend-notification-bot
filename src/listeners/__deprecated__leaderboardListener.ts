@@ -7,7 +7,7 @@ import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers
 import { LeaderboardService } from "@services/leaderboard/__deprecated__LeaderboardService";
 import { scoringStrategies } from "@services/leaderboard/scoringStrategies";
 import { FileLeaderboardStorage } from "@services/leaderboard/FileLeaderboardStorage";
-import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/LeaderboardTickerSnapshotsSorter";
+import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/__deprecated__LeaderboardTickerSnapshotsSorter";
 import { SortOrder } from "@core/enums/SortOrder.enum";
 import { typedEventEmitter } from "@infrastructure/event_bus/TypedEventEmitter";
 import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";

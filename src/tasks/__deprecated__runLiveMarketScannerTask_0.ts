@@ -26,7 +26,7 @@ function addTagsToMarketScanResult(
 ): ITaggedLeaderboardSnapshotsBatch {
 	return {
 		scan_strategy_tag: scanStrategyTag,
-		normalized_leaderboard_tickers: tickers.map((ticker) => ({
+		normalized_leaderboard_snapshots: tickers.map((ticker) => ({
 			...ticker,
 		})),
 	};

@@ -1,4 +1,4 @@
-import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/__deprecated__ITaggedLeaderboardSnapshotsBatch.interface";
 import { RankedLeaderboardTicker } from "./types/__deprecated__RankedLeaderboardTicker.interface";
 import { ILeaderboardStorage } from "./types/ILeaderboardStorage.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
@@ -31,7 +31,7 @@ export class LeaderboardEngine {
 
 	public async orchestrateLeaderboard(data: ITaggedLeaderboardSnapshotsBatch): Promise<ITaggedLeaderboardSnapshotsBatch> {
 		const leaderboardTag = data.scan_strategy_tag;
-		const snapshots = data.normalized_leaderboard_tickers;
+		const snapshots = data.normalized_leaderboard_snapshots;
 
 		// Ensure leaderboard store exists and save new batch
 		await this.initializeLeaderboardIfMissing(leaderboardTag);
@@ -79,7 +79,7 @@ export class LeaderboardEngine {
 
 		return {
 			scan_strategy_tag: leaderboardTag,
-			normalized_leaderboard_tickers: finalLeaderboard,
+			normalized_leaderboard_snapshots: finalLeaderboard,
 		};
 	}
 }

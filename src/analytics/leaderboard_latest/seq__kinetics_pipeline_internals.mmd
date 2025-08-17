@@ -1,0 +1,53 @@
+sequenceDiagram
+    autonumber
+    participant Caller as Caller (computeNewBatchKinetics)
+    participant Pipeline as KineticsPipeline
+    participant Map as kineticMetricFieldsMap
+    participant Calc as KineticsCalculator
+    participant Norm as applyNormalization
+    participant Math as olsSlope
+
+    Caller->>Caller: prep history (sort, append snapshot, minRequiredSnapshots)
+    Caller->>Pipeline: processBatch(snapshots, historyBySymbol)
+
+    loop each snapshot
+        Pipeline->>Pipeline: symbol = snapshot[cfg.keys.symbolFieldKey]
+        alt insufficient history
+            Pipeline-->>Caller: use original snapshot
+        else sufficient history
+            loop each metric in cfg.kinetics.metrics
+                Pipeline->>Map: resolve vel/acc/boost field keys by lookbackSpan
+                loop each horizon in metric.horizons
+                    Pipeline->>Calc: computeVelocity(history, metricKey, lookbackSpan, normalize, tsKey)
+                    Calc->>Math: olsSlope(points)
+                    Math-->>Calc: velocity
+                    opt normalize
+                        Calc->>Norm: applyNormalization(velocity, series, strategy)
+                        Norm-->>Calc: velocity'
+                    end
+
+                    Pipeline->>Calc: computeAcceleration(history, metricKey, lookbackSpan, normalize, tsKey)
+                    Calc->>Math: olsSlope(velocitySeries)
+                    Math-->>Calc: acceleration
+                    opt normalize
+                        Calc->>Norm: applyNormalization(acceleration, series, strategy)
+                        Norm-->>Calc: acceleration'
+                    end
+
+                    alt metric.enableVelocityGuard && |velocity| < minVelocity
+                        Pipeline->>Pipeline: finalAcc = 0
+                    else
+                        Pipeline->>Pipeline: finalAcc = acceleration
+                    end
+
+                    Pipeline->>Pipeline: enriched[velKey] = velocity
+                    Pipeline->>Pipeline: enriched[accKey] = finalAcc
+
+                    opt boosts
+                        Pipeline->>Pipeline: enriched[boostKey] = boost(velocity, finalAcc)
+                    end
+                end
+            end
+        end
+    end
+    Pipeline-->>Caller: Map<symbol, enrichedSnapshot>

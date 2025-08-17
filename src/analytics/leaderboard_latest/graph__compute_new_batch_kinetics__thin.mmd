@@ -1,0 +1,48 @@
+%% Package-level (clean, minimal-crossing) DAG
+flowchart TB
+  %% Layers (bottom -> top)
+  subgraph L1[Types & Utils]
+    TYPES[types/*]
+    UTILS[utils/*]
+  end
+
+  subgraph L2[Schema & Normalization]
+    SCHEMA[schema/kineticMetricFieldsMap.ts]
+    NORM[core/applyNormalization.ts]
+  end
+
+  subgraph L3[Calculator]
+    CALC[core/KineticsCalculator.ts]
+  end
+
+  subgraph L4[Pipeline]
+    PIPE[core/KineticsPipeline.ts]
+  end
+
+  subgraph L5[Config]
+    CFG[config/kineticsConfigSpec.ts]
+  end
+
+  subgraph L6[Index]
+    IDX[kinetics/index.ts]
+  end
+
+  subgraph L7[App / Caller]
+    APP[computeNewBatchKinetics copy.ts]
+  end
+
+  %% Edges (imports): higher layer -> lower layer
+  SCHEMA --> TYPES
+  NORM --> TYPES
+  CALC --> TYPES
+  CALC --> UTILS
+  CALC --> NORM
+  PIPE --> SCHEMA
+  PIPE --> CALC
+  PIPE --> TYPES
+  CFG --> TYPES
+  IDX --> CFG
+  IDX --> PIPE
+  IDX --> CALC
+  APP --> PIPE
+  APP --> TYPES

@@ -76,7 +76,7 @@ describe("LeaderboardService", () => {
 
     const testData: ITaggedLeaderboardSnapshotsBatch = {
       scan_strategy_tag: leaderboardTag,
-      normalized_leaderboard_tickers: [
+      normalized_leaderboard_snapshots: [
         { ticker: "AAA", timestamp: 100, ordinal_sort_position: 0, change_pct: 1.2 },
         { ticker: "BBB", timestamp: 200, ordinal_sort_position: 1, change_pct: -0.5 },
       ],
@@ -109,7 +109,7 @@ describe("LeaderboardService", () => {
     const leaderboardTag = "insufficient-history";
     const testData: ITaggedLeaderboardSnapshotsBatch = {
       scan_strategy_tag: leaderboardTag,
-      normalized_leaderboard_tickers: [
+      normalized_leaderboard_snapshots: [
         { ticker: "CCC", timestamp: 150, ordinal_sort_position: 0, change_pct: 0.9 }, // only one snapshot
       ],
     };

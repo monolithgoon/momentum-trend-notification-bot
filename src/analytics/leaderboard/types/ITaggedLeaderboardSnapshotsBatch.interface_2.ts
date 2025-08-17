@@ -2,5 +2,5 @@ import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboard
 
 export interface ITaggedLeaderboardSnapshotsBatch_2 {
   scan_strategy_tag: string;
-  normalized_leaderboard_tickers: ILeaderboardTickerSnapshot_2[];
+  normalized_leaderboard_snapshots: ILeaderboardTickerSnapshot_2[];
 }

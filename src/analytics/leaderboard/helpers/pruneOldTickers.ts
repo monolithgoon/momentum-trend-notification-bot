@@ -15,13 +15,13 @@ function toMs(ts: number): number {
  * 1. **AGE_BASED**
  *    - Purpose: Keep leaderboard clean by removing entries that haven’t been seen recently.
  *    - Rule: Drop any ticker whose last-seen timestamp (`timestamp__ld_tick`) is older
- *      than `pruneConfig.maxAgeDays` from `now`.
+ *      than `pruneConfigSpec.maxAgeDays` from `now`.
  *    - Time handling: Converts stored timestamps to milliseconds if they are in seconds.
  *
  * 2. **INACTIVITY_BASED**
  *    - Purpose: Remove symbols that have been absent for too many scans.
  *    - Rule: Drop any ticker whose `num_consecutive_absences` exceeds
- *      `pruneConfig.maxUnrankedScans`.
+ *      `pruneConfigSpec.maxUnrankedScans`.
  *
  * 3. **Fallback**
  *    - If the prune mode is unrecognized or misconfigured, all tickers are kept.
@@ -36,13 +36,13 @@ export function pruneStaleLeaderboardTickers(
 	tickers: ILeaderboardTickerSnapshot_2[],
 	nowMs: number = Date.now()
 ): ILeaderboardTickerSnapshot_2[] {
-	const { pruneConfig } = APP_CONFIG_2.leaderboard;
+	const { pruneConfigSpec } = APP_CONFIG_2.leaderboard;
 
-	const ageThresholdMs = pruneConfig.maxAgeDays * 24 * 60 * 60 * 1000;
-	const maxAbsences = pruneConfig.maxUnrankedScans;
+	const ageThresholdMs = pruneConfigSpec.maxAgeDays * 24 * 60 * 60 * 1000;
+	const maxAbsences = pruneConfigSpec.maxUnrankedScans;
 
 	return tickers.filter((t) => {
-		switch (pruneConfig.mode) {
+		switch (pruneConfigSpec.mode) {
 			case "age_based": {
 				const lastSeenMs = toMs(t.timestamp__ld_tick ?? 0);
 				return nowMs - lastSeenMs <= ageThresholdMs;

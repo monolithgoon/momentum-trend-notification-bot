@@ -1,13 +1,13 @@
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 
-type VelocityFieldType = Extract<
+type VelocityCalcFieldType = Extract<
 	keyof LeaderboardRestTickerSnapshot,
-	"change_pct__ld_tick" | "volume__ld_tick"
+	"pct_change__ld_tick" | "volume__ld_tick"
 >;
 
-type AccelerationFieldType = Extract<
+type AccelerationCalcFieldType = Extract<
 	keyof LeaderboardRestTickerSnapshot,
-	"change_pct__ld_tick" | "volume__ld_tick"
+	"pct_change__ld_tick" | "volume__ld_tick"
 >;
 
 export class KineticsCalculator {
@@ -27,7 +27,7 @@ Custom typed FmpQuote interface returned from it
 	 * @param minPoints - Minimum number of points required.
 	 * @returns The average velocity, or 0 if not enough data.
 	 */
-	computeVelocity(field: VelocityFieldType, minPoints: number = 2): number {
+	computeVelocity(field: VelocityCalcFieldType, minPoints: number = 2): number {
 		if (this.history.length < minPoints) return 0;
 		const slice = this.history.slice(0, minPoints).reverse();
 		const times = slice.map((h) => h.timestamp__ld_tick / 1000);
@@ -54,7 +54,7 @@ Custom typed FmpQuote interface returned from it
 	 * @param minPoints - Minimum number of points required.
 	 * @returns The average acceleration, or 0 if not enough data.
 	 */
-	computeAcceleration(field: AccelerationFieldType, minPoints: number = 4): number {
+	computeAcceleration(field: AccelerationCalcFieldType, minPoints: number = 4): number {
 		if (this.history.length < minPoints) return 0;
 		const slice = this.history.slice(0, minPoints).reverse();
 		const times = slice.map((h) => h.timestamp__ld_tick / 1000);
@@ -85,7 +85,7 @@ Custom typed FmpQuote interface returned from it
 	 * @param minPoints - Minimum number of points required.
 	 * @returns The mean velocity, or 0 if not enough data.
 	 */
-	computeMeanVelocity(field: VelocityFieldType, minPoints: number = 2): number {
+	computeMeanVelocity(field: VelocityCalcFieldType, minPoints: number = 2): number {
 		const velocities = this.getVelocities(field, minPoints);
 		if (velocities.length === 0) return 0;
 		return velocities.reduce((sum, v) => sum + v, 0) / velocities.length;
@@ -97,7 +97,7 @@ Custom typed FmpQuote interface returned from it
 	 * @param minPoints - Minimum number of points required.
 	 * @returns The standard deviation of velocity, or 0 if not enough data.
 	 */
-	computeStdVelocity(field: VelocityFieldType, minPoints: number = 2): number {
+	computeStdVelocity(field: VelocityCalcFieldType, minPoints: number = 2): number {
 		const velocities = this.getVelocities(field, minPoints);
 		if (velocities.length === 0) return 0;
 		const mean = this.computeMeanVelocity(field, minPoints);
@@ -111,7 +111,7 @@ Custom typed FmpQuote interface returned from it
 	 * @param minPoints - Minimum number of points required.
 	 * @returns The mean acceleration, or 0 if not enough data.
 	 */
-	computeMeanAcceleration(field: AccelerationFieldType, minPoints: number = 4): number {
+	computeMeanAcceleration(field: AccelerationCalcFieldType, minPoints: number = 4): number {
 		const accels = this.getAccelerations(field, minPoints);
 		if (accels.length === 0) return 0;
 		return accels.reduce((sum, a) => sum + a, 0) / accels.length;
@@ -123,7 +123,7 @@ Custom typed FmpQuote interface returned from it
 	 * @param minPoints - Minimum number of points required.
 	 * @returns The standard deviation of acceleration, or 0 if not enough data.
 	 */
-	computeStdAcceleration(field: AccelerationFieldType, minPoints: number = 4): number {
+	computeStdAcceleration(field: AccelerationCalcFieldType, minPoints: number = 4): number {
 		const accels = this.getAccelerations(field, minPoints);
 		if (accels.length === 0) return 0;
 		const mean = this.computeMeanAcceleration(field, minPoints);
@@ -138,7 +138,7 @@ Custom typed FmpQuote interface returned from it
 	 * @param minPoints - Minimum number of points required.
 	 * @returns Array of velocity values.
 	 */
-	private getVelocities(field: VelocityFieldType, minPoints: number = 2): number[] {
+	private getVelocities(field: VelocityCalcFieldType, minPoints: number = 2): number[] {
 		if (this.history.length < minPoints) return [];
 		const slice = this.history.slice(0, minPoints).reverse();
 		const times = slice.map((h) => h.timestamp__ld_tick / 1000);
@@ -162,7 +162,7 @@ Custom typed FmpQuote interface returned from it
 	 * @param minPoints - Minimum number of points required.
 	 * @returns Array of acceleration values.
 	 */
-	private getAccelerations(field: AccelerationFieldType, minPoints: number = 4): number[] {
+	private getAccelerations(field: AccelerationCalcFieldType, minPoints: number = 4): number[] {
 		if (this.history.length < minPoints) return [];
 		const slice = this.history.slice(0, minPoints).reverse();
 		const times = slice.map((h) => h.timestamp__ld_tick / 1000);

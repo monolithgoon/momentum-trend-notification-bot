@@ -9,6 +9,7 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
+		// "noPropertyAccessFromIndexSignature": true,
 		"baseUrl": ".", // This is the root of your project
 		"paths": {
 			"@app/*": ["src/app/*"],

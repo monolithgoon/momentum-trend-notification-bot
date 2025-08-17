@@ -40,7 +40,7 @@ export type LeaderboardSortFieldType = (typeof LEADERBOARD_SORT_FIELDS)[number];
 export const LEADERBOARD_SORT_FIELDS_2 = [
 	"leaderboard_momentum_score",
 	"volume__ld_tick",
-	"change_pct__ld_tick",
+	"pct_change__ld_tick",
 	"aggregate_kinetics_rank",
 	"first_time_seen_flag",
 ] as const;

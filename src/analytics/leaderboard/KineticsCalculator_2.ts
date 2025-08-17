@@ -14,7 +14,7 @@ export type KineticsCalcOpts = {
 
 type SeriesPoint = {
 	timestamp__ld_tick: number;
-	[k: string]: number; // e.g., "change_pct__ld_tick", "volume__ld_tick"
+	[k: string]: number; // e.g., "pct_change__ld_tick", "volume__ld_tick"
 };
 
 export class KineticsCalculator_2 {
@@ -67,7 +67,7 @@ export class KineticsCalculator_2 {
 	 *        > Near zero slope → flat
 	 *
 	 * Example:
-	 *   Window = 20 bars, field = "change_pct__ld_tick":
+	 *   Window = 20 bars, field = "pct_change__ld_tick":
 	 *     - Uptrend over last 20 bars → positive velocity score.
 	 *     - Downtrend → negative velocity score.
 	 *     - Flat/noisy series → near-zero velocity.

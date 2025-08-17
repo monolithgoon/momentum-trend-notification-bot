@@ -5,7 +5,7 @@ import { pruneStaleLeaderboardTickers } from "./helpers/pruneStaleLeaderboardTic
 import { updatePresenceCounters } from "./helpers/updatePresenceCounters";
 import { RankedLeaderboardTicker } from "./types/__deprecated__RankedLeaderboardTicker.interface";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/__deprecated__ITaggedLeaderboardSnapshotsBatch.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 
 export class LeaderboardEngine {
@@ -21,7 +21,7 @@ export class LeaderboardEngine {
 	): Promise<RankedLeaderboardTicker[]> {
 		
 		const leaderboardTag = data.scan_strategy_tag;
-		const snapshots = data.normalized_leaderboard_tickers;
+		const snapshots = data.normalized_leaderboard_snapshots;
 
 		addAppearancesField(snapshots);
 		await this.initializeLeaderboardIfMissing(leaderboardTag);

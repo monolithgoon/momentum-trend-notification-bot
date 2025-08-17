@@ -2,7 +2,7 @@ import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/models/Norma
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/models/LeaderboardRestTickerSnapshot.interface";
 import { LeaderboardService } from "../__deprecated__LeaderboardService";
 import { GenericTickerSorter } from "@core/generics/GenericTickerSorter.interface";
-import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/__deprecated__ITaggedLeaderboardSnapshotsBatch.interface";
 // import { LeaderboardKineticsCalculator } from "../KineticsCalculator";
 
 // --- Mock Config ---
@@ -48,7 +48,7 @@ const mockKineticsCalculator: LeaderboardKineticsCalculator = {
 // --- Mock Data In ---
 const testData: ITaggedLeaderboardSnapshotsBatch = {
   scan_strategy_tag: "test-strategy",
-  normalized_leaderboard_tickers: [
+  normalized_leaderboard_snapshots: [
     { ticker: "AAA", timestamp: 100, ordinal_sort_position: 0, change_pct: 1.2 },
     { ticker: "BBB", timestamp: 200, ordinal_sort_position: 1, change_pct: -0.5 }
   ]

@@ -11,7 +11,7 @@ import { SortOrder } from "@core/enums/SortOrder.enum";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
 import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
-import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/__deprecated__ITaggedLeaderboardSnapshotsBatch.interface";
 import { ScanFilterConfigTypes } from "src/strategies/scan/types/ScanFilterConfigs.types";
 
 // Core Generics & Transformers
@@ -28,7 +28,7 @@ import { TelegramNotifier } from "@services/notifier/TelegramService";
 
 // Leaderboard Services
 import { FileLeaderboardStorage } from "@services/leaderboard/FileLeaderboardStorage";
-import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/LeaderboardTickerSnapshotsSorter";
+import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/__deprecated__LeaderboardTickerSnapshotsSorter";
 import { LeaderboardService } from "@services/leaderboard/__deprecated__LeaderboardService";
 import { scoringStrategies } from "@services/leaderboard/scoringStrategies";
 
@@ -49,7 +49,7 @@ function tagSnapshotsWithStrategyMeta(
 ): ITaggedLeaderboardSnapshotsBatch {
 	return {
 		scan_strategy_tag,
-		normalized_leaderboard_tickers: tickers.map((ticker) => ({
+		normalized_leaderboard_snapshots: tickers.map((ticker) => ({
 			...ticker,
 		})),
 	};

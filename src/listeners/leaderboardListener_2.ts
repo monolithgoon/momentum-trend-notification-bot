@@ -1,19 +1,22 @@
+import { appEvents } from "@config/appEvents";
+import { typedEventEmitter } from "@infrastructure/event_bus/TypedEventEmitter";
+import logger from "@infrastructure/logger";
+
 import { MarketScanPayload } from "src/types/events/MarketScanEventPayload.interface";
 import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
+
+import { generateCorrelationId } from "@core/utils/correlation";
+import timer from "@core/utils/timer";
+import { SortOrder } from "@core/enums/SortOrder.enum";
+
+import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage_2";
+import { LeaderboardEngine_3 } from "@analytics/leaderboard/LeaderboardEngine_3";
 import { LeaderboardOrchestrator_3 } from "@analytics/leaderboard/LeaderboardOrchestrator_3";
-import { LeaderboardEngine } from "src/analytics/leaderboard/LeaderboardEngine";
 import {
 	FieldSortConfig,
 	LeaderboardTickerSnapshotsSorter_2,
 } from "@analytics/leaderboard/LeaderboardTickerSnapshotsSorter_2";
-import { FileLeaderboardStorage } from "@analytics/leaderboard/FileLeaderboardStorage_2";
 import { LeaderboardTickerTransformer_3 } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer_2 copy";
-import { SortOrder } from "@core/enums/SortOrder.enum";
-import { typedEventEmitter } from "@infrastructure/event_bus/TypedEventEmitter";
-import { appEvents } from "@config/appEvents";
-import logger from "@infrastructure/logger";
-import { generateCorrelationId } from "@core/utils/correlation";
-import timer from "@core/utils/timer";
 
 async function handleMarketScanComplete(payload: MarketScanPayload) {
 	const { snapshots, marketScanStrategyPresetKeys } = payload;
@@ -30,7 +33,7 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 	const tieBreakers: FieldSortConfig[] = [
 		// If you prefer .rankings fields, swap to those (e.g. "volume_rank")
 		// TODO -> add first_time_seen_flag field here
-		{ field: "change_pct__ld_tick", order: SortOrder.DESC },
+		{ field: "pct_change__ld_tick", order: SortOrder.DESC },
 		{ field: "volume__ld_tick", order: SortOrder.DESC },
 	];
 
@@ -45,11 +48,11 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 	// ================================
 	const orchestrator = new LeaderboardOrchestrator_3({
 		correlationId,
-		snapshots: snapshots.slice(0, 5), // Limit to 2 for testing
+		snapshots: snapshots.slice(0, 10), // Limit to 2 for testing
 		// snapshots, // Uncomment for full batch
-		// Note: transformer is used to convert raw snapshots to leaderboard format
 		snapshotTransformer: new LeaderboardTickerTransformer_3(),
-		leaderboardEngine: new LeaderboardEngine(storage, sorter),
+		// leaderboardEngine: new LeaderboardEngine(storage, sorter),
+		leaderboardEngine: new LeaderboardEngine_3(storage, sorter, logger),
 		leaderboardScanStrategyTag: marketScanStrategyPresetKeys,
 		previewOnly: false,
 		onStepComplete: (step) => logger.info({ step, correlationId }, "Leaderboard step complete"),

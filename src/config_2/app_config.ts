@@ -34,14 +34,15 @@ export const APP_CONFIG_2 = {
 
 		// New additions 👇
 		// snapshotStorageRetentionLimit: constants.LEADERBOARD_SNAPSHOT_STORAGE_RETENTION_LIMIT,
-		pruneConfig: constants.LEADERBOARD_PRUNE_CONFIG,
+		pruneConfigSpec: constants.LEADERBOARD_PRUNE_CONFIG_SPEC,
 		useAbsenceBasedTracking: constants.USE_ABSENCE_BASED_TRACKING,
 		velWindow: constants.LEADERBOARD_VEL_WINDOW,
 		accWindow: constants.LEADERBOARD_ACC_WINDOW,
 		maxSnapshotHistoryLookback: constants.LEADERBOARD_MAX_SNAPSHOT_HISTORY_LOOKBACK,
-		useVelocityGuard: constants.LEADERBOARD_USE_VELOCITY_GUARD,
+		usePctChgVelocityGuard: constants.LEADERBOARD_USE_VELOCITY_GUARD,
 		minPctChangeVelocity: constants.LEADERBOARD_MIN_PCT_CHANGE_VELOCITY,
 		maxLeaderboardSnapshotLength: constants.LEADERBOARD_MAX_SNAPSHOT_LENGTH,
+		historyContextWindowsMultiplier: 3,
 	},
 	premarket: {
 		minVolume: constants.PRE_MARKET_MIN_VOLUME,

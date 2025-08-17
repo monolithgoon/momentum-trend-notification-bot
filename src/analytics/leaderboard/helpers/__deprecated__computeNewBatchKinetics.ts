@@ -1,7 +1,7 @@
 import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface copy";
 import { ILeaderboardStorage } from "../types/ILeaderboardStorage.interface";
 import { APP_CONFIG_2 } from "src/config_2/app_config";
-import { KineticsCalculator } from "@services/leaderboard/__deprecated__KineticsCalculator";
+import { KineticsCalculator } from "@analytics/leaderboard/__deprecated__KineticsCalculator";
 
 export async function computeNewBatchKinetics(
 	newBatchMap: Map<string, ILeaderboardTickerSnapshot_2>,
@@ -35,8 +35,8 @@ export async function computeNewBatchKinetics(
 			console.log({ snapshot: snapshot.ticker_symbol__ld_tick, historyLength: snapshotHistory.length });
 
 			const kinetics = new KineticsCalculator(snapshotHistory);
-			const pcVel = kinetics.computeVelocity("change_pct__ld_tick");
-			const pcAccel = kinetics.computeAcceleration("change_pct__ld_tick");
+			const pcVel = kinetics.computeVelocity("pct_change__ld_tick");
+			const pcAccel = kinetics.computeAcceleration("pct_change__ld_tick");
 			const volVel = kinetics.computeVelocity("volume__ld_tick");
 			const volAccel = kinetics.computeAcceleration("volume__ld_tick");
 

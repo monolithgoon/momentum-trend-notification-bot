@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant App as App
+    participant CBNK as computeNewBatchKinetics
+    participant KP as KineticsPipeline_2
+
+    App->>CBNK: (snapshots, historyBySymbol, kineticsConfigSpec, opts)
+    CBNK->>CBNK: calc maxLookback → minRequiredSnapshots
+    LOOP per symbol
+        CBNK->>CBNK: ensure ascending history; 
+        ALT history < minRequiredSnapshots
+            CBNK-->>App: original snapshot
+        else
+            CBNK->>KP: processBatch([snapshot], {symbol: history})
+            KP-->>CBNK: Map<symbol, enriched>
+            CBNK->>CBNK: results.set(symbol, enriched)
+        end
+    end
+    CBNK-->>App: Map<symbol, enrichedSnapshot>

@@ -8,7 +8,7 @@
  * - Useful for type constraints and code organization without imposing structure.
  */
 
-export interface BaseInternalTickerSnapshot {
+export interface BaseInternalTickerSnapshot extends Record<string, number | string | boolean | {}> {
 	// REMOVE -> unnecessary fields
 	// ingestion_ordinal_index: number;
 	// computed_ordinal_index: number;

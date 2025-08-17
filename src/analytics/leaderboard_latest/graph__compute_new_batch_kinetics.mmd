@@ -1,0 +1,83 @@
+%% Layered repo dependency graph (applyNormalization moved into Core)
+flowchart TB
+
+  %% ── L1: Types & Utils (base) ──────────────────────────────────────────────
+  subgraph L1[Types & Utils]
+    H["kinetics/types/FieldKeys.ts"]
+    I["kinetics/types/KineticsConfigTypes.ts"]
+    J["kinetics/types/NormalizationStrategies.ts"]
+    L["kinetics/utils/guards.ts"]
+    M["kinetics/utils/math.ts"]
+  end
+
+  %% ── L2: Schema ────────────────────────────────────────────────────────────
+  subgraph L2[Schema]
+    G["kinetics/schema/kineticMetricFieldsMap.ts"]
+  end
+
+  %% ── L3: Core (now includes applyNormalization) ────────────────────────────
+  subgraph L3[Core]
+    D["kinetics/core/KineticsCalculator.ts"]
+    C["kinetics/core/KineticsPipeline.ts"]
+    F["kinetics/core/applyNormalization.ts"]
+  end
+
+  %% ── L4: Config & Index ────────────────────────────────────────────────────
+  subgraph L4[Config & Index]
+    B["kinetics/config/kineticsConfigSpec.ts"]
+    N["kinetics/index.ts"]
+  end
+
+  %% ── L5: App/Caller ───────────────────────────────────────────────────────
+  subgraph L5[App / Caller]
+    A["computeNewBatchKinetics copy.ts"]
+  end
+
+  %% ── Edges (imports): higher layer -> lower layer ─────────────────────────
+  G --> H
+  I --> H
+  I --> J
+
+  %% Core calc depends on types/utils/normalization
+  D --> H
+  D --> J
+  D --> L
+  D --> M
+  D --> F
+
+  %% applyNormalization uses NormalizationStrategies
+  F --> J
+
+  %% Pipeline depends on schema, types, and calculator
+  C --> G
+  C --> I
+  C --> D
+
+  %% Config depends on types; (intended) metric keys from schema
+  B --> I
+  B -.-> G
+
+  %% Index re-exports config/core
+  N --> B
+  N --> C
+  N --> D
+
+  %% Caller uses pipeline + types
+  A --> C
+  A --> I
+  A --> H
+
+  %% Styling
+  classDef types fill:#eef,stroke:#99f,color:#000;
+  classDef utils fill:#efe,stroke:#6c6,color:#000;
+  classDef schema fill:#ffe,stroke:#cc6,color:#000;
+  classDef core fill:#fef,stroke:#c6c,color:#000;
+  classDef cfg fill:#eef9ff,stroke:#69c,color:#000;
+  classDef dashed stroke-dasharray: 5 3,stroke:#999,color:#666;
+
+  class H,I,J types;
+  class L,M utils;
+  class G schema;
+  class D,C,F core;
+  class B,N cfg;
+  class B dashed

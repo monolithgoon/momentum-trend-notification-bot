@@ -1,8 +1,8 @@
 import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
-import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/LeaderboardTickerSnapshotsSorter";
+import { LeaderboardTickerSnapshotsSorter } from "@services/leaderboard/__deprecated__LeaderboardTickerSnapshotsSorter";
 import { LeaderboardService } from "@services/leaderboard/__deprecated__LeaderboardService";
 import { LeaderboardStorage } from "@services/leaderboard/LeaderboardStorage.interface";
-import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/ITaggedLeaderboardSnapshotsBatch.interface";
+import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/__deprecated__ITaggedLeaderboardSnapshotsBatch.interface";
 import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 
@@ -100,7 +100,7 @@ function tagSnapshotsWithStrategyMeta(
 ): ITaggedLeaderboardSnapshotsBatch {
   return {
     scan_strategy_tag,
-    normalized_leaderboard_tickers: tickers.map((ticker) => ({
+    normalized_leaderboard_snapshots: tickers.map((ticker) => ({
       ...ticker,
     })),
   };
