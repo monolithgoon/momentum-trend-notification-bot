@@ -25,12 +25,12 @@ export interface IKineticsCalculator {
    This is the output shape from the calculator:
    - `raw`        → Unnormalized raw slope values
    - `normalized` → Values normalized across tickers (if enabled in config)
-   - `boosts`     → Ratio metrics that compare short- vs long-term kinetics
+   - `velAccBoostFns`     → Ratio metrics that compare short- vs long-term kinetics
 ============================================================================ */
 export interface IKineticsCalculatorResult {
 	raw: Record<string, number>;
 	normalized: Record<string, number>;
-	boosts: Record<string, number>;
+	velAccBoostFns: Record<string, number>;
 }
 
 /* ============================================================================
@@ -71,7 +71,7 @@ export class KineticsCalculator_3 {
 		// Containers for computed values
 		const raw: Record<string, number> = {};
 		const normalized: Record<string, number> = {};
-		const boosts: Record<string, number> = {};
+		const velAccBoostFns: Record<string, number> = {};
 
 		/* ------------------------------------------------------------------------
        1️⃣ Compute Velocity
@@ -136,11 +136,11 @@ export class KineticsCalculator_3 {
        This is a proxy for momentum acceleration potential.
        NOTE: Hardcoded L3 vs L8 here — could be made dynamic from config.
     ------------------------------------------------------------------------ */
-		boosts["priceVelocityBoost"] =
+		velAccBoostFns["priceVelocityBoost"] =
 			(raw[`velocity_${VelocityCalcFieldType.PRICE_PCT_CHANGE}_L3`] ?? 0) /
 			Math.abs(raw[`velocity_${VelocityCalcFieldType.PRICE_PCT_CHANGE}_L8`] || 1);
 
-		return { raw, normalized, boosts };
+		return { raw, normalized, velAccBoostFns };
 	}
 }
 

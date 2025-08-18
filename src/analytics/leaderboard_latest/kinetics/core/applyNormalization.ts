@@ -1,4 +1,4 @@
-import { NormalizationStrategies } from "../types/NormalizationStrategies";
+import { NormalizationStrategies } from "../strategies/NormalizationStrategies";
 
 /**
  * CORE CONTEXTUAL COMMENT — NormalizationStrategies.ts

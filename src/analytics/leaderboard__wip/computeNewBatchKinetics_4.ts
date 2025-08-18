@@ -79,7 +79,7 @@ export function computeNewBatchKinetics_4(
 			continue;
 		}
 
-		// ── 3) Compute full kinetics with boosts ─────────────────────────────────
+		// ── 3) Compute full kinetics with velAccBoostFns ─────────────────────────────────
 		const kinetics = calculator.compute(snapshot.ticker_symbol__ld_tick, snapshot, MultiHorizonKineticsConfig);
 
 		// ── 4) Extract the horizons we care about ────────────────────────────────
@@ -88,8 +88,8 @@ export function computeNewBatchKinetics_4(
 		const volVel = kinetics.raw[`velocity_${VelocityCalcFieldType.VOLUME_CHANGE}_L3`] ?? 0;
 		const volAcc = kinetics.raw[`acceleration_${AccelerationCalcFieldType.VOLUME_CHANGE}_L3`] ?? 0;
 
-		// Boost example: `priceVelocityBoost` from KineticsCalculator boosts map
-		const priceVelocityBoost = kinetics.boosts.priceVelocityBoost ?? 0;
+		// Boost example: `priceVelocityBoost` from KineticsCalculator velAccBoostFns map
+		const priceVelocityBoost = kinetics.velAccBoostFns.priceVelocityBoost ?? 0;
 
 		// ── 5) Optional velocity guard ───────────────────────────────────────────
 		if (APP_CONFIG_2.leaderboard.usePctChgVelocityGuard) {

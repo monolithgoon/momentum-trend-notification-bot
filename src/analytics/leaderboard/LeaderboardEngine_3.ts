@@ -8,7 +8,7 @@ import { pruneStaleLeaderboardTickers } from "./helpers/pruneOldTickers";
 import { mergeWithExistingLeaderboard_3 } from "./helpers/mergeWithExistingLeaderboard_2 copy";
 import { computeAggregateRank, computeKineticsRanks, getFinalLeaderboardRank } from "./helpers/computeKineticsRanks";
 import { Logger } from "@infrastructure/logger";
-import { kineticsComputePlanSpec } from "@analytics/leaderboard_latest/kinetics";
+import { buildKineticsComputeSpec } from "@analytics/leaderboard_latest/kinetics/config/kineticsComputeSpecBuilder";
 
 const BULK_CHUNK_SIZE = 250; // Tune for your FS/DB characteristics
 
@@ -129,19 +129,12 @@ export class LeaderboardEngine_3 {
 		// Read bounded lookback histories for the current batch of ticker symbols
 		const symbolHistoriesMap = await this.retrieveHistoryForSymbols(tag, tickerSymbols, lookbackSamplesLimit);
 
-		// REMOVE - DEPRECATED
-		// const enrichedSnapshotsMap = computeNewBatchKinetics_3(incomingSnapshots, symbolHistoriesMap, {
-		// 	velWindow: velWindowSamples,
-		// 	accWindow: accWindowSamples,
-		// 	// Optional override: minRequiredPoints
-		// 	appendCurrentIfMissing: true,
-		// });
-
 		// Latest (newest) kinetics pipeline
 		const enrichedSnapshotsMap = computeNewBatchKinetics_4(
 			incomingSnapshots, // ILeaderboardTickerSnapshot_2[]
 			symbolHistoriesMap, // Record<string, ILeaderboardTickerSnapshot_2[]>
-			kineticsComputePlanSpec
+			buildKineticsComputeSpec("momentum"), // IPipelineComputePlanSpec
+			
 		);
 
 		// Prune stale leaderboard snapshots

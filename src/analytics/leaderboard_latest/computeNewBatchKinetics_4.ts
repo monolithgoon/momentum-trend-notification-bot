@@ -1,36 +1,22 @@
-import type { IKineticsComputePlanSpec } from "./kinetics/types/KineticsComputeSpecTypes";
+import type { IPipelineComputePlanSpec } from "./kinetics/types/KineticsComputeSpecTypes";
 import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface copy";
-import {
-	KineticsSymbolFieldKey,
-	KineticsTimestampFieldKey,
-	type KineticsMetricFieldKeyType,
-} from "./kinetics/types/RuntimeMetricFieldKeys";
-import type {
-	EnrichedSnapshotType,
-	HorizonSpanType,
-} from "./kinetics/types/ComputedKineticsTypes";
-import { KineticsPipeline_5 } from "./kinetics/core/KineticsPipeline_4 copy";
+import { FIELD_KEYS, SnapshotMetricFieldKeyType } from "./kinetics/config/KineticsFieldBindings";
+import type { EnrichedSnapshotType, HorizonSpanType } from "./kinetics/types/ComputedKineticsTypes";
+import { KineticsPipeline_6 } from "./kinetics/core/KineticsPipeline_6_patched";
 
 // Concrete enriched output type
 export type EnrichedLeaderboardSnapshot = EnrichedSnapshotType<
 	ILeaderboardTickerSnapshot_2,
-	KineticsMetricFieldKeyType,
+	SnapshotMetricFieldKeyType,
 	HorizonSpanType
 >;
 
 /* ------------------------------------------------------------------------
 	 1️⃣ Resolve runtime keys
-	 - Defines where to find ticker symbol and timestamp in the incoming snapshots.
+	 - Defines where to find ticker tickerSymbol and timestamp in the incoming snapshots.
 ------------------------------------------------------------------------ */
-const symbolField = KineticsSymbolFieldKey.TICKER_SYMBOL_FIELD satisfies Extract<
-	keyof ILeaderboardTickerSnapshot_2,
-	string
->;
-
-const tsField = KineticsTimestampFieldKey.LEADERBOARD_TIMESTAMP satisfies Extract<
-	keyof ILeaderboardTickerSnapshot_2,
-	string
->;
+const symbolFieldKey = FIELD_KEYS.TICKER_SYMBOL_FIELD satisfies Extract<keyof ILeaderboardTickerSnapshot_2, string>;
+const tsFieldKey = FIELD_KEYS.TIMESTAMP_FIELD satisfies Extract<keyof ILeaderboardTickerSnapshot_2, string>;
 
 /**
  * Receives: ILeaderboardTickerSnapshot_2[]
@@ -39,12 +25,12 @@ const tsField = KineticsTimestampFieldKey.LEADERBOARD_TIMESTAMP satisfies Extrac
  * Enriches a batch of leaderboard snapshots with computed velocity, acceleration, and boost metrics.
  * - Metrics & horizons come from the provided `kineticsComputePlanSpec`.
  * - Writes to nested `derivedProps.metrics[metricKey][lookbackSpan]` (no flat magic-string fields).
- * - Timestamp & symbol fields are passed explicitly to the pipeline.
+ * - Timestamp & tickerSymbol fields are passed explicitly to the pipeline.
  */
 export function computeNewBatchKinetics_4(
 	snapshots: ILeaderboardTickerSnapshot_2[],
 	historyBySymbolMap: Record<string, ILeaderboardTickerSnapshot_2[]>,
-	kineticsComputePlanSpec: IKineticsComputePlanSpec,
+	kineticsComputePlanSpec: IPipelineComputePlanSpec,
 	opts: { minRequiredSnapshots?: number } = {}
 ): Map<string, EnrichedLeaderboardSnapshot> {
 	/* ------------------------------------------------------------------------
@@ -59,12 +45,10 @@ export function computeNewBatchKinetics_4(
 		 3️⃣ Instantiate pipeline (no widening; full snapshot in/out)
 		 - Passes kineticsComputePlanSpec + runtime keys to Kinetics Pipeline.
 	------------------------------------------------------------------------ */
-	const pipeline = new KineticsPipeline_5<ILeaderboardTickerSnapshot_2>({
-		kineticsCompPlSpc: kineticsComputePlanSpec,
-		runtimeKeys: {
-			symbolFieldKey: symbolField,
-			timestampFieldKey: tsField,
-		},
+	const pipeline = new KineticsPipeline_6<ILeaderboardTickerSnapshot_2>({
+		pipelineComputeSpec: kineticsComputePlanSpec,
+		symbolFieldKey: symbolFieldKey,
+		timestampFieldKey: tsFieldKey,
 	});
 
 	/* ------------------------------------------------------------------------
@@ -76,18 +60,18 @@ export function computeNewBatchKinetics_4(
 	const results = new Map<string, EnrichedLeaderboardSnapshot>();
 
 	for (const snapshot of snapshots) {
-		const symbol = snapshot[symbolField];
-		const ts = snapshot[tsField];
+		const tickerSymbol = snapshot[symbolFieldKey];
+		const ts = snapshot[tsFieldKey];
 
-		let history = historyBySymbolMap[symbol] ?? [];
+		let history = historyBySymbolMap[tickerSymbol] ?? [];
 
 		// Retrieve & sort history in ascending timestamp order
-		if (history.length > 1 && Number(history[0][tsField]) > Number(history[history.length - 1][tsField])) {
-			history = history.slice().sort((a, b) => Number(a[tsField]) - Number(b[tsField]));
+		if (history.length > 1 && Number(history[0][tsFieldKey]) > Number(history[history.length - 1][tsFieldKey])) {
+			history = history.slice().sort((a, b) => Number(a[tsFieldKey]) - Number(b[tsFieldKey]));
 		}
 
 		// Append current snapshot if newer than last
-		const lastTs = history[history.length - 1]?.[tsField] as number | undefined;
+		const lastTs = history[history.length - 1]?.[tsFieldKey] as number | undefined;
 		if (lastTs == null || lastTs < (ts as number)) history.push(snapshot);
 
 		// Not enough history → return snapshot with empty derivedProps
@@ -101,13 +85,13 @@ export function computeNewBatchKinetics_4(
 					},
 				} as const);
 
-			results.set(symbol, { ...snapshot, derivedProps });
+			results.set(tickerSymbol, { ...snapshot, derivedProps });
 			continue;
 		}
 
 		// Queue for batch processing
 		readySnapshots.push(snapshot);
-		readyHistory[symbol] = history;
+		readyHistory[tickerSymbol] = history;
 	}
 
 	/* ------------------------------------------------------------------------
@@ -117,12 +101,12 @@ export function computeNewBatchKinetics_4(
 	if (readySnapshots.length) {
 		const enriched = pipeline.processBatch(readySnapshots, readyHistory); // Map<string, EnrichedLeaderboardSnapshot>
 		for (const s of readySnapshots) {
-			results.set(s[symbolField], enriched.get(s[symbolField])!);
+			results.set(s[symbolFieldKey], enriched.get(s[symbolFieldKey])!);
 		}
 	}
 
 	/* ------------------------------------------------------------------------
-		 ✅ Return results map keyed by symbol
+		 ✅ Return results map keyed by tickerSymbol
 	------------------------------------------------------------------------ */
 	return results as Map<string, EnrichedLeaderboardSnapshot>;
 }

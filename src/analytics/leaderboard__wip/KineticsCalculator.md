@@ -49,14 +49,14 @@
    4. **Boost Ratios**
       - Boost metrics compare short-term to long-term horizon slopes, intended
         to signal acceleration potential.
-      - Current implementation hard-codes L3 vs L8 boosts; this must be made
+      - Current implementation hard-codes L3 vs L8 velAccBoostFns; this must be made
         configurable to align with future dynamic strategies.
 
    5. **Output Contract**
       - The `raw` map contains unadjusted slope values.
       - The `normalized` map contains scaled values if normalization was
         enabled for that metric.
-      - The `boosts` map contains ratio-based metrics for horizon comparison.
+      - The `velAccBoostFns` map contains ratio-based metrics for horizon comparison.
 
    6. **Error Handling**
       - Insufficient data (fewer snapshots than required) results in zero

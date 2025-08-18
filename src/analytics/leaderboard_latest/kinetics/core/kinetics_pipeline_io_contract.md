@@ -3,7 +3,7 @@
   🔹 KineticsPipeline_2.processBatch — I/O CONTRACT (Derived structure)
   -----------------------------------------------------------------------------
   Purpose:
-  - Enrich latest snapshots with derivedProps metrics (velocity, acceleration, boosts)
+  - Enrich latest snapshots with derivedProps metrics (velocity, acceleration, velAccBoostFns)
     **without** flat magic-string fields. Results are nested under `derivedProps.computedKinetics`.
 
   Signature:
@@ -25,7 +25,7 @@
             [lookbackSpan: number]: {
               velocity: number;
               acceleration: number;
-              boosts?: Record<string, number>; // e.g., { velocity_boost: 0.021 }
+              velAccBoostFns?: Record<string, number>; // e.g., { velocity_boost: 0.021 }
             } | undefined;
           };
         };
@@ -66,11 +66,11 @@
   //     "derivedProps": {
   //       "computedKinetics": {
   //         "pct_change__ld_tick": {
-  //           3: { "velocity": 0.018, "acceleration": 0.004, "boosts": { "velocity_boost": 0.021 } },
+  //           3: { "velocity": 0.018, "acceleration": 0.004, "velAccBoostFns": { "velocity_boost": 0.021 } },
   //           5: { "velocity": 0.015, "acceleration": 0.003 }
   //         },
   //         "volume__ld_tick": {
-  //           3: { "velocity": 120000, "acceleration": 15000, "boosts": { "momentum_boost": 135000 } },
+  //           3: { "velocity": 120000, "acceleration": 15000, "velAccBoostFns": { "momentum_boost": 135000 } },
   //           5: { "velocity": 90000,  "acceleration": 12000 }
   //         }
   //       }
@@ -88,7 +88,7 @@
   // const s   = results.get("AAPL");
   // const vel = s?.derivedProps.computedKinetics[key]?.[L5]?.velocity ?? 0;
   // const acc = s?.derivedProps.computedKinetics[key]?.[L5]?.acceleration ?? 0;
-  // const vb  = s?.derivedProps.computedKinetics[key]?.[L5]?.boosts?.velocity_boost ?? 0;
+  // const vb  = s?.derivedProps.computedKinetics[key]?.[L5]?.velAccBoostFns?.velocity_boost ?? 0;
 
   /* ---------------------------------------------------------
      Notes / Policy

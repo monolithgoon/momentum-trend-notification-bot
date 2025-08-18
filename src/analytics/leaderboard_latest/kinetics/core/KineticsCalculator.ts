@@ -1,5 +1,5 @@
-import { KineticsMetricFieldKeyType, KineticsTimestampFieldKey } from "../types/RuntimeMetricFieldKeys";
-import { NormalizationStrategies } from "../types/NormalizationStrategies";
+import { SnapshotTimestampFieldKeyType, SnapshotMetricFieldKeyType } from "../config/KineticsFieldBindings";
+import { NormalizationStrategies } from "../strategies/NormalizationStrategies";
 import { sanitizeValue } from "../utils/guards";
 import { calcOlsSlope } from "../utils/math";
 import { applyNormalization } from "./applyNormalization";
@@ -34,10 +34,10 @@ export class KineticsCalculator {
 
 	computeVelocity_2<TIn extends Record<string, unknown>>(
 		history: TIn[],
-		metricFieldKey: KineticsMetricFieldKeyType & keyof TIn, // ensure it's a valid key in TIn
+		metricFieldKey: SnapshotMetricFieldKeyType & keyof TIn, // ensure it's a valid key in TIn
 		lookbackSpan: number,
 		normalizationStrategy: NormalizationStrategies = NormalizationStrategies.NONE,
-		timestampFieldKey: keyof TIn = KineticsTimestampFieldKey.LEADERBOARD_TIMESTAMP as keyof TIn
+		timestampFieldKey: SnapshotTimestampFieldKeyType & keyof TIn
 	): number {
 		const tsFieldKey = timestampFieldKey;
 		const mKey = metricFieldKey;
@@ -70,10 +70,10 @@ export class KineticsCalculator {
 	 */
 	computeAcceleration_2<TIn extends Record<string, unknown>>(
 		history: TIn[],
-		metricFieldKey: KineticsMetricFieldKeyType & keyof TIn,
+		metricFieldKey: SnapshotMetricFieldKeyType & keyof TIn,
 		lookbackSpan: number,
 		normalizationStrategy: NormalizationStrategies = NormalizationStrategies.NONE,
-		timestampFieldKey: keyof TIn = KineticsTimestampFieldKey.LEADERBOARD_TIMESTAMP as keyof TIn
+		timestampFieldKey: SnapshotTimestampFieldKeyType & keyof TIn,
 	): number {
 		const tsFieldKey = timestampFieldKey;
 		const mKey = metricFieldKey;

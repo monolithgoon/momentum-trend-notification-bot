@@ -1,10 +1,10 @@
-import { KineticsMetricFieldKeyType } from "../types/RuntimeMetricFieldKeys";
-import { IKineticsComputePlanSpec, IKineticsRuntimeFieldKeys } from "../types/KineticsComputeSpecTypes";
-import { NormalizationStrategies } from "../types/NormalizationStrategies";
+import { KineticsMetricFieldKeyType } from "../config/KineticsFieldBindings";
+import { IPipelineComputePlanSpec, IKineticsRuntimeFieldKeys } from "../types/KineticsComputeSpecTypes";
+import { NormalizationStrategies } from "../strategies/NormalizationStrategies";
 import { KineticsCalculator } from "./KineticsCalculator";
 
 // WIP
-type ComputedKineticsPropertyType = { velocity: number; acceleration: number; boosts?: Record<string, number> };
+type ComputedKineticsPropertyType = { velocity: number; acceleration: number; velAccBoostFns?: Record<string, number> };
 type ComputedKineticsResultsType<TKmf extends string, TLb extends number> = Record<TKmf, Partial<Record<TLb, ComputedKineticsPropertyType>>>;
 type EnrichedSnapshotType<T, TKmf extends string, TLb extends number> = T & { derivedProps: { metrics: ComputedKineticsResultsType<TKmf, TLb> } };
 
@@ -16,7 +16,7 @@ type TLb = number;
 type ComputedKineticsEntryType = {
 	velocity: number;
 	acceleration: number;
-	boosts?: Record<string, number>;
+	velAccBoostFns?: Record<string, number>;
 };
 // WIP
 
@@ -26,7 +26,7 @@ type Job = {
 	normalize?: NormalizationStrategies;
 	enableVelocityGuard: boolean;
 	minVelocity: number;
-	boosts: Array<{ name: string; formula: (v: number, a: number) => number }>;
+	velAccBoostFns: Array<{ name: string; formula: (v: number, a: number) => number }>;
 };
 
 /** === KineticsPipeline (functional version, nested `derivedProps` shape; comments preserved) === */
@@ -37,7 +37,7 @@ export class KineticsPipeline_3<TIn extends Record<string, any>> {
 	constructor(
 		private readonly cfg: {
 			/** keep naming as-is to match your existing code */
-			kineticsCfg: IKineticsComputePlanSpec;
+			kineticsCfg: IPipelineComputePlanSpec;
 			keys: IKineticsRuntimeFieldKeys<TIn>;
 		}
 	) {}
@@ -52,7 +52,7 @@ export class KineticsPipeline_3<TIn extends Record<string, any>> {
 				normalize: h.normalize,
 				enableVelocityGuard: !!m.enableVelocityGuard,
 				minVelocity: m.minVelocity ?? 0,
-				boosts: (m.boosts ?? []).map((b) => ({ name: b.name, formula: b.formula })),
+				velAccBoostFns: (m.velAccBoostFns ?? []).map((b) => ({ name: b.name, formula: b.formula })),
 			}))
 		);
 	}
@@ -73,7 +73,7 @@ export class KineticsPipeline_3<TIn extends Record<string, any>> {
 	 *    b. Computes acceleration from the velocity series.
 	 *    c. Applies velocity guard if enabled (zeroing acceleration).
 	 *    d. Stores computed values in the enriched snapshot object.
-	 *    e. Applies any configured "boosts" (custom formulas).
+	 *    e. Applies any configured "velAccBoostFns" (custom formulas).
 	 * 4. Returns all enriched snapshots as a Map for easy downstream merging.
 	 */
 	processBatch(snapshots: TIn[], historyBySymbol: Record<string, TIn[]>): Map<string, TIn> {
@@ -161,10 +161,10 @@ export class KineticsPipeline_3<TIn extends Record<string, any>> {
            5️⃣ Apply Boosts (optional)
            - Boost formulas are custom functions of velocity & acceleration.
         --------------------------------------------------------- */
-				if (job.boosts.length) {
-					const boosts = (entry.boosts ??= {});
-					for (const b of job.boosts) {
-						boosts[b.name] = b.formula(vel, finalAcc);
+				if (job.velAccBoostFns.length) {
+					const velAccBoostFns = (entry.velAccBoostFns ??= {});
+					for (const b of job.velAccBoostFns) {
+						velAccBoostFns[b.name] = b.formula(vel, finalAcc);
 					}
 				}
 			}

@@ -18,7 +18,7 @@ All outputs are written into a **nested structure** under the snapshot’s `deri
 - Level 1: `derivedProps.computedKinetics`
 - Level 2: `byMetric[metricKey]`
 - Level 3: `byLookbackSpan[span]`
-- Leaf: `{ velocity: number, acceleration: number, boosts?: Record<string, number> }`
+- Leaf: `{ velocity: number, acceleration: number, velAccBoostFns?: Record<string, number> }`
 
 This is a 2-D matrix keyed by `(metricKey, lookbackSpan)` which avoids flat, magic-string fields and groups related values together.
 
@@ -34,7 +34,7 @@ Config (e.g., `kineticsComputePlanSpec`) defines:
   - `horizons`: array of `{ lookbackSpan, normalizeStrategy | valueTransform }`
   - `enableVelocityGuard`: boolean
   - `minVelocity`: threshold for velocity guard
-  - `boosts`: array of `{ name, formula(vel, acc) }`
+  - `velAccBoostFns`: array of `{ name, formula(vel, acc) }`
 
 > **Naming note**: If migrating from `normalizeStrategy`, you may rename to `valueTransform` for clarity (no functional change intended).
 
@@ -93,7 +93,7 @@ TIn & {
             [span: number]: {
               velocity: number;
               acceleration: number;
-              boosts?: Record<string, number>;
+              velAccBoostFns?: Record<string, number>;
             } | undefined;
           };
         } | undefined;
@@ -138,13 +138,13 @@ const historyBySymbol: Record<string, Snapshot[]> = {
         "byMetric": {
           "pct_change__ld_tick": {
             "byLookbackSpan": {
-              "3": { "velocity": 0.018, "acceleration": 0.004, "boosts": { "velocity_boost": 0.021 } },
+              "3": { "velocity": 0.018, "acceleration": 0.004, "velAccBoostFns": { "velocity_boost": 0.021 } },
               "5": { "velocity": 0.015, "acceleration": 0.003 }
             }
           },
           "volume__ld_tick": {
             "byLookbackSpan": {
-              "3": { "velocity": 120000, "acceleration": 15000, "boosts": { "momentum_boost": 135000 } },
+              "3": { "velocity": 120000, "acceleration": 15000, "velAccBoostFns": { "momentum_boost": 135000 } },
               "5": { "velocity": 90000,  "acceleration": 12000 }
             }
           }
@@ -163,7 +163,7 @@ const L5  = 5 as const;
 
 const vel = s?.derivedProps.computedKinetics.byMetric[key]?.byLookbackSpan[L5]?.velocity ?? 0;
 const acc = s?.derivedProps.computedKinetics.byMetric[key]?.byLookbackSpan[L5]?.acceleration ?? 0;
-const vb  = s?.derivedProps.computedKinetics.byMetric[key]?.byLookbackSpan[L5]?.boosts?.velocity_boost ?? 0;
+const vb  = s?.derivedProps.computedKinetics.byMetric[key]?.byLookbackSpan[L5]?.velAccBoostFns?.velocity_boost ?? 0;
 ```
 
 ---
@@ -172,7 +172,7 @@ const vb  = s?.derivedProps.computedKinetics.byMetric[key]?.byLookbackSpan[L5]?.
 
 **Do**
 - Ensure histories are **ascending** and **sufficient** before calling.
-- Keep config as the **single source of truth** for metrics/spans/guards/boosts.
+- Keep config as the **single source of truth** for metrics/spans/guards/velAccBoostFns.
 - Treat derived results as **immutable** snapshots for downstream consumers.
 - Add tests for new **value transforms** and **boost** strategies.
 

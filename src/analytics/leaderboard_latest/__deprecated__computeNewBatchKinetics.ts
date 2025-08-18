@@ -1,5 +1,5 @@
 import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface";
-import { IKineticsComputePlanSpec } from "./kinetics/types/KineticsComputeSpecTypes";
+import { IPipelineComputePlanSpec } from "./kinetics/types/KineticsComputeSpecTypes";
 import { KineticsPipeline_2 } from "./kinetics/core/KineticsPipeline";
 import { KineticsSymbolFieldKey, KineticsTimestampFieldKey } from "./kinetics/types/FieldKeys";
 
@@ -12,7 +12,7 @@ import { KineticsSymbolFieldKey, KineticsTimestampFieldKey } from "./kinetics/ty
 export function computeNewBatchKinetics(
 	snapshots: ILeaderboardTickerSnapshot_2[],
 	historyBySymbolMap: Record<string, ILeaderboardTickerSnapshot_2[]>,
-	kineticsConfigSpec: IKineticsComputePlanSpec,
+	kineticsConfigSpec: IPipelineComputePlanSpec,
 	opts: { minRequiredSnapshots?: number } = {}
 ): Map<string, ILeaderboardTickerSnapshot_2> {
 	/* ---------------------------------------------------------

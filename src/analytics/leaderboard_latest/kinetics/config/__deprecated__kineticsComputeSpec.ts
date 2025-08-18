@@ -1,8 +1,8 @@
-import { FIELD_KEYS } from "../types/RuntimeMetricFieldKeys";
-import { IKineticsComputePlanSpec } from "../types/KineticsComputeSpecTypes";
-import { NormalizationStrategies } from "../types/NormalizationStrategies";
+import { FIELD_KEYS } from "./KineticsFieldBindings";
+import { IPipelineComputePlanSpec } from "../types/KineticsComputeSpecTypes";
+import { NormalizationStrategies } from "../strategies/NormalizationStrategies";
 
-export const kineticsComputePlanSpec: IKineticsComputePlanSpec = {
+export const kineticsComputePlanSpec: IPipelineComputePlanSpec = {
 	/** Optional */
 	// defaultHorizons: [
 	// 	{ lookbackSpan: 3, normalizeStrategy: NormalizationStrategies.NONE },
@@ -19,7 +19,7 @@ export const kineticsComputePlanSpec: IKineticsComputePlanSpec = {
 				{ lookbackSpan: 5, normalizeStrategy: NormalizationStrategies.Z_SCORE },
 				{ lookbackSpan: 8, normalizeStrategy: NormalizationStrategies.MIN_MAX },
 			],
-			boosts: [
+			velAccBoostFns: [
 				{
 					name: "velocity_boost",
 					formula: (vel: number, acc: number) => vel * 1.5 + acc, // example
@@ -35,7 +35,7 @@ export const kineticsComputePlanSpec: IKineticsComputePlanSpec = {
 				{ lookbackSpan: 5, normalizeStrategy: NormalizationStrategies.Z_SCORE },
 				{ lookbackSpan: 8, normalizeStrategy: NormalizationStrategies.MIN_MAX },
 			],
-			boosts: [
+			velAccBoostFns: [
 				{
 					name: "momentum_boost",
 					formula: (vel: number, acc: number) => vel + acc * 0.2,

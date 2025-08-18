@@ -1,5 +1,5 @@
-import { KineticsMetricFieldKeyType } from "./RuntimeMetricFieldKeys";
-import { NormalizationStrategies } from "./NormalizationStrategies";
+import { SnapshotTimestampFieldKeyType, SnapshotMetricFieldKeyType, SnapshotSymbolFieldKeyType } from "../config/KineticsFieldBindings";
+import { NormalizationStrategies } from "../strategies/NormalizationStrategies";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Config Types (single source of truth)
@@ -26,36 +26,28 @@ export interface IKineticsBoostConfig {
 /** Definition of a single metric calculation config. */
 export interface IPerMetricComputePlanSpec {
 	/** The metric field key to operate on (e.g., PRICE_PCT_CHANGE). */
-	metricFieldKey: KineticsMetricFieldKeyType;
+	metricFieldKey: SnapshotMetricFieldKeyType;
 
 	/** Whether to apply a velocity guard before acceleration. */
-	enableVelocityGuard?: boolean;
+	enableVelocityGuard: boolean;
 
 	/** Minimum velocity threshold for acceleration to be considered valid. */
-	minVelocity?: number;
+	minVelocity: number;
 
 	/** The horizons to calculate for this metric. */
 	horizons: IKineticsHorizon[];
 
 	/** Optional boosts to apply after computing velocity and acceleration. */
-	boosts?: IKineticsBoostConfig[];
+	velAccBoostFns?: IKineticsBoostConfig[];
 }
 
 /**
  * Root configuration interface for the Kinetics pipeline.
  */
-export interface IKineticsComputePlanSpec {
+export interface IPipelineComputePlanSpec {
 	/** List of metrics to compute. */
 	perMetricPlans: IPerMetricComputePlanSpec[];
 
 	/** Optional setting to apply same horizons to all kinetics metric fields. */
 	defaultHorizons?: IKineticsHorizon[];
-}
-
-/** Runtime wiring for the pipeline: tells it which fields in TIn are the symbol and timestamp. */
-export interface IKineticsRuntimeFieldKeys<TIn> {
-	/** Snapshot field name holding the symbol/ticker (e.g., "ticker_symbol__ld_tick"). */
-	symbolFieldKey: keyof TIn;
-	/** Snapshot field name holding the timestamp value (used by the calculator). */
-	timestampFieldKey: keyof TIn;
 }

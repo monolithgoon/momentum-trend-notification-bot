@@ -1,9 +1,9 @@
 # 🚀 computeNewBatchKinetics — Semantics & Policies
 
-Enriches the latest leaderboard snapshots with derivedProps metrics (velocity, acceleration, optional boosts) using the **nested** schema:
+Enriches the latest leaderboard snapshots with derivedProps metrics (velocity, acceleration, optional velAccBoostFns) using the **nested** schema:
 
 ```bash
-snapshot.derivedProps.metrics[metricKey][lookbackSpan] = { velocity, acceleration, boosts? }
+snapshot.derivedProps.metrics[metricKey][lookbackSpan] = { velocity, acceleration, velAccBoostFns? }
 ```
 
 - 📜 **Source of Truth:** Uses `/config/kineticsConfigSpec` for:
@@ -36,7 +36,7 @@ The process is broken down into five main steps:
    - If history is too short, returns snapshot unmodified; otherwise, queues for batch processing
 
 5. **⚡ Run Enrichment Pipeline:**  
-   If there are queued snapshots, calls `pipeline.processBatch()` to compute velocity, acceleration, and boosts for all "ready" symbols in a single batch. Returns a map keyed by symbol with enriched snapshots.
+   If there are queued snapshots, calls `pipeline.processBatch()` to compute velocity, acceleration, and velAccBoostFns for all "ready" symbols in a single batch. Returns a map keyed by symbol with enriched snapshots.
 
 ---
 
@@ -44,7 +44,7 @@ The process is broken down into five main steps:
 
 - `snapshots: TIn[]` — Latest snapshots (one per symbol)
 - `historyBySymbol: Record<string, TIn[]>` — Full history per symbol (unordered OK)
-- `kineticsConfigSpec: IKineticsComputePlanSpec` — Metrics + horizons + guards + boosts (authoritative)
+- `kineticsConfigSpec: IPipelineComputePlanSpec` — Metrics + horizons + guards + velAccBoostFns (authoritative)
 - `opts.minRequiredSnapshots?: number` — Override for history length; defaults to `(maxLookback + 1)`
 
 ---
@@ -61,7 +61,7 @@ Map<string, TIn> keyed by symbol, where each TIn is **cloned** and enriched with
           [lookbackSpan: number]: {
             velocity: number;
             acceleration: number;
-            boosts?: Record<string, number>;
+            velAccBoostFns?: Record<string, number>;
           } | undefined;
         };
       };
@@ -79,7 +79,7 @@ Map<string, TIn> keyed by symbol, where each TIn is **cloned** and enriched with
 - 🧱 **Non-mutating:** Input `snapshots` are not mutated; enriched copies are returned.
 - 🧹 **History Hygiene:** Sorts ascending by timestamp; appends current snapshot if newer.
 - 🚦 **Velocity Guard:** If enabled and `|velocity| < minVelocity`, acceleration is set to 0 for that job.
-- 🧩 **Boosts:** Each configured boost receives (velocity, acceleration) and is written under `boosts[name]`.
+- 🧩 **Boosts:** Each configured boost receives (velocity, acceleration) and is written under `velAccBoostFns[name]`.
 
 ---
 
@@ -136,5 +136,5 @@ const lookback_3 = 3 as const;
 const s = results.get("AAPL");
 const vel = s?.derivedProps.metrics[k]?.[lookback_3]?.velocity ?? 0;
 const acc = s?.derivedProps.metrics[k]?.[lookback_3]?.acceleration ?? 0;
-const vb  = s?.derivedProps.metrics[k]?.[lookback_3]?.boosts?.velocity_boost ?? 0;
+const vb  = s?.derivedProps.metrics[k]?.[lookback_3]?.velAccBoostFns?.velocity_boost ?? 0;
 ```

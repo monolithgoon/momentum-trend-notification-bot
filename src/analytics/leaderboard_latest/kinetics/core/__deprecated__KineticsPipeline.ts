@@ -1,5 +1,5 @@
 import { kineticMetricFieldsMap } from "../schema/kineticMetricFieldsMap";
-import { IKineticsComputePlanSpec,IKineticsRuntimeFieldKeys } from "../types/KineticsComputeSpecTypes";
+import { IPipelineComputePlanSpec,IKineticsRuntimeFieldKeys } from "../types/KineticsComputeSpecTypes";
 import { KineticsCalculator } from "./KineticsCalculator";
 
 /* =============================================================================
@@ -13,7 +13,7 @@ import { KineticsCalculator } from "./KineticsCalculator";
   - Takes in raw snapshot data + historical series for each symbol.
   - Computes 1st derivative (velocity) and 2nd derivative (acceleration)
     across multiple metric types and horizons as defined in config.
-  - Optionally applies "boosts" (custom formulas) to enrich final metrics.
+  - Optionally applies "velAccBoostFns" (custom formulas) to enrich final metrics.
 
   Policy:
   -------
@@ -28,7 +28,7 @@ export class KineticsPipeline_2<TIn extends Record<string, any>> {
 
 	constructor(
 		private readonly cfg: {
-			kineticsCfg: IKineticsComputePlanSpec;
+			kineticsCfg: IPipelineComputePlanSpec;
 			keys: IKineticsRuntimeFieldKeys<TIn>;
 		}
 	) {}
@@ -38,7 +38,7 @@ export class KineticsPipeline_2<TIn extends Record<string, any>> {
 	 *
 	 * @param snapshots        - Latest snapshot objects (one per symbol)
 	 * @param historyBySymbol  - Map from symbol → array of historical snapshots
-	 * @param kineticsConfigSpec   - Runtime config controlling metrics, horizons, normalization, and boosts
+	 * @param kineticsConfigSpec   - Runtime config controlling metrics, horizons, normalization, and velAccBoostFns
 	 * @returns                - Map from symbol → enriched snapshot
 	 *
 	 * How it works:
@@ -50,7 +50,7 @@ export class KineticsPipeline_2<TIn extends Record<string, any>> {
 	 *    b. Computes acceleration from the velocity series.
 	 *    c. Applies velocity guard if enabled (zeroing acceleration).
 	 *    d. Stores computed values in the enriched snapshot object.
-	 *    e. Applies any configured "boosts" (custom formulas).
+	 *    e. Applies any configured "velAccBoostFns" (custom formulas).
 	 * 4. Returns all enriched snapshots as a Map for easy downstream merging.
 	 */
 
@@ -134,9 +134,9 @@ export class KineticsPipeline_2<TIn extends Record<string, any>> {
              - Boost formulas are custom functions of velocity & acceleration.
              - Stored in the same map structure as velocity/acceleration.
           --------------------------------------------------------- */
-					if (metricCfg.boosts?.length) {
-						for (const boost of metricCfg.boosts) {
-							const boostField = mapEntry.boosts[boost.name]?.[lookbackSpan];
+					if (metricCfg.velAccBoostFns?.length) {
+						for (const boost of metricCfg.velAccBoostFns) {
+							const boostField = mapEntry.velAccBoostFns[boost.name]?.[lookbackSpan];
 							if (!boostField) continue;
 							(enriched as any)[boostField] = boost.formula(vel, finalAcc);
 						}

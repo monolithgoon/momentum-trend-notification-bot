@@ -10,7 +10,7 @@
 // export type ComputedKineticsPropertyType = {
 // 	velocity: number;
 // 	acceleration: number;
-// 	boosts?: Record<string, number>;
+// 	velAccBoostFns?: Record<string, number>;
 // };
 
 // export type ComputedKineticsResultsType<TComputeMetricFieldKey extends string, TLookbackSpan extends number> = Record<
@@ -59,7 +59,7 @@
 
 // --- Types -------------------------------------------------------------------
 
-import { kineticsComputePlanSpec } from "../config/kineticsComputeSpec";
+import { kineticsComputePlanSpec } from "../config/__deprecated__kineticsComputeSpec";
 
 type KCfg = typeof kineticsComputePlanSpec;
 type MetricCfg = KCfg["perMetricPlans"][number];
@@ -71,8 +71,10 @@ export type HorizonNormalizationType = Horizon["normalizeStrategy"];
 export type ComputedKineticsPropertyType = {
   velocity: number;
   acceleration: number;
-  boosts?: Record<string, number>;
+  velAccBoostFns?: Record<string, number>;
 };
+
+export type BoostDef = { name: string; formula: (v: number, a: number) => number };
 
 // Per-span map
 export type KineticsBySpan<TLookbackSpan extends number> =

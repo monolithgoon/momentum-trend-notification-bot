@@ -43,7 +43,7 @@ sequenceDiagram
                     Pipeline->>Pipeline: enriched[velKey] = velocity
                     Pipeline->>Pipeline: enriched[accKey] = finalAcc
 
-                    opt boosts
+                    opt velAccBoostFns
                         Pipeline->>Pipeline: enriched[boostKey] = boost(velocity, finalAcc)
                     end
                 end
