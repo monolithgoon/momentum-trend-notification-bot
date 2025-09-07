@@ -57,6 +57,7 @@ export type AdvancedThresholdConfig<T> = Partial<Record<NumericKeys<T>, Threshol
  */
 
 export function filterByThresholds<T extends Record<string, any>>(data: T[], config: AdvancedThresholdConfig<T>): T[] {
+	console.log(data.slice(0, 1));
 	return data.filter((item) =>
 		Object.entries(config).every(([field, rule]) => {
 			const value = item[field as keyof T];

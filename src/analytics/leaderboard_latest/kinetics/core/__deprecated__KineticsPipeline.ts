@@ -1,152 +1,275 @@
-import { kineticMetricFieldsMap } from "../schema/kineticMetricFieldsMap";
-import { IPipelineComputePlanSpec,IKineticsRuntimeFieldKeys } from "../types/KineticsComputeSpecTypes";
+import {
+	SnapshotMetricFieldKeyType,
+	SnapshotSymbolFieldKeyType,
+	SnapshotTimestampFieldKeyType,
+} from "../config/KineticsFieldBindings";
 import { KineticsCalculator } from "./KineticsCalculator";
+import type {
+	HorizonSpanType,
+	HorizonNormalizationType,
+	ComputedKineticsPropertyType,
+	KineticsBySpan,
+	KineticsByMetric,
+	EnrichedSnapshotType,
+	BoostDef,
+} from "../types/KineticsResultTypes";
 
-/* =============================================================================
-  🔹 KineticsPipeline_2
-  -----------------------------------------------------------------------------
-  Orchestrates velocity & acceleration calculations for leaderboard snapshots.
+/** --------------------------------------------------------------------------
+ * Types
+ * -------------------------------------------------------------------------- */
 
-  Purpose:
-  --------
-  - Acts as the main coordination layer for the Kinetics system.
-  - Takes in raw snapshot data + historical series for each symbol.
-  - Computes 1st derivative (velocity) and 2nd derivative (acceleration)
-    across multiple metric types and horizons as defined in config.
-  - Optionally applies "velAccBoostFns" (custom formulas) to enrich final metrics.
+/**
+ * PerMetricComputePlan
+ * ---------------------------------------------------------------------------
+ * Represents one metric’s configuration (expanded from DEFAULT_KINETICS_CONFIG).
+ * Each plan carries the metric key, guard thresholds, and a list of horizons.
+ *
+ * Example expansion (from DEFAULT_KINETICS_CONFIG):
+ *
+ * const perMetricPlans = [
+ *   {
+ *     metricFieldKey: "PRICE_PCT_CHANGE",
+ *     enableVelocityGuard: true,
+ *     minVelocity: 0.02,
+ *     horizons: [
+ *       { lookbackSpan: 3, normalizeStrategy: "NONE" },
+ *       { lookbackSpan: 5, normalizeStrategy: "Z_SCORE" },
+ *       { lookbackSpan: 8, normalizeStrategy: "Z_SCORE" },
+ *     ],
+ *   },
+ *   {
+ *     metricFieldKey: "VOLUME_CHANGE",
+ *     enableVelocityGuard: false,
+ *     minVelocity: 0,
+ *     horizons: [
+ *       { lookbackSpan: 3, normalizeStrategy: "NONE" },
+ *       { lookbackSpan: 5, normalizeStrategy: "Z_SCORE" },
+ *       { lookbackSpan: 8, normalizeStrategy: "Z_SCORE" },
+ *     ],
+ *   },
+ * ];
+ */
+type PerMetricComputePlan = {
+	metricFieldKey: SnapshotMetricFieldKeyType;
+	enableVelocityGuard: boolean;
+	minVelocity: number;
+	horizons: Array<{ lookbackSpan: HorizonSpanType; normalizeStrategy: HorizonNormalizationType }>;
+	velAccBoostFns?: BoostDef[];
+};
 
-  Policy:
-  -------
-  - This class does **not** assume any fixed field names for timestamps
-    or metrics; it relies entirely on the `kineticsConfigSpec` and field maps.
-  - Operates on generic `TIn` types that represent leaderboard snapshot shapes.
-  - Produces a **Map** keyed by symbol, with enriched snapshots as values.
-============================================================================= */
+/**
+	ResolvedComputePlan
+	---------------------------------------------------------------------------
+	Flattened runtime representation: expands each (metric × horizon)
+	from PerMetricComputePlan into a single compute job.
+	Example expansion:
+	const resolvedPlans = [
+	  {
+	    metricKey: "PRICE_PCT_CHANGE",
+	    lookbackSpan: 3,
+	    normalizeStrategy: "NONE",
+	    enableVelocityGuard: true,
+	    minVelocity: 0.02,
+	    velAccBoostFns: [],
+	  },
+	  {
+	    metricKey: "PRICE_PCT_CHANGE",
+	    lookbackSpan: 5,
+	    normalizeStrategy: "Z_SCORE",
+	    enableVelocityGuard: true,
+	    minVelocity: 0.02,
+	    velAccBoostFns: [],
+	  },
+	  {
+	    metricKey: "VOLUME_CHANGE",
+	    lookbackSpan: 3,
+	    normalizeStrategy: "NONE",
+	    enableVelocityGuard: false,
+	    minVelocity: 0,
+	    velAccBoostFns: [],
+	  },
+	  ...
+	];
+ */
+type ResolvedComputePlan = {
+	metricKey: SnapshotMetricFieldKeyType;
+	lookbackSpan: HorizonSpanType;
+	normalizeStrategy: HorizonNormalizationType;
+	enableVelocityGuard: boolean;
+	minVelocity: number;
+	velAccBoostFns: BoostDef[];
+};
 
-export class KineticsPipeline_2<TIn extends Record<string, any>> {
-	private readonly calc = new KineticsCalculator();
+type TOut<TBase> = EnrichedSnapshotType<TBase, SnapshotMetricFieldKeyType, HorizonSpanType>;
+
+/** --------------------------------------------------------------------------
+ * Helpers
+ * -------------------------------------------------------------------------- */
+
+function hasDerivedProps<TBase>(s: TBase | TOut<TBase>): s is TOut<TBase> {
+	return typeof s === "object" && s !== null && "derivedProps" in (s as object);
+}
+
+function ensureAscByTimestamp<T extends Record<string, unknown>>(history: T[], tsKey: keyof T): T[] {
+	if (history.length <= 1) return history.slice();
+	const first = Number(history[0][tsKey]);
+	const last = Number(history[history.length - 1][tsKey]);
+	if (!Number.isFinite(first) || !Number.isFinite(last)) return history.slice();
+	if (first <= last) return history.slice();
+	return history.slice().sort((a, b) => Number(a[tsKey]) - Number(b[tsKey]));
+}
+
+function appendIfNewerThanLast<T extends Record<string, unknown>>(ascHistory: T[], current: T, tsKey: keyof T): T[] {
+	const hasAny = ascHistory.length > 0;
+	const lastTs = hasAny ? (ascHistory[ascHistory.length - 1][tsKey] as number | undefined) : undefined;
+	const curTs = current[tsKey] as number | undefined;
+	if (!hasAny || (curTs != null && lastTs != null && curTs > lastTs)) {
+		return [...ascHistory, current];
+	}
+	return ascHistory.slice();
+}
+
+function ensureNodeEntry<TMetricKey extends string, TSpan extends number>(
+	kineticsResultsMatrix: KineticsByMetric<TMetricKey, TSpan>,
+	metricKey: TMetricKey,
+	span: TSpan
+): ComputedKineticsPropertyType {
+	if (!kineticsResultsMatrix[metricKey]) {
+		kineticsResultsMatrix[metricKey] = { byLookbackSpan: {} as KineticsBySpan<TSpan> } as any;
+	}
+	const metricNode = kineticsResultsMatrix[metricKey] as { byLookbackSpan: KineticsBySpan<TSpan> };
+	if (!metricNode.byLookbackSpan[span]) {
+		metricNode.byLookbackSpan[span] = { velocity: 0, acceleration: 0 };
+	}
+	return metricNode.byLookbackSpan[span]!;
+}
+
+function buildFlattenedComputePlans(perMetricPlans: PerMetricComputePlan[]): ResolvedComputePlan[] {
+	return perMetricPlans.flatMap((m) =>
+		m.horizons.map((h) => ({
+			metricKey: m.metricFieldKey,
+			lookbackSpan: h.lookbackSpan,
+			normalizeStrategy: h.normalizeStrategy,
+			enableVelocityGuard: !!m.enableVelocityGuard,
+			minVelocity: m.minVelocity ?? 0,
+			velAccBoostFns: (m.velAccBoostFns ?? []).map((b) => ({ name: b.name, formula: b.formula })),
+		}))
+	);
+}
+
+/** --------------------------------------------------------------------------
+ * Pipeline
+ * -------------------------------------------------------------------------- */
+
+export class KineticsPipeline_6<TIn extends Record<string, unknown>> {
+	private readonly calculator = new KineticsCalculator();
+	private readonly computePlans: ResolvedComputePlan[];
 
 	constructor(
-		private readonly cfg: {
-			kineticsCfg: IPipelineComputePlanSpec;
-			keys: IKineticsRuntimeFieldKeys<TIn>;
+		private readonly pipelineCfg: {
+			pipelineComputeSpec: { perMetricPlans: PerMetricComputePlan[] };
+			tickerSymbolFieldKey: SnapshotSymbolFieldKeyType & keyof TIn;
+			timestampFieldKey: SnapshotTimestampFieldKeyType & keyof TIn;
+			options?: { autoSortAndAppendHistoryChk?: boolean };
 		}
-	) {}
+	) {
+		this.computePlans = buildFlattenedComputePlans(pipelineCfg.pipelineComputeSpec.perMetricPlans);
+	}
 
 	/**
-	 * Compute velocity, acceleration, and boost metrics for a batch of snapshots.
+	 * Process a batch of snapshots and return enriched snapshots with computed kinetics.
 	 *
-	 * @param snapshots        - Latest snapshot objects (one per symbol)
-	 * @param historyBySymbol  - Map from symbol → array of historical snapshots
-	 * @param kineticsConfigSpec   - Runtime config controlling metrics, horizons, normalization, and velAccBoostFns
-	 * @returns                - Map from symbol → enriched snapshot
+	 * @param snapshots       Array of latest snapshot objects (one per symbol).
+	 * @param historyBySymbol Map of symbol → array of historical snapshots.
+	 * @returns               Map of symbol → enriched snapshot containing `derivedProps.computedKinetics`.
 	 *
-	 * How it works:
-	 * -------------
-	 * 1. Loops over each latest snapshot in the batch.
-	 * 2. Looks up the full historical series for the symbol.
-	 * 3. For each metric fiekd key + horizon defined in `kineticsConfigSpec`:
-	 *    a. Computes velocity using the configured lookbackSpan.
-	 *    b. Computes acceleration from the velocity series.
-	 *    c. Applies velocity guard if enabled (zeroing acceleration).
-	 *    d. Stores computed values in the enriched snapshot object.
-	 *    e. Applies any configured "velAccBoostFns" (custom formulas).
-	 * 4. Returns all enriched snapshots as a Map for easy downstream merging.
+	 * Behavior:
+	 * ---------
+	 * 1. For each snapshot:
+	 *    a. Extract symbol using the configured runtime key.
+	 *    b. Retrieve history for that symbol; optionally guard ordering & append current if newer.
+	 *    c. Clone snapshot into an enriched form with `derivedProps` initialized if missing.
+	 *    d. For each configured metric × horizon:
+	 *       i.   Compute velocity and acceleration via calculator.
+	 *       ii.  Apply finite-number guards (replace NaN/Inf with 0).
+	 *       iii. Apply velocity guard (zero acceleration if |velocity| < minVelocity).
+	 *       iv.  Store results under `derivedProps.computedKinetics.byMetric[metricKey].byLookbackSpan[span]`.
+	 *       v.   If boosts are configured, compute them (errors are caught & ignored).
+	 * 2. Collect enriched snapshots into a Map keyed by symbol.
+	 *
+	 * Notes:
+	 * - Input snapshots are not mutated; enrichment is applied to shallow copies.
+	 * - History guard behavior is controlled by `autoSortAndAppendHistoryChk` (default: true).
+	 * - Boost failures do not throw; unset values are left absent.
 	 */
-
-	processBatch(snapshots: TIn[], historyBySymbol: Record<string, TIn[]>): Map<string, TIn> {
-		const results = new Map<string, TIn>();
+	processBatch(snapshots: TIn[], historyBySymbol: Record<string, TIn[]>): Map<string, TOut<TIn>> {
+		const output = new Map<string, TOut<TIn>>();
 
 		for (const snapshot of snapshots) {
-			// Extract the symbol from the configured field
-			const rawSymbol = snapshot[this.cfg.keys.symbolFieldKey];
-			if (rawSymbol == null) continue;
-			const symbol = String(rawSymbol);
+			const tickerSymbol = snapshot[this.pipelineCfg.tickerSymbolFieldKey] as string;
+			if (!tickerSymbol) continue;
 
-			// Historical series for this symbol
-			const history = historyBySymbol[symbol] ?? [];
+			// Prepare history
+			let history = historyBySymbol[tickerSymbol] ?? [];
+			if (this.pipelineCfg.options?.autoSortAndAppendHistoryChk) {
+				history = appendIfNewerThanLast(
+					ensureAscByTimestamp(history, this.pipelineCfg.timestampFieldKey),
+					snapshot,
+					this.pipelineCfg.timestampFieldKey
+				);
+			}
 
-			// Clone the snapshot to avoid mutating the original
-			const enriched: TIn = { ...snapshot };
+			// Prepare enriched snapshot
+			const enrichedSnapshot: TOut<TIn> = hasDerivedProps(snapshot)
+				? { ...snapshot }
+				: ({ ...snapshot, derivedProps: { computedKinetics: { byMetric: {} } } } as TOut<TIn>);
 
-			for (const metricCfg of this.cfg.kineticsCfg.metricsConfig) {
-				const mapEntry = kineticMetricFieldsMap[metricCfg.metricFieldKey];
-				if (!mapEntry) continue; // Unknown metric; skip silently.
+			const kineticsResultsMatrix = enrichedSnapshot.derivedProps.computedKinetics.byMetric as KineticsByMetric<
+				SnapshotMetricFieldKeyType,
+				HorizonSpanType
+			>;
 
-				for (const horizon of metricCfg.horizons) {
-					const lookbackSpan = horizon.lookbackSpan;
-					const normalize = horizon.normalize;
+			// Execute compute plans
+			for (const plan of this.computePlans) {
+				const velRaw = this.calculator.computeVelocity_2(
+					history,
+					plan.metricKey,
+					plan.lookbackSpan,
+					plan.normalizeStrategy,
+					this.pipelineCfg.timestampFieldKey
+				);
+				const accRaw = this.calculator.computeAcceleration_2(
+					history,
+					plan.metricKey,
+					plan.lookbackSpan,
+					plan.normalizeStrategy,
+					this.pipelineCfg.timestampFieldKey
+				);
 
-					// If output field names aren't defined for this lookbackSpan, skip.
-					const velKey = mapEntry.velocity[lookbackSpan];
-					const accKey = mapEntry.acceleration[lookbackSpan];
-					if (!velKey || !accKey) continue;
+				const vel = Number.isFinite(velRaw) ? velRaw : 0;
+				const acc = Number.isFinite(accRaw) ? accRaw : 0;
 
-					/* ---------------------------------------------------------
-             1️⃣ Compute Velocity (1st derivative)
-             - Uses the specified metric field key.
-             - Lookback controls how many historical points to use.
-             - Normalization applied if strategy != NONE.
-          --------------------------------------------------------- */
-					const vel = this.calc.computeVelocity_2(
-						history,
-						metricCfg.metricFieldKey,
-						lookbackSpan,
-						normalize,
-						this.cfg.keys.timestampFieldKey as keyof TIn
-					);
+				const finalAcc = plan.enableVelocityGuard && Math.abs(vel) < plan.minVelocity ? 0 : acc;
 
-					/* ---------------------------------------------------------
-             2️⃣ Compute Acceleration (2nd derivative)
-             - Uses the velocity series for the metric.
-             - Same lookbackSpan as velocity computation.
-             - Normalization applied if strategy != NONE.
-          --------------------------------------------------------- */
-					const acc = this.calc.computeAcceleration_2(
-						history,
-						metricCfg.metricFieldKey,
-						lookbackSpan,
-						normalize,
-						this.cfg.keys.timestampFieldKey as keyof TIn
-					);
+				const entry = ensureNodeEntry(kineticsResultsMatrix, plan.metricKey, plan.lookbackSpan);
+				entry.velocity = vel;
+				entry.acceleration = finalAcc;
 
-					/* ---------------------------------------------------------
-             3️⃣ Velocity Guard (optional)
-             - If enabled, zero out acceleration when velocity is
-               below the configured minVelocity threshold.
-          --------------------------------------------------------- */
-					let finalAcc = acc;
-					if (metricCfg.enableVelocityGuard) {
-						const minV = metricCfg.minVelocity ?? 0;
-						if (Math.abs(vel) < minV) finalAcc = 0;
-					}
-
-					/* ---------------------------------------------------------
-             4️⃣ Store Computed Metrics
-             - Use kineticMetricFieldsMap to avoid hardcoding keys.
-             - Store velocity and acceleration keyed by horizon.
-          --------------------------------------------------------- */
-					(enriched as any)[velKey] = vel;
-					(enriched as any)[accKey] = finalAcc;
-
-					/* ---------------------------------------------------------
-             5️⃣ Apply Boosts (optional)
-             - Boost formulas are custom functions of velocity & acceleration.
-             - Stored in the same map structure as velocity/acceleration.
-          --------------------------------------------------------- */
-					if (metricCfg.velAccBoostFns?.length) {
-						for (const boost of metricCfg.velAccBoostFns) {
-							const boostField = mapEntry.velAccBoostFns[boost.name]?.[lookbackSpan];
-							if (!boostField) continue;
-							(enriched as any)[boostField] = boost.formula(vel, finalAcc);
+				if (plan.velAccBoostFns.length) {
+					entry.velAccBoostFns = entry.velAccBoostFns ?? {};
+					for (const boost of plan.velAccBoostFns) {
+						try {
+							entry.velAccBoostFns[boost.name] = boost.formula(vel, finalAcc);
+						} catch {
+							// Ignore boost computation errors
 						}
 					}
 				}
 			}
 
-			results.set(symbol, enriched);
+			output.set(tickerSymbol, enrichedSnapshot);
 		}
 
-		return results;
+		return output;
 	}
 }

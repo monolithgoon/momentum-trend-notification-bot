@@ -1,11 +1,11 @@
 import type { IPipelineComputePlanSpec } from "./kinetics/types/KineticsComputeSpecTypes";
 import { ILeaderboardTickerSnapshot_2 } from "@core/models/rest_api/ILeaderboardTickerSnapshot.interface copy";
 import { FIELD_KEYS, SnapshotMetricFieldKeyType } from "./kinetics/config/KineticsFieldBindings";
-import type { EnrichedSnapshotType, HorizonSpanType } from "./kinetics/types/ComputedKineticsTypes";
-import { KineticsPipeline_6 } from "./kinetics/core/KineticsPipeline_6_patched";
+import type { EnrichedSnapshotType, HorizonSpanType } from "./kinetics/types/KineticsResultTypes";
+import { KineticsPipeline_6 } from "./kinetics/core/__deprecated__KineticsPipeline";
 
 // Concrete enriched output type
-export type EnrichedLeaderboardSnapshot = EnrichedSnapshotType<
+type EnrichedLeaderboardSnapshot = EnrichedSnapshotType<
 	ILeaderboardTickerSnapshot_2,
 	SnapshotMetricFieldKeyType,
 	HorizonSpanType
@@ -15,7 +15,7 @@ export type EnrichedLeaderboardSnapshot = EnrichedSnapshotType<
 	 1️⃣ Resolve runtime keys
 	 - Defines where to find ticker tickerSymbol and timestamp in the incoming snapshots.
 ------------------------------------------------------------------------ */
-const symbolFieldKey = FIELD_KEYS.TICKER_SYMBOL_FIELD satisfies Extract<keyof ILeaderboardTickerSnapshot_2, string>;
+const tickerSymbolFieldKey = FIELD_KEYS.TICKER_SYMBOL_FIELD satisfies Extract<keyof ILeaderboardTickerSnapshot_2, string>;
 const tsFieldKey = FIELD_KEYS.TIMESTAMP_FIELD satisfies Extract<keyof ILeaderboardTickerSnapshot_2, string>;
 
 /**
@@ -47,7 +47,7 @@ export function computeNewBatchKinetics_4(
 	------------------------------------------------------------------------ */
 	const pipeline = new KineticsPipeline_6<ILeaderboardTickerSnapshot_2>({
 		pipelineComputeSpec: kineticsComputePlanSpec,
-		symbolFieldKey: symbolFieldKey,
+		tickerSymbolFieldKey: tickerSymbolFieldKey,
 		timestampFieldKey: tsFieldKey,
 	});
 
@@ -60,7 +60,7 @@ export function computeNewBatchKinetics_4(
 	const results = new Map<string, EnrichedLeaderboardSnapshot>();
 
 	for (const snapshot of snapshots) {
-		const tickerSymbol = snapshot[symbolFieldKey];
+		const tickerSymbol = snapshot[tickerSymbolFieldKey];
 		const ts = snapshot[tsFieldKey];
 
 		let history = historyBySymbolMap[tickerSymbol] ?? [];
@@ -101,7 +101,7 @@ export function computeNewBatchKinetics_4(
 	if (readySnapshots.length) {
 		const enriched = pipeline.processBatch(readySnapshots, readyHistory); // Map<string, EnrichedLeaderboardSnapshot>
 		for (const s of readySnapshots) {
-			results.set(s[symbolFieldKey], enriched.get(s[symbolFieldKey])!);
+			results.set(s[tickerSymbolFieldKey], enriched.get(s[tickerSymbolFieldKey])!);
 		}
 	}
 

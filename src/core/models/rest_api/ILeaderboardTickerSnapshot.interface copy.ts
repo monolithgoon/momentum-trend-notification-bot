@@ -41,7 +41,7 @@ import { BaseInternalTickerSnapshot } from "./BaseInternalTickerSnapshot.interfa
 // }
 
 // Core 5 fields used for computation (no unions)
-export interface IKineticsComputationFields {
+export interface IKineticsComputationFields extends Record<string, unknown> {
   readonly ticker_symbol__ld_tick: string;
   readonly ticker_name__ld_tick: string;
   readonly timestamp__ld_tick: number;
@@ -84,9 +84,3 @@ export interface ILeaderboardTickerSnapshot_2
   // Flags
   first_time_seen_flag: boolean;
 }
-
-// Usage
-function compute(input: IKineticsPipelineInput) {
-  // input has only those 5 fields (structural typing accepts ILeaderboardTickerSnapshot_2 too)
-}
-

@@ -1,0 +1,758 @@
+[
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756744605088,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756744698639,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756744804509,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756744909660,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756745002309,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756798704341,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756798819434,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756798916934,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756799023422,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756801658302,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756802048909,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "IPDN",
+    "ticker_name__ld_tick": "Professional Diversity Network, Inc.",
+    "pct_change__ld_tick": 246.63212,
+    "timestamp__ld_tick": 1756802260580,
+    "volume__ld_tick": 306028558,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]

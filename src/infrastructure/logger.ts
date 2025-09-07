@@ -55,3 +55,49 @@ const logger = new TinyLogger();
 
 export default logger;
 export type Logger = typeof logger;
+
+class TinyLogger_2 {
+  constructor(private readonly context?: string) {}
+
+  private log(level: LogLevel, message: string, meta: LogMeta = {}) {
+    const logEntry = {
+      level,
+      timestamp: new Date().toISOString(),
+      context: this.context,
+      message,
+      ...meta, // 👈 meta after message
+    };
+
+    const serialized = JSON.stringify(logEntry);
+    console[level === "error" ? "error" : "log"](serialized);
+  }
+
+  info(message: string, meta: LogMeta = {}) {
+    this.log("info", message, meta);
+  }
+
+  warn(message: string, meta: LogMeta = {}) {
+    this.log("warn", message, meta);
+  }
+
+  error(message: string | Error, meta: LogMeta = {}) {
+    if (typeof message === "string") {
+      this.log("error", message, meta);
+    } else {
+      this.log("error", "Error occurred", {
+        ...meta,
+        error: message.message,
+        stack: message.stack,
+      });
+    }
+  }
+
+  child(context: string): TinyLogger {
+    return new TinyLogger(context);
+  }
+}
+
+export const logger_2 = new TinyLogger_2();
+
+// export default logger_2;
+export type Logger_2 = typeof logger_2;

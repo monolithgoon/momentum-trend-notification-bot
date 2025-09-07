@@ -1,6 +1,6 @@
 import { appEvents } from "@config/appEvents";
 import { typedEventEmitter } from "@infrastructure/event_bus/TypedEventEmitter";
-import logger from "@infrastructure/logger";
+import logger, { logger_2 } from "@infrastructure/logger";
 
 import { MarketScanPayload } from "src/types/events/MarketScanEventPayload.interface";
 import { LeaderboardUpdateEvent } from "src/types/events/LeaderboardUpdateEvent.interface";
@@ -52,7 +52,7 @@ async function handleMarketScanComplete(payload: MarketScanPayload) {
 		// snapshots, // Uncomment for full batch
 		snapshotTransformer: new LeaderboardTickerTransformer_3(),
 		// leaderboardEngine: new LeaderboardEngine(storage, sorter),
-		leaderboardEngine: new LeaderboardEngine_3(storage, sorter, logger),
+		leaderboardEngine: new LeaderboardEngine_3(storage, sorter, logger_2),
 		leaderboardScanStrategyTag: marketScanStrategyPresetKeys,
 		previewOnly: false,
 		onStepComplete: (step) => logger.info({ step, correlationId }, "Leaderboard step complete"),

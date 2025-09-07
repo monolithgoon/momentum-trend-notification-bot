@@ -1,0 +1,1889 @@
+[
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {}
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {}
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {}
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {}
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {}
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {}
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {}
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {}
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ticker_symbol__ld_tick": "CNF",
+    "ticker_name__ld_tick": "CNFinance Holdings Limited",
+    "pct_change__ld_tick": 94.16667,
+    "timestamp__ld_tick": 1757102485,
+    "volume__ld_tick": 1144440,
+    "pct_change_velocity__ld_tick": 0,
+    "pct_change_acceleration__ld_tick": 0,
+    "volume_velocity__ld_tick": 0,
+    "volume_acceleration__ld_tick": 0,
+    "num_consecutive_appearances": 0,
+    "num_consecutive_absences": 0,
+    "rankings": {
+      "volume_rank": -1,
+      "vol_vel_rank": -1,
+      "vol_acc_rank": -1,
+      "pct_change_rank": -1,
+      "pct_change_vel_rank": -1,
+      "pct_change_acc_rank": -1
+    },
+    "aggregate_kinetics_rank": 0,
+    "leaderboard_momentum_score": 0,
+    "leaderboard_rank": 0,
+    "first_time_seen_flag": true,
+    "derivedProps": {
+      "computedKinetics": {
+        "byMetric": {
+          "pct_change__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          },
+          "volume__ld_tick": {
+            "byLookbackSpan": {
+              "3": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "5": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "8": {
+                "velocity": 0,
+                "acceleration": 0
+              },
+              "20": {
+                "velocity": 0,
+                "acceleration": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]

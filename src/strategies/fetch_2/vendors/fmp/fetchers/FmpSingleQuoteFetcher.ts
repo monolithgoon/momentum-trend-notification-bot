@@ -47,3 +47,28 @@ export class FmpSingleQuoteFetcher {
 		}
 	}
 }
+
+
+import { withFmpApiKey } from "src/config_2/constants/fmp.constants";
+import { adaptRawFmpQuote, IFmpQuoteRaw } from "./adaptRawFmpQuote";
+
+export class FmpSingleQuoteFetcher_2 {
+  public async fetchQuote(symbol: string): Promise<IFmpQuoteRaw | null> {
+    try {
+      const res = await safeAPICall(() =>
+        axios.get(
+          withFmpApiKey(
+            APP_CONFIG_2.fmp.singleQuoteUrl(symbol),
+            `${APP_CONFIG_2.env.FMP_API_KEY}`
+          )
+        )
+      );
+
+      const data = res?.data?.[0];
+      return data ? adaptRawFmpQuote(data) : null;
+    } catch (err) {
+      console.error(`❌ Failed to fetch FMP quote for ${symbol}:`, err);
+      return null;
+    }
+  }
+}

@@ -1,53 +1,130 @@
-import { SnapshotTimestampFieldKeyType, SnapshotMetricFieldKeyType, SnapshotSymbolFieldKeyType } from "../config/KineticsFieldBindings";
-import { NormalizationStrategies } from "../strategies/NormalizationStrategies";
+/* ============================================================================
+   src/analytics/types.ts
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Config Types (single source of truth)
-// ─────────────────────────────────────────────────────────────────────────────
+   Unified types for Kinetics + Momentum computation.
+   - Purely declarative (no value imports or logic)
+   - Clean separation between domains
+   - Imports only type-level dependencies
+============================================================================ */
 
-/** A single computation horizon (lookback span period). */
-export interface IKineticsHorizon {
-	/** Number of historical snapshots to use for calculation. */
-	lookbackSpan: number;
+/* ----------------------------------------------------------------------------
+   📦 Type-only imports
+---------------------------------------------------------------------------- */
 
-	/** Optional normalization strategy applied to this horizon. */
-	normalizeStrategy: NormalizationStrategies;
+import { TNormalizationKey } from "@analytics/math/normalization/strategies";
+import type {
+	SnapshotMetricFieldKeyType,
+	SnapshotPctChangeFieldKeyType,
+	SnapshotVolumeFieldKeyType,
+} from "../config/KineticsFieldBindings";
+
+/* ----------------------------------------------------------------------------
+   🔑 Shared Primitives
+---------------------------------------------------------------------------- */
+
+export type Span = number;
+export type Direction = "asc" | "desc";
+
+/** Minimal scalar point used by normalization/ranking utilities. */
+export interface ScalarPoint {
+	v: number;
 }
 
-/** Boost formula definition. */
-export interface IKineticsBoostConfig {
-	/** Name of the boost — used for field mapping in MetricFieldMap. */
-	name: string;
+/* ============================================================================
+   📈 MOMENTUM DOMAIN TYPES
+============================================================================ */
 
-	/** Calculation logic for the boost. */
+/** A computed momentum vector at a single span. */
+export interface MomentumVector {
+	span: Span;
+	momentumScore: number;
+	breakdown: {
+		priceVelocity: number;
+		priceAcceleration: number;
+		volumeVelocity: number;
+		volumeAcceleration: number;
+		baseMomentum: number;
+	};
+}
+
+// REMOVE - DEPRECATED
+/** Final momentum signal output for all spans. */
+export type MomentumSignalsBySpan = Record<Span, MomentumVector>;
+
+// REMOVE - DEPRECATED
+/** Strategy config for computing momentum. */
+export interface MomentumComputationSpec {
+	/**
+	 * Enables normalization of momentum inputs across spans.
+	 * - If `true`: uses Z_SCORE normalization.
+	 * - If object: allows explicit selection of normalization strategy and direction.
+	 */
+	normalizeChk?:
+		| boolean
+		| {
+				strategy?: TNormalizationKey;
+				direction?: Direction;
+		  };
+
+	/** Weights applied to price and volume components. */
+	priceWeight?: number;
+	volumeWeight?: number;
+
+	/** Include acceleration in the momentum computation. */
+	includeAccelerationChk?: boolean;
+
+	/** Velocity/acceleration combination logic. */
+	boostFormula?: (velocity: number, acceleration: number) => number;
+
+	/** Field keys used to extract base metrics from the snapshot. */
+	baseMetricKeys: {
+		priceMetricKey: SnapshotPctChangeFieldKeyType;
+		volumeMetricKey: SnapshotVolumeFieldKeyType;
+	};
+
+	// Optional future use: strategy name (if registry applied)
+	// momentumStrategyName: MomentumStrategyKey;
+}
+
+/* ============================================================================
+   ⚙️ MAIN LEADERBOARD KINETICS DOMAIN TYPES
+============================================================================ */
+
+/** Represents computed values at a given span. */
+export interface IKineticsMetricPoint {
+	velocity: number;
+	acceleration: number;
+}
+
+/** Maps each span to its metric point. */
+export type IKineticsBySpanMap = Record<Span, IKineticsMetricPoint>;
+
+/** Maps each metric name (e.g., "price_pct_change") to its span map. */
+export type IKineticsByMetricMap = Record<string, IKineticsBySpanMap>;
+
+/** A single horizon definition (lookback + optional normalization). */
+export interface IKineticsHorizon {
+	lookbackSpan: number;
+	normalizeStrategy: TNormalizationKey;
+}
+
+/** Optional boost logic for computed velocity + acceleration. */
+export interface IKineticsBoostConfig {
+	name: string;
 	formula: (velocity: number, acceleration: number) => number;
 }
 
-/** Definition of a single metric calculation config. */
+/** Configuration for a single metric to compute. */
 export interface IPerMetricComputePlanSpec {
-	/** The metric field key to operate on (e.g., PRICE_PCT_CHANGE). */
 	metricFieldKey: SnapshotMetricFieldKeyType;
-
-	/** Whether to apply a velocity guard before acceleration. */
 	enableVelocityGuard: boolean;
-
-	/** Minimum velocity threshold for acceleration to be considered valid. */
 	minVelocity: number;
-
-	/** The horizons to calculate for this metric. */
 	horizons: IKineticsHorizon[];
-
-	/** Optional boosts to apply after computing velocity and acceleration. */
 	velAccBoostFns?: IKineticsBoostConfig[];
 }
 
-/**
- * Root configuration interface for the Kinetics pipeline.
- */
+/** Full config for running the pipeline across all metrics. */
 export interface IPipelineComputePlanSpec {
-	/** List of metrics to compute. */
 	perMetricPlans: IPerMetricComputePlanSpec[];
-
-	/** Optional setting to apply same horizons to all kinetics metric fields. */
 	defaultHorizons?: IKineticsHorizon[];
 }

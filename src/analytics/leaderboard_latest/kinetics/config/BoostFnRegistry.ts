@@ -1,4 +1,32 @@
-export type KineticsBoostFn = (v: number, a: number) => number;
+/* ============================================================================
+   Boosts: Custom scoring signals derived from velocity and acceleration
+   ---------------------------------------------------------------------------
+   These boost formulas are designed to shape the priority of each
+   enriched (metric × horizon) result, depending on the character of the move.
+
+   Together, they form a scoring toolkit that can later be used to
+   filter, rank, or surface particularly interesting momentum patterns.
+
+   ⚙️ Boosts defined below:
+   ----------------------------------------------------------------------------
+   1. velocity_boost:
+      - Emphasizes high velocity, slightly adjusted by acceleration.
+      - Ideal for fast-moving trends that are still gaining steam.
+
+   2. momentum_boost:
+      - Balanced signal that equally rewards velocity + acceleration.
+      - Encourages strong consistent trends over noise.
+
+   3. breakout_bias:
+      - Detects aggressive spikes by multiplying velocity and acceleration.
+      - Tends to reward explosive moves more than steady ones.
+
+   4. stability_adjusted_boost:
+      - De-emphasizes moves with high negative acceleration (i.e. slowing).
+      - Useful for preserving gains in stable upward trends.
+============================================================================ */
+
+type KineticsBoostFn = (v: number, a: number) => number;
 
 type NamedBoostFn = {
 	name: string;

@@ -1,0 +1,36 @@
+{
+  "byMetric": {
+    "pct_change__ld_tick": {
+      "byLookbackSpan": {
+        "3": {
+          "velocity": 0,
+          "acceleration": 0
+        },
+        "5": {
+          "velocity": 0,
+          "acceleration": 0
+        },
+        "8": {
+          "velocity": 0,
+          "acceleration": 0
+        }
+      }
+    },
+    "volume__ld_tick": {
+      "byLookbackSpan": {
+        "3": {
+          "velocity": 0,
+          "acceleration": 0
+        },
+        "5": {
+          "velocity": 0,
+          "acceleration": 0
+        },
+        "8": {
+          "velocity": 0,
+          "acceleration": 0
+        }
+      }
+    }
+  }
+}

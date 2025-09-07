@@ -2,12 +2,12 @@ import { getCurrentMarketSession } from "@core/utils";
 import { generateCorrelationId } from "@core/utils/correlation";
 import timer from "@core/utils/timer";
 import logger from "@infrastructure/logger";
-import { ComposableDatasetFieldThresholdFilter } from "src/strategies/filter/ComposableDatasetFieldThresholdFilter";
+import { ComposableDatasetFieldThresholdFilter } from "src/strategies/__deprecated__filter/ComposableDatasetFieldThresholdFilter";
 import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRestTickerSnapshot.interface";
-import { MarketScanOrchestrator_2 } from "src/strategies/scan/MarketScanOrchestrator_2";
-import { CompositeFilterScreener } from "src/strategies/filter/CompositeFilterScreener";
-import { GenericDatasetFilter } from "src/strategies/filter/GenericDatasetFilter.interface";
-import { DatasetScreenerConfig } from "src/strategies/scan/MarketScanOrchestrator_2";
+import { MarketScanOrchestrator_2 } from "src/strategies/__deprecated__scan/MarketScanOrchestrator_2";
+import { CompositeFilterScreener } from "src/strategies/__deprecated__filter/CompositeFilterScreener";
+import { GenericDatasetFilter } from "src/strategies/__deprecated__filter/GenericDatasetFilter.interface";
+import { DatasetScreenerConfig } from "src/strategies/__deprecated__scan/MarketScanOrchestrator_2";
 
 /**
  * Runs a live market scan using predefined filters and logs the results.

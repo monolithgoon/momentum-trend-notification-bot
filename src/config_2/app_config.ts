@@ -21,7 +21,13 @@ export const APP_CONFIG_2 = {
 	},
 	fmp: {
 		baseUrl: constants.FMP_BASE_URL,
-		moversUrls: constants.FMP_MARKET_MOVERS_URLS,
+		moversUrls: constants.FMP_URLS.MARKET_MOVERS,
+		singleQuoteUrl: constants.FMP_URLS.SINGLE_QUOTE,
+		batchQuoteUrl: constants.FMP_URLS.BATCH_QUOTE,
+		minuteHistoryUrl: constants.FMP_URLS.MINUTE_HISTORY,
+		marketCapUrl: constants.FMP_URLS.MARKET_CAP,
+		profileUrl: constants.FMP_URLS.PROFILE,
+
 	},
 	eodhd: {
 		quoteUrl: constants.EODHD_LIVE_US_QUOTE_URL,

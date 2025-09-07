@@ -12,15 +12,15 @@ import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRe
 import { SortedNormalizedTickerSnapshot } from "@core/models/rest_api/SortedNormalizedTickerSnapshot.interface";
 import { LeaderboardRestTickerSnapshot } from "@core/models/rest_api/LeaderboardRestTickerSnapshot.interface";
 import { ITaggedLeaderboardSnapshotsBatch } from "@core/models/rest_api/__deprecated__ITaggedLeaderboardSnapshotsBatch.interface";
-import { ScanFilterConfigTypes } from "src/strategies/scan/types/ScanFilterConfigs.types";
+import { ScanFilterConfigTypes } from "src/strategies/__deprecated__scan/types/ScanFilterConfigs.types";
 
 // Core Generics & Transformers
 import { GenericSorter } from "@core/generics/GenericSorter";
 import { LeaderboardTickerTransformer } from "@core/models/rest_api/transformers/LeaderboardTickerTransformer";
 
 // Scan Services
-import { MarketQuoteScanner } from "src/strategies/scan/MarketQuoteScanner";
-import { PriceChangeScanFilter, VolumeChangeScanFilter } from "src/strategies/filter/normalizedTickerScanFilters";
+import { MarketQuoteScanner } from "src/strategies/__deprecated__scan/MarketQuoteScanner";
+import { PriceChangeScanFilter, VolumeChangeScanFilter } from "src/strategies/__deprecated__filter/normalizedTickerScanFilters";
 
 // Notifier Services
 import { NotifierService } from "@services/notifier/NotifierService";

@@ -7,7 +7,7 @@ import { NormalizedRestTickerSnapshot } from "@core/models/rest_api/NormalizedRe
 import { AdvancedThresholdConfig, filterByThresholds } from "../filter_2/filterByThresholds";
 import { dedupeByField } from "@core/generics/dedupeByField";
 import { generateMockSnapshots } from "@core/rest_api/rest_api/generateMockSnapshots";
-import { MarketQuoteScanner_2 } from "../scan/MarketQuoteScanner_2";
+import { MarketQuoteScanner_2 } from "../__deprecated__scan/MarketQuoteScanner_2";
 
 interface OrchestratorOptions {
 	session: MarketSession;

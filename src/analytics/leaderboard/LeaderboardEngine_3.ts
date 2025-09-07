@@ -7,8 +7,16 @@ import { computeNewBatchKinetics_4 } from "@analytics/leaderboard_latest/compute
 import { pruneStaleLeaderboardTickers } from "./helpers/pruneOldTickers";
 import { mergeWithExistingLeaderboard_3 } from "./helpers/mergeWithExistingLeaderboard_2 copy";
 import { computeAggregateRank, computeKineticsRanks, getFinalLeaderboardRank } from "./helpers/computeKineticsRanks";
-import { Logger } from "@infrastructure/logger";
-import { buildKineticsComputeSpec } from "@analytics/leaderboard_latest/kinetics/config/kineticsComputeSpecBuilder";
+import { Logger_2 } from "@infrastructure/logger";
+import { buildKineticsComputeSpec_3 } from "@analytics/leaderboard_latest/kinetics/config/buildKineticsComputeSpec";
+import { buildMomentumComputeSpec } from "@analytics/leaderboard_latest/kinetics/config/buildMomentumComputeSpec";
+import { computeMomentumSignalsStage } from "@analytics/leaderboard_latest/__deprecated__stages/computeMomentumSignalsStage";
+import { extractKineticsByMetricMap } from "@analytics/leaderboard_latest/kinetics/core/__kineticsAdapter";
+import { makePipelineContext } from "@analytics/leaderboard_pipeline_revamp/pipeline/context/makePipelineContext";
+import { makePipelineEngine } from "@analytics/leaderboard_pipeline_revamp/pipeline/PipelineEngine_2";
+
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { join } from "path";
 
 const BULK_CHUNK_SIZE = 250; // Tune for your FS/DB characteristics
 
@@ -42,7 +50,7 @@ export class LeaderboardEngine_3 {
 	constructor(
 		private readonly storage: ILeaderboardStorage,
 		private readonly sorter: LeaderboardTickerSnapshotsSorter_2,
-		private readonly logger: Logger
+		private readonly logger: Logger_2
 	) {}
 
 	/**
@@ -76,21 +84,19 @@ export class LeaderboardEngine_3 {
 
 		if (!incomingSnapshots.length) {
 			// Nothing to ingest; return what we already have.
-			this.logger.info(
-				{
-					tag,
-					correlationId,
-					currLeaderboard: currLeaderboard.length,
-				},
-				"[LeaderboardEngine] no incoming snapshots"
-			);
+			this.logger.info("[LeaderboardEngine] no incoming snapshots", {
+				tag,
+				correlationId,
+				currLeaderboard: currLeaderboard.length,
+			});
 			return currLeaderboard;
 		}
 
+		// FIXME
 		/**	Derive kinetics windowing  (single source of truth) */
 
-		const velWindowSamples = APP_CONFIG_2?.leaderboard?.velWindow ?? 20;
-		const accWindowSamples = APP_CONFIG_2?.leaderboard?.accWindow ?? 20;
+		const velWindowSamples = APP_CONFIG_2?.leaderboard?.velWindow ?? 8;
+		const accWindowSamples = APP_CONFIG_2?.leaderboard?.accWindow ?? 8;
 		const longestWindowSamples = Math.max(velWindowSamples, accWindowSamples);
 
 		// How many windows of history to fetch for context (e.g., 6 × window)
@@ -109,6 +115,7 @@ export class LeaderboardEngine_3 {
 			minSamplesForAccel,
 			APP_CONFIG_2?.leaderboard?.maxSnapshotHistoryLookback ?? defaultLookbackSamples
 		);
+		// FIXME
 
 		// === PHASE A: Append raw snapshots to history (skip in preview mode) ===
 
@@ -129,13 +136,107 @@ export class LeaderboardEngine_3 {
 		// Read bounded lookback histories for the current batch of ticker symbols
 		const symbolHistoriesMap = await this.retrieveHistoryForSymbols(tag, tickerSymbols, lookbackSamplesLimit);
 
-		// Latest (newest) kinetics pipeline
+		// WIP
+		// WIP 1
+		// Define engine with stages
+		// new PipelineEngine(
+		// 	[
+		// 		ComputeKineticsStage_5,
+		// 		// … other stages (Rank, Sort, Emit, etc.)
+		// 	],
+		// 	this.logger
+		// );
+
+		// WIP 2
+		const ctx = makePipelineContext({
+			incomingBatch: incomingSnapshots,
+			historyBySymbol: symbolHistoriesMap,
+			correlationId,
+		});
+
+		console.log({ incomingSnaps: ctx.incomingBatch.slice(0, 3) });
+
+		// // Run just this stage
+		// const result = await ComputeKineticsStage_5.run(ctx);
+
+		// console.log({ result });
+		// console.log({ minSnapshots: ctx.config.computeSpec.minSnapshotsNeeded });
+
+		// WIP 3
+		// Step 1: Run kinetics pipeline - Entry to the kinetics (vel. / accel.) calc. pipeline
 		const enrichedSnapshotsMap = computeNewBatchKinetics_4(
 			incomingSnapshots, // ILeaderboardTickerSnapshot_2[]
 			symbolHistoriesMap, // Record<string, ILeaderboardTickerSnapshot_2[]>
-			buildKineticsComputeSpec("momentum"), // IPipelineComputePlanSpec
-			
+			buildKineticsComputeSpec_3() // IPipelineComputePlanSpec
 		);
+
+		// WIP 4
+		// await runPipelineOrchestrator(ctx);
+
+		// WIP 5
+		const engine = makePipelineEngine({}, { storage: undefined, logger: this.logger });
+		const result = await engine.run(ctx);
+
+		// WIP 6
+		// Expand map → object
+		const expanded = Array.isArray(result.kineticsBatch)
+			? Object.fromEntries(result.kineticsBatch.map((item: any) => [item.ticker_symbol__ld_tick, item]))
+			: {};
+
+		console.dir(
+			{ snapsWithKinetics_2: Array.isArray(result.kineticsBatch) ? result.kineticsBatch.slice(0, 3) : [] },
+			{ depth: null, colors: true }
+		);
+
+		// Ensure cache dir exists
+		const cacheDir = join(__dirname, "cache");
+		mkdirSync(cacheDir, { recursive: true });
+
+		// Persist topmost entry (append if file exists)
+		const [symbol, data] = Object.entries(expanded)[0] ?? [];
+
+		if (symbol && data) {
+			const file = join(cacheDir, `${symbol}.json`);
+
+			let history: unknown[] = [];
+
+			if (existsSync(file)) {
+				history = JSON.parse(readFileSync(file, "utf-8"));
+			}
+
+			history.push(data); // append new kinetics
+			writeFileSync(file, JSON.stringify(history, null, 2));
+		}
+
+		// Step 2: Extract momentum input
+		for (const [key, enrichedSnapshot] of enrichedSnapshotsMap) {
+			// console.log({ key, enrichedSnapshot });
+			// if (!enrichedSnapshot || !enrichedSnapshot.length) {
+			// 	continue;
+			// }
+			const kineticsByMetric = extractKineticsByMetricMap(enrichedSnapshot);
+
+			// Step 3: Build momentum scores
+			const momentumVectors = computeMomentumSignalsStage(
+				kineticsByMetric,
+				buildMomentumComputeSpec({ momentumStrategyName: "default" })
+			);
+
+			// console.log(`LeaderboardEngine`, key, momentumVectors);
+		}
+		// for (const enriched of enrichedSnapshotsMap.values()) {
+		// 	const kineticsByMetric = extractKineticsByMetricMap(enriched);
+
+		// 	// Step 3: Build momentum scores
+		// 	const momentumVectors = computeMomentumSignalsStage(
+		// 		kineticsByMetric,
+		// 		buildMomentumComputeSpec({ momentumStrategyName: "default" })
+		// 	);
+
+		// 	console.log({ momentumVectors });
+		// }
+		// WIP
+		// WIP
 
 		// Prune stale leaderboard snapshots
 		const prunedLeaderboardTickers = pruneStaleLeaderboardTickers(currLeaderboard);
@@ -218,17 +319,14 @@ export class LeaderboardEngine_3 {
 		}
 
 		if (failed.length) {
-			this.logger.warn(
-				{
-					tag,
-					correlationId,
-					attempted: items.length,
-					success,
-					failed: failed.length,
-					chunks: Math.ceil(items.length / BULK_CHUNK_SIZE),
-				},
-				"[LeaderboardEngine] storeSnapshot partial failures"
-			);
+			this.logger.warn("[LeaderboardEngine] storeSnapshot partial failures", {
+				tag,
+				correlationId,
+				attempted: items.length,
+				success,
+				failed: failed.length,
+				chunks: Math.ceil(items.length / BULK_CHUNK_SIZE),
+			});
 		}
 
 		return { success, failed };
@@ -236,7 +334,6 @@ export class LeaderboardEngine_3 {
 
 	/**
 	 * Read bounded lookback histories for a set of tickerSymbols in parallel.
-	 * If storage introduces `readTailMany`, swap it in here for fewer syscalls.
 	 */
 	private async retrieveHistoryForSymbols(
 		tag: string,

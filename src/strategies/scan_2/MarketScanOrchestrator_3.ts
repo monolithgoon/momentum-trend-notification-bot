@@ -78,8 +78,10 @@ export class MarketScanOrchestrator_3 {
 			...s,
 			sort_ordinal_index: idx,
 		}));
-
+		
 		const filtered = filterByThresholds(snapshotsWithSortIndex, numericFieldLimiters);
+
+		console.log({ numericFieldLimiters });
 
 		// Step 3: Deduplicate based on specified key (e.g. ticker symbol)
 		const deduped = dedupeByField(filtered, dedupField);
